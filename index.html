@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMOO — Каждый момент — возможность</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#0B7186; --deep-dark:#075D70; --deep-ink:#05323C;
+    --sea:#19B3C6; --aqua:#63D6E0; --foam:#F1FAFB;
+    --sand:#C99A5B; --sand-light:#F4EADA;
+    --ink:#103C46; --muted:#4A6A71;
+    --line:rgba(16,60,70,.16); --line-light:rgba(241,250,251,.16);
+    --disp:"Unbounded",sans-serif; --body:"Manrope",sans-serif; --mono:"JetBrains Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);background:var(--foam);color:var(--ink);line-height:1.5;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  ::selection{background:var(--sand);color:#fff}
+  section{scroll-margin-top:90px}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px}
+
+  /* grain */
+  .noise{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:300;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 8s steps(10) infinite}
+  @keyframes grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-2%,2%)}40%{transform:translate(2%,-1%)}60%{transform:translate(-1%,-2%)}80%{transform:translate(1%,1%)}}
+
+  /* language */
+  [data-lang="ru"] .en{display:none}
+  [data-lang="en"] .ru{display:none}
+  body.lang-fade .lang-body{opacity:.25}
+  .lang-body{transition:opacity .25s ease}
+
+  /* ===== header ===== */
+  .site-header{position:fixed;top:0;left:0;right:0;z-index:210;background:var(--deep);transition:background .3s,box-shadow .3s}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:74px;transition:height .3s}
+  .site-header.scrolled{background:var(--deep-ink);box-shadow:0 1px 0 var(--line-light)}
+  .site-header.scrolled .header-inner{height:60px}
+  .logo{display:flex;align-items:center;gap:7px;text-decoration:none;color:#fff;font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:.06em}
+  .logo .o{width:15px;height:15px;border:2.5px solid var(--sand);border-radius:50%;display:inline-block}
+  .nav{display:flex;gap:26px}
+  .nav a{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#BFE3E8;text-decoration:none;position:relative;padding:6px 0}
+  .nav a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--sand);transform:scaleX(0);transform-origin:right;transition:transform .35s}
+  .nav a:hover::after,.nav a.active::after{transform:scaleX(1);transform-origin:left}
+  .nav a.active{color:#fff}
+  .head-right{display:flex;align-items:center;gap:16px}
+  .lang{display:flex;gap:6px}
+  .lang-btn{font-family:var(--mono);background:none;border:1px solid rgba(255,255,255,.35);color:#BFE3E8;font-size:11px;padding:5px 9px;border-radius:2px;cursor:pointer;transition:.25s}
+  .lang-btn:hover{border-color:#fff;color:#fff}
+  .lang-btn.active{background:var(--sand);border-color:var(--sand);color:#fff}
+  .btn-brief{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;background:var(--sand);color:#fff;text-decoration:none;padding:10px 16px;border-radius:2px;transition:background .25s}
+  .btn-brief:hover{background:var(--ink)}
+  .burger{display:none;background:none;border:0;cursor:pointer;width:34px;height:26px;position:relative;z-index:220}
+  .burger span{position:absolute;left:0;width:100%;height:2px;background:#fff;transition:.3s}
+  .burger span:nth-child(1){top:7px}.burger span:nth-child(2){top:17px}
+  body.menu-open .burger span:nth-child(1){top:12px;transform:rotate(45deg)}
+  body.menu-open .burger span:nth-child(2){top:12px;transform:rotate(-45deg)}
+  .mnav{position:fixed;inset:0;background:var(--deep-ink);z-index:205;display:flex;flex-direction:column;justify-content:center;padding:0 32px;gap:6px;
+    clip-path:inset(0 0 100% 0);transition:clip-path .5s cubic-bezier(.7,0,.2,1)}
+  body.menu-open .mnav{clip-path:inset(0 0 0 0)}
+  body.menu-open{overflow:hidden}
+  .mnav a{font-family:var(--disp);font-size:30px;color:#DFF3F5;text-decoration:none;padding:10px 0;border-bottom:1px solid var(--line-light)}
+  .mnav a:hover{color:var(--sand)}
+  .mnav .lang{margin-top:26px}
+
+  /* ===== hero ===== */
+  .hero{background:var(--deep);color:#fff;padding:170px 0 90px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:72px 72px;mask-image:radial-gradient(70% 70% at 60% 30%,#000 30%,transparent 100%)}
+  .hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:56px;align-items:center;position:relative}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--aqua);min-height:1.4em}
+  .hero-title{font-family:var(--disp);font-weight:900;font-size:clamp(34px,5.6vw,72px);line-height:1.04;margin-top:26px;text-transform:uppercase}
+  .hero-title .line{display:block;overflow:hidden}
+  .js .hero-title .line>span{display:block;transform:translateY(112%);transition:transform 1s cubic-bezier(.16,1,.3,1);transition-delay:var(--d,0s)}
+  body.loaded .hero-title .line>span{transform:none}
+  .hero-title .stroke{color:transparent;-webkit-text-stroke:1.5px #fff}
+  @supports not (-webkit-text-stroke:1px #000){.hero-title .stroke{color:#fff}}
+  .hero-title .accent{color:var(--sand)}
+  .hero-lead{margin-top:26px;max-width:560px;font-size:17px;color:#CFEBEF;line-height:1.65}
+  .btn-row{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;
+    font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    padding:17px 30px;border-radius:2px;border:0;cursor:pointer;text-decoration:none;background:var(--sand);color:#fff;transition:color .3s}
+  .btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleY(0);transform-origin:top;transition:transform .4s cubic-bezier(.7,0,.2,1)}
+  .btn:hover::before{transform:scaleY(1)}
+  .btn>span{position:relative;z-index:1}
+  .btn.ghost{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);color:#EAF7F8}
+  .btn.ghost::before{background:var(--sea)}
+  .btn.dark{background:var(--deep)}
+  .hero-meta{margin-top:48px;border-top:1px solid var(--line-light)}
+  .hero-meta div{display:flex;justify-content:space-between;gap:20px;padding:11px 0;border-bottom:1px solid var(--line-light);
+    font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:#9CC9D1;text-transform:uppercase}
+  .hero-meta div b{color:#fff;font-weight:500}
+  .hero-visual{position:relative}
+  .hero-visual .frame{position:relative;aspect-ratio:4/5;overflow:hidden;box-shadow:0 30px 60px rgba(3,32,40,.45)}
+  .hero-visual .frame img{width:100%;height:100%;object-fit:cover;animation:kb 14s ease-in-out infinite alternate}
+  @keyframes kb{from{transform:scale(1)}to{transform:scale(1.09)}}
+  .dim-h{position:absolute;top:-26px;left:0;right:14%;display:flex;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:11px;color:var(--aqua);letter-spacing:.14em}
+  .dim-h i{flex:1;height:1px;background:var(--aqua);opacity:.7}
+  .dim-v{position:absolute;top:8%;bottom:14%;right:-26px;display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:11px;color:var(--aqua);letter-spacing:.14em}
+  .dim-v i{flex:1;width:1px;background:var(--aqua);opacity:.7}
+  .dim-v span{writing-mode:vertical-rl}
+  .corner{position:absolute;width:14px;height:14px;border-color:var(--sand);border-style:solid;border-width:0}
+  .corner.tl{top:-8px;left:-8px;border-top-width:2px;border-left-width:2px}
+  .corner.br{bottom:-8px;right:-8px;border-bottom-width:2px;border-right-width:2px}
+  .chip{position:absolute;left:-30px;bottom:34px;background:var(--foam);color:var(--ink);padding:14px 18px;border-radius:2px;
+    display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;box-shadow:0 14px 30px rgba(3,32,40,.4)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#2FA36B;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,163,107,.5)}70%{box-shadow:0 0 0 9px rgba(47,163,107,0)}100%{box-shadow:0 0 0 0 rgba(47,163,107,0)}}
+
+  /* ticker */
+  .marquee{background:var(--deep-ink);border-top:1px solid var(--line-light);border-bottom:1px solid var(--line-light);overflow:hidden;padding:15px 0}
+  .marquee-track{display:flex;width:max-content;animation:mq 30s linear infinite}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee-track span{font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#8FC7CF;white-space:nowrap;padding-right:18px}
+  .marquee-track span::after{content:"✦";color:var(--sand);padding-left:18px}
+  @keyframes mq{to{transform:translateX(-50%)}}
+
+  /* ===== section scaffolding ===== */
+  .sec{padding:110px 0}
+  .sec-index{display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--sand);margin-bottom:22px}
+  .sec-index::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sec-title{font-family:var(--disp);font-weight:700;font-size:clamp(26px,3.6vw,42px);line-height:1.15}
+  .sec-sub{margin-top:14px;color:var(--muted);max-width:640px;line-height:1.65}
+  .lm-wrap .lm-line{display:block;overflow:hidden}
+  .js .lm-wrap .lm-line>span{display:block;transform:translateY(112%);transition:transform .9s cubic-bezier(.16,1,.3,1)}
+  .lm-wrap.in .lm-line>span{transform:none}
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1);transition-delay:var(--d,0s)}
+  .rv.in{opacity:1;transform:none}
+
+  /* ===== services ===== */
+  .services{background:#fff}
+  .svc-list{margin-top:54px;border-top:1px solid var(--line)}
+  .svc-row{display:grid;grid-template-columns:70px 1.05fr 1fr 46px;gap:24px;align-items:center;padding:30px 8px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .3s,padding .3s}
+  .svc-row:hover{background:var(--foam);padding-left:20px}
+  .svc-idx{font-family:var(--mono);font-size:13px;color:var(--muted);transition:color .3s}
+  .svc-row:hover .svc-idx{color:var(--sand)}
+  .svc-title{font-family:var(--disp);font-weight:700;font-size:clamp(17px,1.8vw,23px);line-height:1.25;transition:transform .3s}
+  .svc-row:hover .svc-title{transform:translateX(6px)}
+  .svc-desc{font-size:14px;color:var(--muted);line-height:1.6}
+  .svc-arrow{font-family:var(--mono);font-size:20px;color:var(--deep);justify-self:end;transition:transform .35s,color .3s}
+  .svc-row:hover .svc-arrow{transform:rotate(45deg);color:var(--sand)}
+  .svc-preview{position:fixed;top:0;left:0;width:150px;aspect-ratio:3/2;z-index:240;pointer-events:none;overflow:hidden;
+    opacity:0;transform:translate(-50%,-50%) scale(.85) rotate(-4deg);transition:opacity .3s,transform .3s;box-shadow:0 24px 50px rgba(3,32,40,.35)}
+  .svc-preview.show{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-3deg)}
+  .svc-preview img{width:100%;height:100%;object-fit:cover}
+
+  /* ===== formula ===== */
+  .formula{background:var(--foam)}
+  .formula-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:start}
+  .formula-left{position:sticky;top:110px}
+  .eq{font-family:var(--disp);font-weight:900;font-size:clamp(48px,6vw,84px);display:flex;align-items:center;gap:.14em;color:var(--deep)}
+  .eq .x{color:var(--sand);font-size:.55em;transform:translateY(-.2em)}
+  .eq .oo{width:.92em;height:.92em;border:.09em solid var(--sea);border-radius:50%;transition:.35s}
+  .eq .oo:hover{background:var(--sea)}
+  .eq-result{margin-top:18px;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .eq-result b{color:var(--sand);font-weight:500}
+  .formula-intro{color:var(--muted);line-height:1.7;max-width:560px}
+  .defs{margin-top:34px;border-top:1px solid var(--line)}
+  .def{display:grid;grid-template-columns:74px 130px 1fr;gap:18px;align-items:baseline;padding:22px 10px;border-bottom:1px solid var(--line);transition:background .3s,border-color .3s}
+  .def:hover{background:#fff;border-left:3px solid var(--sand);padding-left:20px}
+  .def-letter{font-family:var(--disp);font-weight:900;font-size:32px;color:var(--deep)}
+  .def-word{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--sand)}
+  .def-desc{font-size:14.5px;color:var(--muted);line-height:1.6}
+  .formula-note{margin-top:34px;background:var(--deep);color:#EAF7F8;border-left:4px solid var(--sand);padding:22px 26px;font-size:15.5px;line-height:1.65;border-radius:0 2px 2px 0}
+
+  /* ===== stages ===== */
+  .stages{background:#fff}
+  .stages-grid{display:grid;grid-template-columns:330px 1fr;gap:80px;align-items:start}
+  .stages-side{position:sticky;top:110px}
+  .rail{display:flex;gap:22px;margin-top:40px}
+  .rail-line{width:2px;background:var(--line);height:260px;position:relative;border-radius:2px}
+  .rail-line i{position:absolute;inset:0;background:var(--sand);transform-origin:top;transform:scaleY(var(--p,0));border-radius:2px}
+  .rail-nums{display:flex;flex-direction:column;justify-content:space-between;height:260px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .rail-nums span{transition:color .3s,transform .3s}
+  .rail-nums span.on{color:var(--sand);font-weight:700;transform:translateX(6px)}
+  .stages-count{margin-top:30px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .stage{padding:42px 0;border-top:1px solid var(--line)}
+  .stage:first-child{border-top:0;padding-top:0}
+  .stage-head{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
+  .stage-num{font-family:var(--disp);font-weight:900;font-size:40px;color:transparent;-webkit-text-stroke:1.4px var(--deep)}
+  @supports not (-webkit-text-stroke:1px #000){.stage-num{color:var(--deep)}}
+  .stage-head h3{font-family:var(--disp);font-weight:700;font-size:clamp(19px,2vw,24px)}
+  .stage-tag{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--deep);border:1px solid var(--line);padding:6px 10px;border-radius:2px;background:var(--foam)}
+  .stage p{margin-top:16px;max-width:660px;font-size:15px;line-height:1.7;color:var(--muted)}
+  .stage ul{margin-top:16px;list-style:none;max-width:660px}
+  .stage ul li{position:relative;padding:9px 0 9px 26px;border-bottom:1px dashed var(--line);font-size:14px;color:var(--muted);line-height:1.55}
+  .stage ul li::before{content:"—";position:absolute;left:0;color:var(--sand);font-weight:700}
+  .stage .note{margin-top:18px;max-width:660px;background:var(--sand-light);border-left:3px solid var(--sand);padding:14px 16px;font-size:13.5px;line-height:1.6;border-radius:0 2px 2px 0}
+
+  /* ===== works ===== */
+  .works{background:var(--deep-dark);color:#fff}
+  .works .sec-sub{color:#9CC9D1}
+  .works-grid{margin-top:56px;display:grid;grid-template-columns:repeat(12,1fr);gap:22px}
+  .work{position:relative;overflow:hidden;background:#04242C}
+  .work img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.16,1,.3,1);filter:saturate(.92)}
+  .work:hover img{transform:scale(1.06)}
+  .work-cap{display:flex;justify-content:space-between;gap:14px;padding:14px 2px 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+  .work-cap b{font-weight:500;color:#fff}
+  .work-cap span{color:var(--aqua)}
+  .w-a{grid-column:span 7;}.w-a .ph{aspect-ratio:16/10}
+  .w-b{grid-column:span 5;}.w-b .ph{aspect-ratio:4/4.05}
+  .w-c{grid-column:span 5;}.w-c .ph{aspect-ratio:4/3.3}
+  .w-d{grid-column:span 7;}.w-d .ph{aspect-ratio:16/9.4}
+  .w-e{grid-column:span 8;}.w-e .ph{aspect-ratio:16/8.4}
+  .w-f{grid-column:span 4;}.w-f .ph{aspect-ratio:4/3.9}
+  .work .ph{overflow:hidden}
+
+  /* ===== quote ===== */
+  .quote{background:#fff}
+  .quote-inner{max-width:920px}
+  .quote .q-mark{font-family:var(--disp);font-size:70px;line-height:.5;color:var(--sand)}
+  .quote blockquote{margin-top:26px;font-family:var(--disp);font-weight:500;font-size:clamp(20px,2.6vw,30px);line-height:1.45}
+  .quote cite{display:block;margin-top:26px;font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .quote cite b{color:var(--sand);font-weight:500}
+
+  /* ===== stats ===== */
+  .stats{background:var(--deep);color:#fff;padding:70px 0}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .stat{padding:10px 28px;border-left:1px solid var(--line-light)}
+  .stat:first-child{border-left:0;padding-left:0}
+  .stat-num{font-family:var(--disp);font-weight:900;font-size:clamp(30px,3.6vw,48px);display:flex;align-items:baseline;gap:4px}
+  .stat-num em{font-style:normal;color:var(--sand);font-size:.62em}
+  .stat-label{margin-top:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--aqua)}
+
+  /* ===== contacts ===== */
+  .cta{background:var(--deep-ink);color:#fff}
+  .cta .sec-index{color:var(--sand)}
+  .cta .sec-index::after{background:var(--line-light)}
+  .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+  .cta .sec-sub{color:#9CC9D1}
+  .cta-steps{margin-top:40px;border-top:1px solid var(--line-light)}
+  .cta-steps div{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--line-light);font-size:15px;color:#CFEBEF}
+  .cta-steps b{font-family:var(--mono);color:var(--sand);font-weight:500}
+  .cta-contacts{margin-top:36px;display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:14px;color:#BFE3E8}
+  .cta-contacts a{text-decoration:none;transition:color .25s}
+  .cta-contacts a:hover{color:var(--sand)}
+  .form-card{background:var(--foam);color:var(--ink);padding:38px;border-radius:3px;box-shadow:0 30px 70px rgba(2,22,28,.5)}
+  .form-title{font-family:var(--disp);font-weight:700;font-size:19px;margin-bottom:26px}
+  .f-field{position:relative;margin-bottom:22px}
+  .f-field input,.f-field textarea,.f-field select{width:100%;background:#fff;border:1px solid var(--line);border-radius:2px;padding:15px 14px;font:inherit;font-size:14.5px;color:var(--ink);transition:border-color .25s,box-shadow .25s;outline:none}
+  .f-field textarea{resize:vertical;min-height:86px}
+  .f-field input:focus,.f-field textarea:focus,.f-field select:focus{border-color:var(--sea);box-shadow:0 0 0 3px rgba(25,179,198,.15)}
+  .f-field label{position:absolute;left:14px;top:15px;font-size:14px;color:var(--muted);pointer-events:none;transition:.2s;background:#fff;padding:0 4px}
+  .f-field input:focus~label,.f-field input:not(:placeholder-shown)~label,
+  .f-field textarea:focus~label,.f-field textarea:not(:placeholder-shown)~label{top:-9px;font-size:11px;color:var(--deep);font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+  .f-field.static label{position:static;display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--deep);margin-bottom:8px}
+  .form-hint{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.55}
+  .form-ok{display:none;text-align:center;padding:30px 0 20px}
+  .form-ok.show{display:block}
+  .form-ok svg{width:74px;height:74px;margin:0 auto 20px;display:block}
+  .form-ok circle{stroke:var(--sea);stroke-width:2;fill:none;stroke-dasharray:230;stroke-dashoffset:230;animation:draw 1s ease forwards}
+  .form-ok path{stroke:var(--deep);stroke-width:3;fill:none;stroke-linecap:round;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .6s .7s ease forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .form-ok h4{font-family:var(--disp);font-size:19px;color:var(--deep)}
+  .form-ok p{margin-top:10px;color:var(--muted);font-size:14px}
+
+  /* ===== footer ===== */
+  footer{background:var(--deep-dark);color:#BFE3E8;padding:80px 0 40px;overflow:hidden}
+  .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:40px}
+  .foot-grid h5{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--aqua);margin-bottom:18px}
+  .foot-grid a{display:block;text-decoration:none;font-size:14px;color:#BFE3E8;padding:5px 0;transition:color .25s,transform .25s}
+  .foot-grid a:hover{color:var(--sand);transform:translateX(4px)}
+  .foot-about{font-size:14px;line-height:1.7;color:#9CC9D1;max-width:280px}
+  .foot-word{margin-top:70px;font-family:var(--disp);font-weight:900;font-size:clamp(72px,15vw,200px);line-height:1;display:flex;align-items:center;justify-content:center;gap:.05em;
+    color:transparent;-webkit-text-stroke:1.5px rgba(241,250,251,.22)}
+  .foot-word .o{width:.72em;height:.72em;border:.09em solid rgba(201,154,91,.5);border-radius:50%}
+  .foot-line{margin-top:50px;padding-top:22px;border-top:1px solid var(--line-light);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:#7FB4BD}
+  .foot-line .lang-btn{border-color:rgba(255,255,255,.25)}
+
+  /* ===== responsive ===== */
+  @media (max-width:1080px){
+    .hero-grid{grid-template-columns:1fr;gap:60px}
+    .hero-visual{max-width:520px}
+    .formula-grid{grid-template-columns:1fr;gap:50px}
+    .formula-left{position:static}
+    .stages-grid{grid-template-columns:1fr;gap:40px}
+    .stages-side{position:static}
+    .rail{display:none}
+    .cta-grid{grid-template-columns:1fr;gap:50px}
+  }
+  @media (max-width:900px){
+    .nav,.btn-brief,.head-right .lang{display:none}
+    .burger{display:block}
+    .svc-row{grid-template-columns:44px 1fr 30px;grid-template-areas:"i t a" "i d a"}
+    .svc-idx{grid-area:i}.svc-title{grid-area:t}.svc-desc{grid-area:d}.svc-arrow{grid-area:a}
+    .svc-preview{display:none}
+    .works-grid>*{grid-column:span 12 !important}
+    .stats-grid{grid-template-columns:1fr 1fr;gap:34px 0}
+    .stat:nth-child(3){border-left:0;padding-left:0}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .def{grid-template-columns:52px 1fr;grid-template-rows:auto auto}
+    .def-desc{grid-column:2}
+    .stage-tag{margin-left:0}
+    .chip{left:10px}
+    .sec{padding:80px 0}
+  }
+  @media (max-width:560px){
+    .hero{padding-top:130px}
+    .foot-grid{grid-template-columns:1fr}
+    .form-card{padding:26px 20px}
+  }
+
+  /* ===== reduced motion ===== */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none !important;transition:none !important}
+    .js .hero-title .line>span,.js .lm-wrap .lm-line>span{transform:none}
+    .rv{opacity:1;transform:none}
+    .hero-visual .frame img,.work img{animation:none}
+    .marquee-track{animation:none;flex-wrap:wrap}
+  }
+</style>
+</head>
+<body data-lang="ru" id="home">
+<div class="noise" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a class="logo" href="#home" aria-label="EMOO">EM<span class="o"></span><span class="o"></span></a>
+    <nav class="nav">
+      <a href="#home" class="active"><span class="en">Home</span><span class="ru">Главная</span></a>
+      <a href="#services"><span class="en">Services</span><span class="ru">Услуги</span></a>
+      <a href="#formula"><span class="en">Formula</span><span class="ru">Формула</span></a>
+      <a href="#stages"><span class="en">Process</span><span class="ru">Процесс</span></a>
+      <a href="#works"><span class="en">Projects</span><span class="ru">Проекты</span></a>
+      <a href="#contacts"><span class="en">Contacts</span><span class="ru">Контакты</span></a>
+    </nav>
+    <div class="head-right">
+      <div class="lang">
+        <button class="lang-btn" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a class="btn-brief" href="#contacts"><span class="en">Brief</span><span class="ru">Бриф</span></a>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav class="mnav" id="mnav">
+  <a href="#home"><span class="en">Home</span><span class="ru">Главная</span></a>
+  <a href="#services"><span class="en">Services</span><span class="ru">Услуги</span></a>
+  <a href="#formula"><span class="en">Formula</span><span class="ru">Формула</span></a>
+  <a href="#stages"><span class="en">Process</span><span class="ru">Процесс</span></a>
+  <a href="#works"><span class="en">Projects</span><span class="ru">Проекты</span></a>
+  <a href="#contacts"><span class="en">Contacts</span><span class="ru">Контакты</span></a>
+  <div class="lang">
+    <button class="lang-btn" data-lang="ru">RU</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</nav>
+
+<div class="lang-body">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="kicker" id="kicker"
+           data-ru="Выставочные стенды · Ивент-продакшн · ИИ-концепт за 24 часа"
+           data-en="Exhibition stands · Event production · AI concept in 24 hours"></div>
+      <h1 class="hero-title">
+        <span class="ru">
+          <span class="line" style="--d:.05s"><span class="stroke">Каждый</span></span>
+          <span class="line" style="--d:.15s"><span class="stroke">момент —</span></span>
+          <span class="line" style="--d:.25s"><span>возможность</span></span>
+        </span>
+        <span class="en">
+          <span class="line" style="--d:.05s"><span class="stroke">Every</span></span>
+          <span class="line" style="--d:.15s"><span class="stroke">moment of</span></span>
+          <span class="line" style="--d:.25s"><span>opportunity</span></span>
+        </span>
+      </h1>
+      <p class="hero-lead">
+        <span class="ru">Мы здесь не ради бетона и фанеры. Мы здесь ради того, чтобы каждый момент
+          вашего участия в выставке приносил вам деньги и контакты.</span>
+        <span class="en">We are not here for concrete and plywood. We are here so that every moment
+          of your presence at the exhibition brings you money and contacts.</span>
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="#contacts">
+          <span><span class="en">Free AI concept — 24h</span><span class="ru">Бесплатный ИИ-концепт за 24 часа</span></span>
+        </a>
+        <a class="btn ghost" href="#stages">
+          <span><span class="en">How we work</span><span class="ru">Как мы работаем</span></span>
+        </a>
+      </div>
+      <div class="hero-meta">
+        <div><span class="ru">Формат</span><span class="en">Format</span><b><span class="ru">застройка под ключ</span><span class="en">full turnkey build</span></b></div>
+        <div><span class="ru">Концепт</span><span class="en">Concept</span><b><span class="ru">за 24 часа</span><span class="en">within 24 hours</span></b></div>
+        <div><span class="ru">География</span><span class="en">Geography</span><b><span class="ru">17 стран</span><span class="en">17 countries</span></b></div>
+      </div>
+    </div>
+    <div class="hero-visual rv" style="--d:.3s">
+      <div class="dim-h"><i></i><span>6 000 mm</span><i></i></div>
+      <div class="frame">
+        <img src="hero.jpg" alt="Выставочный стенд EMOO / EMOO exhibition stand">
+      </div>
+      <div class="dim-v"><i></i><span>H 4 200 mm</span><i></i></div>
+      <div class="corner tl"></div><div class="corner br"></div>
+      <div class="chip"><span class="dot"></span>
+        <span class="ru">Ближайшее окно проектирования открыто</span>
+        <span class="en">Next design slot is open</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span><span class="ru">Выставочные стенды</span><span class="en">Exhibition stands</span></span>
+    <span><span class="ru">Ивент-продакшн</span><span class="en">Event production</span></span>
+    <span><span class="ru">ИИ-концепт за 24 часа</span><span class="en">AI concept in 24 hours</span></span>
+    <span><span class="ru">3D-рендеры и облёт</span><span class="en">3D renders &amp; fly-through</span></span>
+    <span><span class="ru">Монтаж и демонтаж</span><span class="en">Assembly &amp; dismantling</span></span>
+    <span><span class="ru">Персонал и активности</span><span class="en">Staff &amp; activities</span></span>
+    <span><span class="ru">Сопровождение 24/7</span><span class="en">24/7 support</span></span>
+    <span><span class="ru">Выставочные стенды</span><span class="en">Exhibition stands</span></span>
+    <span><span class="ru">Ивент-продакшн</span><span class="en">Event production</span></span>
+    <span><span class="ru">ИИ-концепт за 24 часа</span><span class="en">AI concept in 24 hours</span></span>
+    <span><span class="ru">3D-рендеры и облёт</span><span class="en">3D renders &amp; fly-through</span></span>
+    <span><span class="ru">Монтаж и демонтаж</span><span class="en">Assembly &amp; dismantling</span></span>
+    <span><span class="ru">Персонал и активности</span><span class="en">Staff &amp; activities</span></span>
+    <span><span class="ru">Сопровождение 24/7</span><span class="en">24/7 support</span></span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="sec services" id="services">
+  <div class="container">
+    <div class="sec-index rv">01 <span class="ru">/ Услуги</span><span class="en">/ Services</span></div>
+    <h2 class="sec-title lm-wrap">
+      <span class="lm-line"><span><span class="ru">Что мы делаем</span><span class="en">What we do</span></span></span>
+    </h2>
+    <p class="sec-sub rv"><span class="ru">Полный цикл: от ИИ-концепта до сопровождения в дни выставки. Один подрядчик, одна ответственность.</span>
+      <span class="en">Full cycle: from AI concept to on-site support during the exhibition days. One contractor, one responsibility.</span></p>
+
+    <div class="svc-list">
+      <div class="svc-row rv" data-img="stand-hanover.jpg">
+        <div class="svc-idx">01</div>
+        <div class="svc-title"><span class="ru">Проектирование и застройка</span><span class="en">Design &amp; build</span></div>
+        <div class="svc-desc"><span class="ru">От обмера до сдачи: конструктив, свет, графика, мебель, инженерия.</span>
+          <span class="en">From survey to handover: structure, lighting, graphics, furniture, engineering.</span></div>
+        <div class="svc-arrow">↗</div>
+      </div>
+      <div class="svc-row rv" style="--d:.08s" data-img="stand-lisbon.jpg">
+        <div class="svc-idx">02</div>
+        <div class="svc-title"><span class="ru">Ивент-программа</span><span class="en">Event program</span></div>
+        <div class="svc-desc"><span class="ru">Сценарий, персонал, активности — стенд, который зарабатывает контакты.</span>
+          <span class="en">Scenario, staff, activities — a stand that earns contacts.</span></div>
+        <div class="svc-arrow">↗</div>
+      </div>
+      <div class="svc-row rv" style="--d:.16s" data-img="stand-moscow.jpg">
+        <div class="svc-idx">03</div>
+        <div class="svc-title"><span class="ru">ИИ-визуализация и 3D</span><span class="en">AI visualization &amp; 3D</span></div>
+        <div class="svc-desc"><span class="ru">ИИ-концепт за 24 часа, фотореалистичные рендеры, видео-облёт, иммерсивный бриф.</span>
+          <span class="en">AI concept in 24 hours, photorealistic renders, video fly-through, immersive brief.</span></div>
+        <div class="svc-arrow">↗</div>
+      </div>
+      <div class="svc-row rv" style="--d:.24s" data-img="stand-shanghai.jpg">
+        <div class="svc-idx">04</div>
+        <div class="svc-title"><span class="ru">Логистика и сопровождение</span><span class="en">Logistics &amp; support</span></div>
+        <div class="svc-desc"><span class="ru">Монтаж, демонтаж, документы площадки и дежурство все дни выставки.</span>
+          <span class="en">Assembly, dismantling, venue paperwork and on-site duty during the show.</span></div>
+        <div class="svc-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+  <div class="svc-preview" id="svcPreview" aria-hidden="true"><img src="" alt=""></div>
+</section>
+
+<!-- FORMULA -->
+<section class="sec formula" id="formula">
+  <div class="container">
+    <div class="sec-index rv">02 <span class="ru">/ Формула</span><span class="en">/ Formula</span></div>
+    <div class="formula-grid">
+      <div class="formula-left">
+        <div class="eq rv" aria-label="EMOO">E<span class="x">×</span>M<span class="x">×</span><span class="oo"></span><span class="x">×</span><span class="oo"></span></div>
+        <div class="eq-result rv" style="--d:.15s">= <span class="ru">каждый момент работает на вас</span><span class="en">every moment works for you</span></div>
+        <h2 class="sec-title lm-wrap" style="margin-top:44px">
+          <span class="lm-line"><span><span class="ru">Формула</span><span class="en">The EMOO</span></span></span>
+          <span class="lm-line"><span><span class="ru">EMOO</span><span class="en">formula</span></span></span>
+        </h2>
+      </div>
+      <div>
+        <p class="formula-intro rv">
+          <span class="ru">Наше имя — не аббревиатура, а метод. Четыре буквы — четыре принципа,
+            вшитые в каждый чертёж, рендер и смонтированный метр.</span>
+          <span class="en">Our name is not an abbreviation but a method. Four letters — four principles
+            stitched into every drawing, render and assembled meter.</span>
+        </p>
+        <div class="defs">
+          <div class="def rv"><div class="def-letter">E</div><div class="def-word">Every</div>
+            <div class="def-desc"><span class="ru">Каждый — без исключений: каждый метр, час и контакт на стенде.</span>
+              <span class="en">Every — no exceptions: every meter, hour and contact at the stand.</span></div></div>
+          <div class="def rv" style="--d:.07s"><div class="def-letter">M</div><div class="def-word">Moment</div>
+            <div class="def-desc"><span class="ru">Момент — выставка коротка. Мы проектируем каждую его секунду.</span>
+              <span class="en">Moment — the show is short. We design every second of it.</span></div></div>
+          <div class="def rv" style="--d:.14s"><div class="def-letter">O</div><div class="def-word">Of</div>
+            <div class="def-desc"><span class="ru">Связка — дизайн, стройка и событие работают как одна цепочка.</span>
+              <span class="en">The link — design, build and event operate as one chain.</span></div></div>
+          <div class="def rv" style="--d:.21s"><div class="def-letter">O</div><div class="def-word">Opportunity</div>
+            <div class="def-desc"><span class="ru">Возможность — стенд, который приносит деньги и контакты.</span>
+              <span class="en">Opportunity — a stand that brings money and contacts.</span></div></div>
+        </div>
+        <div class="formula-note rv">
+          <span class="ru">EMOO = Every Moment Of Opportunity. Каждый момент вашего присутствия
+            на выставке должен работать на успех.</span>
+          <span class="en">EMOO = Every Moment Of Opportunity. Every moment of your presence
+            at the exhibition must work for success.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAGES -->
+<section class="sec stages" id="stages">
+  <div class="container">
+    <div class="sec-index rv">03 <span class="ru">/ Процесс</span><span class="en">/ Process</span></div>
+    <div class="stages-grid">
+      <div class="stages-side">
+        <h2 class="sec-title lm-wrap">
+          <span class="lm-line"><span><span class="ru">Как мы</span><span class="en">How we</span></span></span>
+          <span class="lm-line"><span><span class="ru">работаем</span><span class="en">work —</span></span></span>
+          <span class="lm-line"><span><span class="ru">— пять этапов</span><span class="en">five stages</span></span></span>
+        </h2>
+        <p class="sec-sub rv"><span class="ru">Из бесконечности вариантов — в точный проект вашего пространства.</span>
+          <span class="en">From the infinity of options — into the precise project of your space.</span></p>
+        <div class="rail" aria-hidden="true">
+          <div class="rail-line"><i id="railFill"></i></div>
+          <div class="rail-nums" id="railNums"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span></div>
+        </div>
+        <div class="stages-count rv"><span class="ru">05 этапов · от брифа до демонтажа</span><span class="en">05 stages · from brief to dismantling</span></div>
+      </div>
+
+      <div class="stages-list" id="stagesList">
+        <article class="stage rv" data-stage="0">
+          <div class="stage-head"><span class="stage-num">01</span>
+            <h3><span class="ru">Адаптивный референс</span><span class="en">Adaptive reference</span></h3>
+            <span class="stage-tag">Free · 24h</span></div>
+          <p><span class="ru">Это ваш бренд в геометрии павильона. Мы берём ваши пожелания, логотип и размеры
+            и за 24 часа пересобираем референсы так, как будто их снимали уже на вашем стенде.
+            Никаких догадок — только фактура, цвета и масштаб, подогнанные под вас. Бесплатно. Без обязательств.</span>
+            <span class="en">Your brand in the geometry of the pavilion. We take your wishes, logo and dimensions
+            and within 24 hours reassemble references as if they were shot on your stand.
+            No guesswork: only texture, color and scale tailored to you. Free. No obligations.</span></p>
+          <div class="note"><span class="ru">Нужна дополнительная убедительность перед руководством? Мы предоставим
+            <b>иммерсивные референсы</b> — визуальное погружение в ваше будущее пространство. Заполните дополнительный бриф.</span>
+            <span class="en">Need extra persuasiveness for your decision-makers? We can provide an
+            <b>Immersive Reference</b> — a visual immersion into your future space. Just fill in an additional brief.</span></div>
+        </article>
+
+        <article class="stage rv" data-stage="1">
+          <div class="stage-head"><span class="stage-num">02</span>
+            <h3><span class="ru">Вариант пространства</span><span class="en">Space variant</span></h3>
+            <span class="stage-tag">DWG · Render · PDF · Video</span></div>
+          <p><span class="ru">Вы выбираете один — тот, который приведёт к успеху. Мы фиксируем ваш выбор:</span>
+            <span class="en">You choose one — the one that leads to success. We fix your choice:</span></p>
+          <ul>
+            <li><span class="ru">Рабочий DWG-файл — инженерный чертёж для строителей;</span><span class="en">Working DWG file — engineering drawings for builders;</span></li>
+            <li><span class="ru">Набор рендеров — фотореалистичные изображения стенда;</span><span class="en">Set of renders — photorealistic images of the stand;</span></li>
+            <li><span class="ru">PDF-презентация — готовый документ для руководства;</span><span class="en">PDF presentation — a ready document for management;</span></li>
+            <li><span class="ru">Видео-облёт — прогулка по вашему будущему пространству.</span><span class="en">Video fly-through — a walk through your future space.</span></li>
+          </ul>
+          <p><span class="ru">Вы выбираете — мы материализуем. Утверждённый. Проверенный. Готовый к застройке.</span>
+            <span class="en">You choose — we materialize. Approved. Verified. Ready for construction.</span></p>
+        </article>
+
+        <article class="stage rv" data-stage="2">
+          <div class="stage-head"><span class="stage-num">03</span>
+            <h3><span class="ru">Точка сборки</span><span class="en">Assembly point</span></h3>
+            <span class="stage-tag">Build</span></div>
+          <p><span class="ru">Ваш проект перестаёт быть вариантом — он становится реальностью. Место, где
+            чертежи, материалы и люди собираются в единую конструкцию.</span>
+            <span class="en">Your project stops being an option — it becomes reality. The place where
+            drawings, materials and people assemble into a single structure.</span></p>
+          <ul>
+            <li><span class="ru">Организуем все строительные работы — своими силами или через проверенных партнёров;</span><span class="en">All construction works — in-house or via verified partners;</span></li>
+            <li><span class="ru">Контролируем каждый этап — от закупки материалов до финальной отделки;</span><span class="en">Control of every stage — from procurement to final finishing;</span></li>
+            <li><span class="ru">Гарантируем качество — стенд будет выглядеть ровно так, как на рендерах;</span><span class="en">Quality guarantee — the stand looks exactly like the renders;</span></li>
+            <li><span class="ru">Соблюдаем сроки — вы получаете стенд к назначенному часу.</span><span class="en">On time — you receive your stand at the appointed hour.</span></li>
+          </ul>
+        </article>
+
+        <article class="stage rv" data-stage="3">
+          <div class="stage-head"><span class="stage-num">04</span>
+            <h3><span class="ru">Конструктор событий</span><span class="en">Event constructor</span></h3>
+            <span class="stage-tag">Event</span></div>
+          <p><span class="ru">Из модулей — в уникальное впечатление. Вы собираете событие под свой бюджет и задачи:</span>
+            <span class="en">From modules — into a unique experience. Assemble an event for your budget and goals:</span></p>
+          <ul>
+            <li><span class="ru">Сценарий — маршрут посетителя, логика взаимодействия;</span><span class="en">Scenario — visitor route and interaction logic;</span></li>
+            <li><span class="ru">Персонал — промоутеры, хостес, бариста, аниматоры;</span><span class="en">Staff — promoters, hostesses, baristas, animators;</span></li>
+            <li><span class="ru">Активности — викторины, розыгрыши, мастер-классы, фотозоны;</span><span class="en">Activities — quizzes, giveaways, master-classes, photo zones;</span></li>
+            <li><span class="ru">Цифровые механики — чат-боты, голосования, генерация контента;</span><span class="en">Digital mechanics — chat-bots, voting, content generation;</span></li>
+            <li><span class="ru">Логистика — график, координация, управление очередями.</span><span class="en">Logistics — schedules, coordination, queue management.</span></li>
+          </ul>
+          <p><span class="ru">Или просто скажите нам: «Сделайте круто» — и мы собираем всё сами.</span>
+            <span class="en">Or just say “Make it cool” — and we assemble everything ourselves.</span></p>
+        </article>
+
+        <article class="stage rv" data-stage="4">
+          <div class="stage-head"><span class="stage-num">05</span>
+            <h3><span class="ru">Полное сопровождение</span><span class="en">Full support</span></h3>
+            <span class="stage-tag">24/7</span></div>
+          <p><span class="ru">Мы с вами до последнего дня выставки.</span>
+            <span class="en">We stay with you until the last day of the exhibition.</span></p>
+          <ul>
+            <li><span class="ru">Контроль качества сборки на всех этапах;</span><span class="en">Quality control at every assembly stage;</span></li>
+            <li><span class="ru">Решение любых технических проблем на площадке;</span><span class="en">Solving any technical problems on site;</span></li>
+            <li><span class="ru">Соблюдение сроков и управление графиком;</span><span class="en">Schedule and timeline management;</span></li>
+            <li><span class="ru">Коммуникация с подрядчиками и администрацией площадки;</span><span class="en">Communication with contractors and venue administration;</span></li>
+            <li><span class="ru">Финальная проверка всех систем и сдача стенда в идеальном состоянии.</span><span class="en">Final check and handover in perfect condition.</span></li>
+          </ul>
+          <p><span class="ru">Полное сопровождение — это наша подпись под качеством.</span>
+            <span class="en">Full support is our signature of quality.</span></p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="sec works" id="works">
+  <div class="container">
+    <div class="sec-index rv">04 <span class="ru">/ Проекты</span><span class="en">/ Projects</span></div>
+    <h2 class="sec-title lm-wrap">
+      <span class="lm-line"><span><span class="ru">Построенные стенды</span><span class="en">Built stands</span></span></span>
+    </h2>
+    <p class="sec-sub rv"><span class="ru">Каждый проект сдан в срок и выглядит ровно так, как на рендере.</span>
+      <span class="en">Every project delivered on time — exactly as rendered.</span></p>
+
+    <div class="works-grid">
+      <figure class="work w-a rv"><div class="ph"><img src="stand-hanover.jpg" alt="Стенд промышленного форума в Ганновере, 180 м²" loading="lazy"></div>
+        <figcaption class="work-cap"><b><span class="ru">Промышленный форум</span><span class="en">Industrial forum</span> — <span class="ru">Ганновер</span><span class="en">Hanover</span></b><span>180 м²</span></figcaption></figure>
+
+      <figure class="work w-b rv" style="--d:.1s"><div class="ph"><img src="stand-dubai.jpg" alt="Стенд бьюти-бренда в Дубае, 96 м²" loading="lazy"></div>
+        <figcaption class="work-cap"><b><span class="ru">Бьюти-бренд</span><span class="en">Beauty brand</span> — <span class="ru">Дубай</span><span class="en">Dubai</span></b><span>96 м²</span></figcaption></figure>
+
+      <figure class="work w-c rv"><div class="ph"><img src="stand-moscow.jpg" alt="Стенд ИТ-компании в Москве, 140 м²" loading="lazy"></div>
+        <figcaption class="work-cap"><b><span class="ru">ИТ-компания</span><span class="en">IT company</span> — <span class="ru">Москва</span><span class="en">Moscow</span></b><span>140 м²</span></figcaption></figure>
+
+      <figure class="work w-d rv" style="--d:.1s"><div class="ph"><img src="stand-barcelona.jpg" alt="Стенд фарма-конгресса в Барселоне, 120 м²" loading="lazy"></div>
+        <figcaption class="work-cap"><b><span class="ru">Фарма-конгресс</span><span class="en">Pharma congress</span> — <span class="ru">Барселона</span><span class="en">Barcelona</span></b><span>120 м²</span></figcaption></figure>
+
+      <figure class="work w-e rv"><div class="ph"><img src="stand-shanghai.jpg" alt="Стенд автопроизводителя в Шанхае, 260 м²" loading="lazy"></div>
+        <figcaption class="work-cap"><b><span class="ru">Автопроизводитель</span><span class="en">Automaker</span> — <span class="ru">Шанхай</span><span class="en">Shanghai</span></b><span>260 м²</span></figcaption></figure>
+
+      <figure class="work w-f rv" style="--d:.1s"><div class="ph"><img src="stand-lisbon.jpg" alt="Стенд стартап-шоу в Лиссабоне, 48 м²" loading="lazy"></div>
+        <figcaption class="work-cap"><b><span class="ru">Стартап-шоу</span><span class="en">Startup show</span> — <span class="ru">Лиссабон</span><span class="en">Lisbon</span></b><span>48 м²</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="sec quote">
+  <div class="container quote-inner rv">
+    <div class="q-mark">”</div>
+    <blockquote>
+      <span class="ru">EMOO сдали стенд, мимо которого невозможно было пройти: 1 200 контактов
+        за четыре дня — вдвое больше нашего плана.</span>
+      <span class="en">EMOO delivered a stand that was impossible to walk past: 1,200 contacts
+        in four days — twice our target.</span>
+    </blockquote>
+    <cite><span class="ru">Директор по маркетингу · <b>промышленный холдинг, Ганновер</b></span>
+      <span class="en">Marketing Director · <b>industrial group, Hanover</b></span></cite>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat rv"><div class="stat-num"><span class="count" data-n="340">0</span><em>+</em></div>
+      <div class="stat-label"><span class="ru">построенных стендов</span><span class="en">stands built</span></div></div>
+    <div class="stat rv" style="--d:.08s"><div class="stat-num"><span class="count" data-n="26000">0</span><em>м²</em></div>
+      <div class="stat-label"><span class="ru">застройки под ключ</span><span class="en">turnkey construction</span></div></div>
+    <div class="stat rv" style="--d:.16s"><div class="stat-num"><span class="count" data-n="17">0</span></div>
+      <div class="stat-label"><span class="ru">стран присутствия</span><span class="en">countries served</span></div></div>
+    <div class="stat rv" style="--d:.24s"><div class="stat-num"><span class="count" data-n="92">0</span><em>%</em></div>
+      <div class="stat-label"><span class="ru">клиентов возвращаются</span><span class="en">clients come back</span></div></div>
+  </div>
+</section>
+
+<!-- CONTACTS -->
+<section class="sec cta" id="contacts">
+  <div class="container">
+    <div class="sec-index rv">05 <span class="ru">/ Бриф</span><span class="en">/ Brief</span></div>
+    <div class="cta-grid">
+      <div>
+        <h2 class="sec-title lm-wrap">
+          <span class="lm-line"><span><span class="ru">Оставьте бриф —</span><span class="en">Leave a brief —</span></span></span>
+          <span class="lm-line"><span><span class="ru">вернёмся с ИИ-концептом</span><span class="en">get an AI concept back</span></span></span>
+          <span class="lm-line"><span><span class="ru">через 24 часа</span><span class="en">in 24 hours</span></span></span>
+        </h2>
+        <p class="sec-sub rv"><span class="ru">Бесплатно и без обязательств. Дальше решаете вы.</span>
+          <span class="en">Free and with no obligations. The next move is yours.</span></p>
+        <div class="cta-steps rv">
+          <div><b>01</b><span><span class="ru">Вы оставляете бриф — это 2 минуты.</span><span class="en">You send a brief — it takes 2 minutes.</span></span></div>
+          <div><b>02</b><span><span class="ru">Через 24 часа получаете ИИ-концепт и предварительную смету.</span><span class="en">In 24 hours you receive an AI concept and a preliminary estimate.</span></span></div>
+          <div><b>03</b><span><span class="ru">Утверждаете — мы строим и сопровождаем до демонтажа.</span><span class="en">You approve — we build and support until dismantling.</span></span></div>
+        </div>
+        <div class="cta-contacts rv">
+          <a href="mailto:emoo@emoo.ru">emoo@emoo.ru</a>
+          <a href="tel:+74951203840">+7 (495) 120-38-40</a>
+          <span><span class="ru">Москва · Дубай · Белград</span><span class="en">Moscow · Dubai · Belgrade</span></span>
+        </div>
+      </div>
+
+      <div class="form-card rv" style="--d:.15s">
+        <form id="briefForm" novalidate>
+          <div class="form-title"><span class="ru">Бриф на стенд</span><span class="en">Stand brief</span></div>
+          <div class="f-field">
+            <input type="text" id="fName" placeholder=" " required data-en="Name" data-ru="Имя">
+            <label for="fName"><span class="ru">Имя</span><span class="en">Name</span></label>
+          </div>
+          <div class="f-field">
+            <input type="tel" id="fPhone" placeholder=" " required data-en="Phone or email" data-ru="Телефон или e-mail">
+            <label for="fPhone"><span class="ru">Телефон или e-mail</span><span class="en">Phone or email</span></label>
+          </div>
+          <div class="f-field">
+            <input type="text" id="fCompany" placeholder=" " data-en="Company" data-ru="Компания">
+            <label for="fCompany"><span class="ru">Компания</span><span class="en">Company</span></label>
+          </div>
+          <div class="f-field static">
+            <label for="fArea"><span class="ru">Площадь стенда</span><span class="en">Stand area</span></label>
+            <select id="fArea">
+              <option data-en="Under 50 m²" data-ru="До 50 м²">До 50 м²</option>
+              <option data-en="50 – 100 m²" data-ru="50 – 100 м²">50 – 100 м²</option>
+              <option data-en="100 – 200 m²" data-ru="100 – 200 м²">100 – 200 м²</option>
+              <option data-en="200 m² and more" data-ru="200 м² и больше">200 м² и больше</option>
+              <option data-en="Forum / conference" data-ru="Форум / конференция">Форум / конференция</option>
+            </select>
+          </div>
+          <div class="f-field">
+            <textarea id="fMsg" rows="3" placeholder=" " data-en="Your task, exhibition, dates…" data-ru="Ваша задача, выставка, сроки…"></textarea>
+            <label for="fMsg"><span class="ru">Задача, выставка, сроки</span><span class="en">Your task, exhibition, dates</span></label>
+          </div>
+          <button class="btn dark" type="submit" id="submitBtn" style="width:100%">
+            <span class="submit-label"><span class="ru">Отправить бриф</span><span class="en">Send brief</span></span>
+            <span class="submit-loading" style="display:none"><span class="ru">Отправляем…</span><span class="en">Sending…</span></span>
+          </button>
+          <p class="form-hint"><span class="ru">Нажимая кнопку, вы соглашаетесь с политикой обработки данных. Отвечаем в течение рабочего часа.</span>
+            <span class="en">By clicking the button you agree to our data processing policy. We reply within one working hour.</span></p>
+        </form>
+        <div class="form-ok" id="formOk">
+          <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 41 L36 53 L57 30"/></svg>
+          <h4><span class="ru">Бриф получен</span><span class="en">Brief received</span></h4>
+          <p><span class="ru">ИИ-концепт будет у вас в течение 24 часов.</span>
+            <span class="en">Your AI concept will arrive within 24 hours.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#home" style="margin-bottom:18px">EM<span class="o"></span><span class="o"></span></a>
+        <p class="foot-about"><span class="ru">Экспертный монтаж и управление выставочными событиями.
+          Каждый момент — возможность.</span>
+          <span class="en">Expert production and management of exhibition events.
+          Every moment of opportunity.</span></p>
+      </div>
+      <div>
+        <h5><span class="ru">Навигация</span><span class="en">Navigation</span></h5>
+        <a href="#services"><span class="ru">Услуги</span><span class="en">Services</span></a>
+        <a href="#formula"><span class="ru">Формула</span><span class="en">Formula</span></a>
+        <a href="#stages"><span class="ru">Процесс</span><span class="en">Process</span></a>
+        <a href="#works"><span class="ru">Проекты</span><span class="en">Projects</span></a>
+        <a href="#contacts"><span class="ru">Бриф</span><span class="en">Brief</span></a>
+      </div>
+      <div>
+        <h5><span class="ru">Контакты</span><span class="en">Contacts</span></h5>
+        <a href="mailto:emoo@emoo.ru">emoo@emoo.ru</a>
+        <a href="tel:+74951203840">+7 (495) 120-38-40</a>
+        <a href="#contacts"><span class="ru">Москва · Дубай · Белград</span><span class="en">Moscow · Dubai · Belgrade</span></a>
+      </div>
+      <div>
+        <h5><span class="ru">Соцсети</span><span class="en">Social</span></h5>
+        <a href="#" rel="noopener">Instagram</a>
+        <a href="#" rel="noopener">LinkedIn</a>
+        <a href="#" rel="noopener">Telegram</a>
+        <a href="#" rel="noopener">Behance</a>
+      </div>
+    </div>
+    <div class="foot-word" aria-hidden="true">EM<span class="o"></span><span class="o"></span></div>
+    <div class="foot-line">
+      <span>© 2026 EMOO — Every Moment Of Opportunity</span>
+      <div class="lang">
+        <button class="lang-btn" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /lang-body -->
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var $  = function(s,c){ return (c||document).querySelector(s); };
+  var $$ = function(s,c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FINE = window.matchMedia('(pointer: fine)').matches;
+
+  /* ---------- language ---------- */
+  function scramble(el, text){
+    if(!el) return;
+    if(RM){ el.textContent = text; return; }
+    var glyphs = 'EMOO#/*×+=01', frame = 0, total = Math.max(16, text.length + 8);
+    clearInterval(el._t);
+    el._t = setInterval(function(){
+      frame++;
+      var reveal = Math.floor((frame/total) * text.length), out = '';
+      for(var i=0;i<text.length;i++){
+        out += (i < reveal || text[i]===' ') ? text[i] : glyphs[Math.floor(Math.random()*glyphs.length)];
+      }
+      el.textContent = out;
+      if(frame >= total){ clearInterval(el._t); el.textContent = text; }
+    }, 28);
+  }
+
+  function setLang(l){
+    document.body.setAttribute('data-lang', l);
+    document.documentElement.lang = l;
+    $$('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang')===l); });
+    $$('[data-en][data-ru]').forEach(function(el){
+      if(el.tagName==='INPUT' || el.tagName==='TEXTAREA'){ el.placeholder = el.getAttribute('data-'+l); }
+      else if(el.tagName==='OPTION'){ el.textContent = el.getAttribute('data-'+l); }
+      else if(el.id==='kicker'){ scramble(el, el.getAttribute('data-'+l)); }
+    });
+    document.title = (l==='ru') ? 'EMOO — Каждый момент — возможность' : 'EMOO — Every Moment Of Opportunity';
+    if(!RM){
+      document.body.classList.add('lang-fade');
+      setTimeout(function(){ document.body.classList.remove('lang-fade'); }, 260);
+    }
+  }
+  $$('.lang-btn').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+  setLang('ru'); /* укажите 'en' для английского по умолчанию */
+
+  /* ---------- entrance ---------- */
+  window.addEventListener('load', function(){ setTimeout(function(){ document.body.classList.add('loaded'); }, 80); });
+
+  /* ---------- header ---------- */
+  var header = $('#siteHeader');
+  function onScrollHeader(){ header.classList.toggle('scrolled', window.scrollY > 12); }
+  window.addEventListener('scroll', onScrollHeader, {passive:true}); onScrollHeader();
+
+  /* ---------- mobile menu ---------- */
+  var burger = $('#burger');
+  burger.addEventListener('click', function(){ document.body.classList.toggle('menu-open'); });
+  $$('#mnav a').forEach(function(a){ a.addEventListener('click', function(){ document.body.classList.remove('menu-open'); }); });
+
+  /* ---------- reveal on scroll ---------- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.15, rootMargin:'0px 0px -6% 0px'});
+  $$('.rv, .lm-wrap').forEach(function(el){ io.observe(el); });
+
+  /* ---------- active nav ---------- */
+  var navLinks = $$('.nav a');
+  var secIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        navLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href')==='#'+e.target.id); });
+      }
+    });
+  }, {rootMargin:'-40% 0px -55% 0px'});
+  ['home','services','formula','stages','works','contacts'].forEach(function(id){
+    var s = document.getElementById(id); if(s) secIO.observe(s);
+  });
+
+  /* ---------- stages rail ---------- */
+  var stagesSec = $('#stages'), railFill = $('#railFill'), railNums = $$('#railNums span'), stages = $$('.stage');
+  if(stagesSec && railFill){
+    var onRail = function(){
+      var r = stagesSec.getBoundingClientRect(), vh = window.innerHeight;
+      var p = (vh*0.55 - r.top) / r.height;
+      railFill.style.setProperty('--p', Math.max(0, Math.min(1, p)));
+    };
+    window.addEventListener('scroll', onRail, {passive:true}); onRail();
+    var stIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var i = +e.target.getAttribute('data-stage');
+          railNums.forEach(function(n,j){ n.classList.toggle('on', j===i); });
+        }
+      });
+    }, {rootMargin:'-38% 0px -52% 0px'});
+    stages.forEach(function(s){ stIO.observe(s); });
+  }
+
+  /* ---------- counters ---------- */
+  function runCounter(el){
+    var target = +el.getAttribute('data-n');
+    if(RM){ el.textContent = target.toLocaleString('ru-RU'); return; }
+    var t0 = null, dur = 1500;
+    function step(t){
+      if(!t0) t0 = t;
+      var p = Math.min(1, (t - t0)/dur), e = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(target*e).toLocaleString('ru-RU');
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var cIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ runCounter(e.target); cIO.unobserve(e.target); } });
+  }, {threshold:.6});
+  $$('.count').forEach(function(el){ cIO.observe(el); });
+
+  /* ---------- services cursor preview ---------- */
+  if(FINE && !RM){
+    var prev = $('#svcPreview'), prevImg = prev.querySelector('img'), px=0, py=0, tx=0, ty=0, active=false;
+    $$('.svc-row').forEach(function(row){
+      row.addEventListener('mouseenter', function(){ prevImg.src = row.getAttribute('data-img'); prev.classList.add('show'); active=true; });
+      row.addEventListener('mouseleave', function(){ prev.classList.remove('show'); active=false; });
+    });
+    document.addEventListener('mousemove', function(ev){ tx = ev.clientX + 40; ty = ev.clientY; });
+    (function loop(){
+      px += (tx-px)*.12; py += (ty-py)*.12;
+      if(active || prev.classList.contains('show')){ prev.style.left = px+'px'; prev.style.top = py+'px'; }
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  /* ---------- form ---------- */
+  var form = $('#briefForm');
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var name = $('#fName'), phone = $('#fPhone'), ok = true;
+    [name, phone].forEach(function(f){
+      if(!f.value.trim()){ f.style.borderColor = '#C0574F'; ok = false; }
+      else f.style.borderColor = '';
+    });
+    if(!ok) return;
+    var btn = $('#submitBtn');
+    btn.disabled = true;
+    btn.querySelector('.submit-label').style.display = 'none';
+    btn.querySelector('.submit-loading').style.display = '';
+    setTimeout(function(){
+      form.style.display = 'none';
+      $('#formOk').classList.add('show');
+    }, 900);
+  });
+})();
+</script>
+</body>
+</html>
