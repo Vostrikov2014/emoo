@@ -726,23 +726,24 @@
       </div>
 
       <div class="form-card rv" style="--d:.15s">
-        <form id="briefForm" novalidate>
+        <form id="briefForm" action="send-brief.php" method="POST" novalidate>
+          <input type="hidden" name="csrf_token" id="csrfToken" value="">
           <div class="form-title"><span class="ru">Бриф на стенд</span><span class="en">Stand brief</span></div>
           <div class="f-field">
-            <input type="text" id="fName" placeholder=" " required data-en="Name" data-ru="Имя">
+            <input type="text" id="fName" name="name" placeholder=" " required data-en="Name" data-ru="Имя">
             <label for="fName"><span class="ru">Имя</span><span class="en">Name</span></label>
           </div>
           <div class="f-field">
-            <input type="tel" id="fPhone" placeholder=" " required data-en="Phone or email" data-ru="Телефон или e-mail">
+            <input type="tel" id="fPhone" name="phone" placeholder=" " required data-en="Phone or email" data-ru="Телефон или e-mail">
             <label for="fPhone"><span class="ru">Телефон или e-mail</span><span class="en">Phone or email</span></label>
           </div>
           <div class="f-field">
-            <input type="text" id="fCompany" placeholder=" " data-en="Company" data-ru="Компания">
+            <input type="text" id="fCompany" name="company" placeholder=" " data-en="Company" data-ru="Компания">
             <label for="fCompany"><span class="ru">Компания</span><span class="en">Company</span></label>
           </div>
           <div class="f-field static">
             <label for="fArea"><span class="ru">Площадь стенда</span><span class="en">Stand area</span></label>
-            <select id="fArea">
+            <select id="fArea" name="area">
               <option data-en="Under 50 m²" data-ru="До 50 м²">До 50 м²</option>
               <option data-en="50 – 100 m²" data-ru="50 – 100 м²">50 – 100 м²</option>
               <option data-en="100 – 200 m²" data-ru="100 – 200 м²">100 – 200 м²</option>
@@ -751,7 +752,7 @@
             </select>
           </div>
           <div class="f-field">
-            <textarea id="fMsg" rows="3" placeholder=" " data-en="Your task, exhibition, dates…" data-ru="Ваша задача, выставка, сроки…"></textarea>
+            <textarea id="fMsg" name="message" rows="3" placeholder=" " data-en="Your task, exhibition, dates…" data-ru="Ваша задача, выставка, сроки…"></textarea>
             <label for="fMsg"><span class="ru">Задача, выставка, сроки</span><span class="en">Your task, exhibition, dates</span></label>
           </div>
           <button class="btn dark" type="submit" id="submitBtn" style="width:100%">
@@ -948,6 +949,41 @@
     })();
   }
 
+  /* ---------- CSRF Token Loading from Server ---------- */
+  // Загружаем CSRF токен с сервера при загрузке страницы
+  function loadCSRFToken() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'get-csrf-token.php', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          var response = JSON.parse(xhr.responseText);
+          if (response.success && response.csrf_token) {
+            var csrfField = $('#csrfToken');
+            if (csrfField) {
+              csrfField.value = response.csrf_token;
+            }
+          }
+        } catch(e) {
+          console.error('Ошибка загрузки CSRF токена:', e);
+        }
+      }
+    };
+    
+    xhr.onerror = function() {
+      console.error('Не удалось загрузить CSRF токен');
+    };
+    
+    xhr.send();
+  }
+  
+  // Загружаем токен после загрузки страницы
+  window.addEventListener('load', function() {
+    setTimeout(loadCSRFToken, 100);
+  });
+
   /* ---------- form ---------- */
   var form = $('#briefForm');
   form.addEventListener('submit', function(ev){
@@ -958,14 +994,52 @@
       else f.style.borderColor = '';
     });
     if(!ok) return;
+    
     var btn = $('#submitBtn');
     btn.disabled = true;
     btn.querySelector('.submit-label').style.display = 'none';
     btn.querySelector('.submit-loading').style.display = '';
-    setTimeout(function(){
-      form.style.display = 'none';
-      $('#formOk').classList.add('show');
-    }, 900);
+    
+    // Send data via AJAX to PHP handler
+    var formData = new FormData(form);
+    var xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', 'send-brief.php', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          var response = JSON.parse(xhr.responseText);
+          if (response.success) {
+            form.style.display = 'none';
+            $('#formOk').classList.add('show');
+          } else {
+            alert(response.message || 'Ошибка при отправке. Попробуйте позже.');
+            btn.disabled = false;
+            btn.querySelector('.submit-label').style.display = '';
+            btn.querySelector('.submit-loading').style.display = 'none';
+          }
+        } catch(e) {
+          form.style.display = 'none';
+          $('#formOk').classList.add('show');
+        }
+      } else {
+        alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+        btn.disabled = false;
+        btn.querySelector('.submit-label').style.display = '';
+        btn.querySelector('.submit-loading').style.display = 'none';
+      }
+    };
+    
+    xhr.onerror = function() {
+      alert('Ошибка сети. Проверьте подключение к интернету.');
+      btn.disabled = false;
+      btn.querySelector('.submit-label').style.display = '';
+      btn.querySelector('.submit-loading').style.display = 'none';
+    };
+    
+    xhr.send(formData);
   });
 })();
 </script>
