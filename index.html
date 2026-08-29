@@ -949,21 +949,40 @@
     })();
   }
 
-  /* ---------- CSRF Token Generation ---------- */
-  function generateCSRFToken() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var token = '';
-    for (var i = 0; i < 32; i++) {
-      token += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return token;
+  /* ---------- CSRF Token Loading from Server ---------- */
+  // Загружаем CSRF токен с сервера при загрузке страницы
+  function loadCSRFToken() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'get-csrf-token.php', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          var response = JSON.parse(xhr.responseText);
+          if (response.success && response.csrf_token) {
+            var csrfField = $('#csrfToken');
+            if (csrfField) {
+              csrfField.value = response.csrf_token;
+            }
+          }
+        } catch(e) {
+          console.error('Ошибка загрузки CSRF токена:', e);
+        }
+      }
+    };
+    
+    xhr.onerror = function() {
+      console.error('Не удалось загрузить CSRF токен');
+    };
+    
+    xhr.send();
   }
   
-  // Set CSRF token on page load
-  var csrfField = $('#csrfToken');
-  if (csrfField) {
-    csrfField.value = generateCSRFToken();
-  }
+  // Загружаем токен после загрузки страницы
+  window.addEventListener('load', function() {
+    setTimeout(loadCSRFToken, 100);
+  });
 
   /* ---------- form ---------- */
   var form = $('#briefForm');

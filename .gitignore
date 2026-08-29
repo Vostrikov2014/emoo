@@ -19,14 +19,7 @@ vendor/
 .vscode/
 .idea/
 
-# System files
+# OS
 .DS_Store
 Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Original rules preserved
 ```

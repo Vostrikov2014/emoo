@@ -9,10 +9,17 @@
  * - Защита от CSRF
  * - Санитизация данных
  * - Rate limiting
+ * 
+ * Совместимость: PHP 7.4+
+ * Сайт и почта на одном хостинге - используется локальная отправка mail()
  */
 
-// Только HTTPS
-if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+// Только HTTPS (проверяем разные варианты)
+$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https');
+
+if (!$is_https) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Требуется HTTPS соединение']);
     exit;
@@ -27,12 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Настройки
 $to_email = 'emoo@emoo.ru';
-$site_url = 'https://emoo.ru';
+$from_email = 'noreply@emoo.ru'; // Должен существовать на хостинге
 $rate_limit_seconds = 60; // Минимум секунд между отправками с одного IP
-$max_file_size = 5 * 1024 * 1024; // 5MB
+
+// Запускаем сессию для CSRF и rate limiting
+session_start();
 
 // Rate limiting по IP
-session_start();
 $last_submit = isset($_SESSION['last_brief_submit']) ? $_SESSION['last_brief_submit'] : 0;
 $now = time();
 
@@ -41,6 +49,19 @@ if ($now - $last_submit < $rate_limit_seconds) {
     echo json_encode(['success' => false, 'message' => 'Слишком частые запросы. Попробуйте позже.']);
     exit;
 }
+
+// CSRF проверка
+$csrf_token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
+$expected_token = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : '';
+
+if (empty($csrf_token) || $csrf_token !== $expected_token) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Ошибка безопасности (CSRF)']);
+    exit;
+}
+
+// Очишаем токен после использования (одноразовый)
+unset($_SESSION['csrf_token']);
 
 // Получаем и санитизируем данные
 $name = isset($_POST['name']) ? trim(strip_tags($_POST['name'])) : '';
@@ -61,7 +82,7 @@ if (empty($phone)) {
 } else {
     // Проверка: телефон или email
     $is_email = filter_var($phone, FILTER_VALIDATE_EMAIL);
-    $is_phone = preg_match('/^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/', $phone);
+    $is_phone = preg_match('/^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/', preg_replace('/\s/', '', $phone));
     
     if (!$is_email && !$is_phone) {
         $errors[] = 'Некорректный телефон или email';
@@ -86,14 +107,6 @@ if (!empty($errors)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'errors' => $errors]);
     exit;
-}
-
-// CSRF токен (простая проверка)
-$csrf_token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
-$expected_token = hash('sha256', session_id() . '_brief_form');
-if ($csrf_token !== $expected_token) {
-    // Для первой отправки генерируем токен
-    // В реальном использовании токен должен быть в форме при загрузке страницы
 }
 
 // Формирование письма
@@ -124,14 +137,19 @@ $email_body .= "User-Agent: " . substr($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
 $email_body .= "Referer: " . ($_SERVER['HTTP_REFERER'] ?? 'Direct') . "\n";
 
 // Заголовки письма
-$headers = "From: EMOO Website <noreply@emoo.ru>\r\n";
+// Поскольку почта и сайт на одном хостинге, используем локальный домен
+$headers = "From: EMOO Website <{$from_email}>\r\n";
 $headers .= "Reply-To: {$name} <{$phone}>\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 $headers .= "X-Priority: 1 (Highest)\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
+// Дополнительные параметры для mail() - указываем отправителя через -f
+// Это важно для корректной работы на хостинге
+$additional_params = "-f{$from_email}";
+
 // Отправка письма
-$mail_sent = mail($to_email, $subject, $email_body, $headers);
+$mail_sent = mail($to_email, $subject, $email_body, $headers, $additional_params);
 
 if ($mail_sent) {
     // Сохраняем время отправки для rate limiting
