@@ -6,6 +6,9 @@
  * Совместимость: PHP 7.4+
  */
 
+// Запускаем сессию в самом начале, до любого вывода
+session_start();
+
 // Только HTTPS
 $is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
     || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
@@ -13,6 +16,7 @@ $is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
 
 if (!$is_https) {
     http_response_code(403);
+    header('Content-Type: application/json; charset=UTF-8');
     echo json_encode(['success' => false, 'message' => 'Требуется HTTPS']);
     exit;
 }
@@ -20,12 +24,10 @@ if (!$is_https) {
 // Только GET запросы
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
+    header('Content-Type: application/json; charset=UTF-8');
     echo json_encode(['success' => false, 'message' => 'Метод не разрешён']);
     exit;
 }
-
-// Запускаем сессию
-session_start();
 
 // Генерируем новый CSRF токен
 $token = bin2hex(random_bytes(32));
