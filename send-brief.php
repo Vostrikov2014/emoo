@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Настройки
 $to_email = 'emoo@emoo.ru';
-$from_email = 'noreply@emoo.ru'; // Должен существовать на хостинге
+$from_email = 'emoo@emoo.ru'; // Используем существующий ящик, так как сайт и почта на одном хостинге
 $rate_limit_seconds = 60; // Минимум секунд между отправками с одного IP
 
 // Запускаем сессию для CSRF и rate limiting
