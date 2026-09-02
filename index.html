@@ -1000,12 +1000,34 @@
     btn.querySelector('.submit-label').style.display = 'none';
     btn.querySelector('.submit-loading').style.display = '';
     
+    // Собираем данные формы вручную для корректной отправки
+    var formData = new FormData();
+    formData.append('csrf_token', $('#csrfToken').value);
+    formData.append('name', name.value.trim());
+    formData.append('phone', phone.value.trim());
+    
+    // Добавляем остальные поля если они есть
+    var company = $('#fCompany');
+    if (company && company.value.trim()) {
+      formData.append('company', company.value.trim());
+    }
+    
+    var area = $('#fArea');
+    if (area && area.value) {
+      formData.append('area', area.value);
+    }
+    
+    var message = $('#fMessage');
+    if (message && message.value.trim()) {
+      formData.append('message', message.value.trim());
+    }
+    
     // Send data via AJAX to PHP handler
-    var formData = new FormData(form);
     var xhr = new XMLHttpRequest();
     
     xhr.open('POST', 'send-brief.php', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    // Не устанавливаем Content-Type вручную - браузер сделает это правильно для FormData
     
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -1015,17 +1037,34 @@
             form.style.display = 'none';
             $('#formOk').classList.add('show');
           } else {
-            alert(response.message || 'Ошибка при отправке. Попробуйте позже.');
+            // Обрабатываем ошибки валидации (400)
+            if (response.errors && Array.isArray(response.errors)) {
+              alert(response.errors.join('\\n'));
+            } else {
+              alert(response.message || 'Ошибка при отправке. Попробуйте позже.');
+            }
             btn.disabled = false;
             btn.querySelector('.submit-label').style.display = '';
             btn.querySelector('.submit-loading').style.display = 'none';
+            // Загружаем новый CSRF токен для следующей попытки
+            loadCSRFToken();
           }
         } catch(e) {
+          console.error('Ошибка парсинга ответа:', e);
           form.style.display = 'none';
           $('#formOk').classList.add('show');
         }
       } else {
-        alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+        var errorMsg = 'Ошибка соединения. Проверьте интернет и попробуйте снова.';
+        if (xhr.status === 400) {
+          errorMsg = 'Ошибка в данных формы. Проверьте заполнение полей.';
+        } else if (xhr.status === 403) {
+          errorMsg = 'Ошибка безопасности. Обновите страницу и попробуйте снова.';
+          loadCSRFToken();
+        } else if (xhr.status === 429) {
+          errorMsg = 'Слишком много запросов. Подождите немного.';
+        }
+        alert(errorMsg);
         btn.disabled = false;
         btn.querySelector('.submit-label').style.display = '';
         btn.querySelector('.submit-loading').style.display = 'none';
