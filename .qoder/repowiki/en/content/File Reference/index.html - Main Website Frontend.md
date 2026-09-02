@@ -7,6 +7,14 @@
 - [README.md](file://README.md)
 </cite>
 
+## Update Summary
+**Changes Made**
+- Removed CSRF token loading mechanism and related JavaScript functions
+- Added honeypot field for enhanced bot protection in contact form
+- Enhanced form area selection with proper value attributes for better data handling
+- Added 'Send another brief' button for improved user experience after successful submission
+- Updated backend validation to work with simplified security approach
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
@@ -45,12 +53,12 @@ L --> M["Email Delivery"]
 ```
 
 **Diagram sources**
-- [index.html:1-1013](file://index.html#L1-L1013)
-- [send-brief.php:1-116](file://send-brief.php#L1-L116)
+- [index.html:1-1029](file://index.html#L1-L1029)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 **Section sources**
-- [index.html:1-1013](file://index.html#L1-L1013)
-- [send-brief.php:1-116](file://send-brief.php#L1-L116)
+- [index.html:1-1029](file://index.html#L1-L1029)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 - [README.md:1-73](file://README.md#L1-L73)
 
 ## Core Components
@@ -61,7 +69,7 @@ L --> M["Email Delivery"]
 - Process stages: Five-step process with a side rail indicator and per-stage details; scroll-driven progress and active state highlighting.
 - Portfolio gallery: Grid of works with varied aspect ratios and hover zoom effects (currently commented out in markup but styles present).
 - Statistics display: Animated counters triggered by intersection observer.
-- Contact form: Floating labels, validation, AJAX submission to send-brief.php, success state with animated checkmark.
+- Contact form: Floating labels, validation, AJAX submission to send-brief.php with honeypot protection, success state with animated checkmark, and 'Send another brief' functionality.
 - Footer: Branding, navigation, contacts, social links, and language switcher.
 
 **Section sources**
@@ -71,7 +79,7 @@ L --> M["Email Delivery"]
 The page is a single-file application with:
 - Embedded CSS using custom properties for theming and consistent typography.
 - Inline JavaScript orchestrating UI behaviors without external dependencies.
-- A lightweight backend script for secure form delivery.
+- A lightweight backend script for secure form delivery with honeypot protection.
 
 ```mermaid
 sequenceDiagram
@@ -82,6 +90,7 @@ participant E as "Mail System"
 U->>P : Fill brief form and submit
 P->>P : Validate required fields
 P->>S : POST FormData (AJAX)
+S->>S : Check honeypot field
 S->>S : Sanitize and validate input
 S->>E : Send email via local mail()
 E-->>S : Delivery result
@@ -90,8 +99,9 @@ P->>P : Show success state or error
 ```
 
 **Diagram sources**
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:29-115](file://send-brief.php#L29-L115)
+- [index.html:956-1025](file://index.html#L956-L1025)
+- [send-brief.php:22-28](file://send-brief.php#L22-L28)
+- [send-brief.php:29-126](file://send-brief.php#L29-L126)
 
 ## Detailed Component Analysis
 
@@ -111,12 +121,12 @@ Burger["Click burger"] --> Toggle["Toggle 'menu-open'"]
 ```
 
 **Diagram sources**
-- [index.html:871-879](file://index.html#L871-L879)
+- [index.html:874-882](file://index.html#L874-L882)
 
 **Section sources**
 - [index.html:45-75](file://index.html#L45-L75)
 - [index.html:333-368](file://index.html#L333-L368)
-- [index.html:871-879](file://index.html#L871-L879)
+- [index.html:874-882](file://index.html#L874-L882)
 
 ### Hero Section
 - Animated title lines reveal on load with staggered delays.
@@ -136,7 +146,7 @@ B->>DOM : Animate frame image scale
 ```
 
 **Diagram sources**
-- [index.html:868-869](file://index.html#L868-L869)
+- [index.html:871-872](file://index.html#L871-L872)
 - [index.html:77-124](file://index.html#L77-L124)
 
 **Section sources**
@@ -156,13 +166,13 @@ Leave["Mouse leave"] --> HidePrev["Hide preview element"]
 ```
 
 **Diagram sources**
-- [index.html:938-951](file://index.html#L938-L951)
+- [index.html:941-954](file://index.html#L941-L954)
 - [index.html:146-162](file://index.html#L146-L162)
 
 **Section sources**
 - [index.html:146-162](file://index.html#L146-L162)
 - [index.html:446-488](file://index.html#L446-L488)
-- [index.html:938-951](file://index.html#L938-L951)
+- [index.html:941-954](file://index.html#L941-L954)
 
 ### Formula Explanation
 - Sticky left column with an equation graphic and definitions list.
@@ -197,13 +207,13 @@ S->>N : Toggle 'on' class for visible stage
 ```
 
 **Diagram sources**
-- [index.html:900-918](file://index.html#L900-L918)
+- [index.html:903-921](file://index.html#L903-L921)
 - [index.html:182-204](file://index.html#L182-L204)
 
 **Section sources**
 - [index.html:182-204](file://index.html#L182-L204)
 - [index.html:535-640](file://index.html#L535-L640)
-- [index.html:900-918](file://index.html#L900-L918)
+- [index.html:903-921](file://index.html#L903-L921)
 
 ### Portfolio Gallery
 - Grid layout with varied spans and aspect ratios.
@@ -228,18 +238,22 @@ Done --> |Yes| End["Stop animation"]
 ```
 
 **Diagram sources**
-- [index.html:920-936](file://index.html#L920-L936)
+- [index.html:923-939](file://index.html#L923-L939)
 - [index.html:232-240](file://index.html#L232-L240)
 
 **Section sources**
 - [index.html:232-240](file://index.html#L232-L240)
 - [index.html:689-701](file://index.html#L689-L701)
-- [index.html:920-936](file://index.html#L920-L936)
+- [index.html:923-939](file://index.html#L923-L939)
 
 ### Contact Form
 - Floating labels with focus and placeholder-shown behavior.
 - Client-side validation highlights invalid fields.
-- AJAX submission to send-brief.php with loading state and success animation.
+- AJAX submission to send-brief.php with honeypot protection, loading state, and success animation.
+- Enhanced area selection with proper value attributes for accurate data processing.
+- 'Send another brief' button allows users to submit additional forms without page reload.
+
+**Updated** Enhanced security with honeypot field and improved user experience with resend functionality
 
 ```mermaid
 sequenceDiagram
@@ -249,21 +263,24 @@ participant X as "XHR"
 participant PHP as "send-brief.php"
 F->>V : Validate name and phone
 V-->>F : OK or highlight errors
-F->>X : POST FormData
+F->>X : POST FormData (includes honeypot)
 X->>PHP : Send request
+PHP->>PHP : Check honeypot field
 PHP-->>X : JSON {success}
 X-->>F : Handle response (show success or alert)
+F->>F : Optional : Reset form for another submission
 ```
 
 **Diagram sources**
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:29-115](file://send-brief.php#L29-L115)
+- [index.html:956-1025](file://index.html#L956-L1025)
+- [send-brief.php:22-28](file://send-brief.php#L22-L28)
+- [send-brief.php:29-126](file://send-brief.php#L29-L126)
 
 **Section sources**
 - [index.html:241-271](file://index.html#L241-L271)
 - [index.html:703-775](file://index.html#L703-L775)
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:1-116](file://send-brief.php#L1-L116)
+- [index.html:956-1025](file://index.html#L956-L1025)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 ### Footer
 - Multi-column grid with brand info, navigation, contacts, and social links.
@@ -291,13 +308,13 @@ P --> M["Local Mail System"]
 - [index.html:7-9](file://index.html#L7-L9)
 - [index.html:413-414](file://index.html#L413-L414)
 - [index.html:457-487](file://index.html#L457-L487)
-- [send-brief.php:102-115](file://send-brief.php#L102-L115)
+- [send-brief.php:113-126](file://send-brief.php#L113-L126)
 
 **Section sources**
 - [index.html:7-9](file://index.html#L7-L9)
 - [index.html:413-414](file://index.html#L413-L414)
 - [index.html:457-487](file://index.html#L457-L487)
-- [send-brief.php:102-115](file://send-brief.php#L102-L115)
+- [send-brief.php:113-126](file://send-brief.php#L113-L126)
 
 ## Performance Considerations
 - Use prefers-reduced-motion media query to disable animations for users who prefer reduced motion.
@@ -305,8 +322,7 @@ P --> M["Local Mail System"]
 - Lazy-load images where possible; ensure images are optimized for web.
 - Keep CSS custom properties centralized for easy theming and performance-friendly updates.
 - Minimize reflows by batching DOM updates and using transform-based animations.
-
-[No sources needed since this section provides general guidance]
+- Simplified security approach reduces server overhead by removing CSRF token validation.
 
 ## Troubleshooting Guide
 Common issues and resolutions:
@@ -322,18 +338,20 @@ Common issues and resolutions:
   - Verify .js class added to documentElement and .loaded class on body.
 - Mobile menu not closing:
   - Ensure burger click toggles menu-open class and nav links remove it on click.
+- Form area selection issues:
+  - Verify proper value attributes in select options for accurate backend processing.
+- Bot submissions:
+  - Honeypot field should remain hidden and empty for legitimate users.
 
 **Section sources**
 - [index.html:831-866](file://index.html#L831-L866)
-- [index.html:871-879](file://index.html#L871-L879)
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:10-15](file://send-brief.php#L10-L15)
+- [index.html:874-882](file://index.html#L874-L882)
+- [index.html:956-1025](file://index.html#L956-L1025)
+- [send-brief.php:22-28](file://send-brief.php#L22-L28)
 - [README.md:48-73](file://README.md#L48-L73)
 
 ## Conclusion
-The index.html file delivers a polished, responsive single-page experience for EMOO with robust interactivity and clear content structure. The embedded CSS uses custom properties for theming and ensures accessibility through reduced motion support. The inline JavaScript provides bilingual content management, smooth animations, and seamless form submission via AJAX to a secure backend handler. Customization is straightforward through CSS variables and well-structured markup, making it easy to extend sections and update branding.
-
-[No sources needed since this section summarizes without analyzing specific files]
+The index.html file delivers a polished, responsive single-page experience for EMOO with robust interactivity and clear content structure. The embedded CSS uses custom properties for theming and ensures accessibility through reduced motion support. The inline JavaScript provides bilingual content management, smooth animations, and seamless form submission via AJAX to a secure backend handler with enhanced security through honeypot protection. Recent improvements include simplified security architecture, enhanced form validation, and improved user experience with the 'Send another brief' functionality. Customization is straightforward through CSS variables and well-structured markup, making it easy to extend sections and update branding.
 
 ## Appendices
 
@@ -346,12 +364,15 @@ The index.html file delivers a polished, responsive single-page experience for E
   - Duplicate a service row block and update data-img, titles, and descriptions.
 - Extend process stages:
   - Add a new stage article with appropriate data-stage index and update rail logic if needed.
+- Modify form fields:
+  - Update select options with proper value attributes for accurate backend processing.
 
 **Section sources**
-- [index.html:866-866](file://index.html#L866-L866)
+- [index.html:869-869](file://index.html#L869-L869)
 - [index.html:16-23](file://index.html#L16-L23)
 - [index.html:456-487](file://index.html#L456-L487)
 - [index.html:555-637](file://index.html#L555-L637)
+- [index.html:747-753](file://index.html#L747-L753)
 
 ### Extending Functionality
 - Add analytics:
@@ -360,7 +381,9 @@ The index.html file delivers a polished, responsive single-page experience for E
   - Expand client-side checks and integrate with backend validation messages.
 - Improve accessibility:
   - Add aria-labels and roles where missing; ensure keyboard navigation works for all interactive elements.
+- Add more form fields:
+  - Include proper value attributes for new select options to ensure accurate data processing.
 
 **Section sources**
 - [index.html:3-14](file://index.html#L3-L14)
-- [index.html:953-1009](file://index.html#L953-L1009)
+- [index.html:956-1025](file://index.html#L956-L1025)
