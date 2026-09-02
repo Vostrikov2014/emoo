@@ -1,0 +1,1 @@
+Deploy by placing `index.html`, `send-brief.php`, and all `stand-*.jpg` / `hero.jpg` / `favicon.svg` into the same directory on a PHP 7.4+ hosting account with `mail()` enabled and SSL active; the README documents an optional `.htaccess` HTTPS redirect and a separate `get-csrf-token.php` helper referenced in documentation (not present in this scope).

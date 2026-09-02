@@ -1,0 +1,21 @@
+schema_version: 1
+module_path: ""
+title: EMOO Exhibition Company Landing Page
+scope:
+    - .
+    - .gitignore
+    - README.md
+    - favicon.png
+    - favicon.svg
+    - hero.jpg
+    - index.html
+    - send-brief.php
+    - stand-barcelona.jpg
+    - stand-dubai.jpg
+    - stand-hanover.jpg
+    - stand-lisbon.jpg
+    - stand-moscow.jpg
+    - stand-shanghai.jpg
+source_files: []
+depends_on: []
+related_to: []

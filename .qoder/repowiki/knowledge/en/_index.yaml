@@ -1,0 +1,29 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: en-US
+branch: not_token
+nodes_managed: true
+exported_at: "2026-09-02T19:29:45Z"
+modules:
+    "":
+        dir_name: EMOO Exhibition Company Landing Page
+        title: EMOO Exhibition Company Landing Page
+        scope:
+            - .
+            - .gitignore
+            - README.md
+            - favicon.png
+            - favicon.svg
+            - hero.jpg
+            - index.html
+            - send-brief.php
+            - stand-barcelona.jpg
+            - stand-dubai.jpg
+            - stand-hanover.jpg
+            - stand-lisbon.jpg
+            - stand-moscow.jpg
+            - stand-shanghai.jpg
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
