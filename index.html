@@ -986,27 +986,64 @@
 
   /* ---------- form ---------- */
   var form = $('#briefForm');
+  
+  function waitForCsrfToken(callback) {
+    var maxAttempts = 50;
+    var attempts = 0;
+    
+    var checkToken = function() {
+      var csrfField = $('#csrfToken');
+      if (csrfField && csrfField.value && csrfField.value.length > 0) {
+        callback(true);
+      } else if (attempts >= maxAttempts) {
+        console.error('CSRF токен не загружен');
+        callback(false);
+      } else {
+        attempts++;
+        setTimeout(checkToken, 100);
+      }
+    };
+    
+    checkToken();
+  }
+  
   form.addEventListener('submit', function(ev){
     ev.preventDefault();
+    
+    var csrfField = $('#csrfToken');
+    if (!csrfField || !csrfField.value || csrfField.value.length === 0) {
+      waitForCsrfToken(function(loaded) {
+        if (loaded) {
+          submitForm();
+        } else {
+          alert('Ошибка безопасности. Обновите страницу и попробуйте снова.');
+        }
+      });
+      return;
+    }
+    
+    submitForm();
+  });
+  
+  function submitForm() {
     var name = $('#fName'), phone = $('#fPhone'), ok = true;
     [name, phone].forEach(function(f){
       if(!f.value.trim()){ f.style.borderColor = '#C0574F'; ok = false; }
       else f.style.borderColor = '';
     });
     if(!ok) return;
-    
+
     var btn = $('#submitBtn');
     btn.disabled = true;
     btn.querySelector('.submit-label').style.display = 'none';
     btn.querySelector('.submit-loading').style.display = '';
-    
-    // Send data via AJAX to PHP handler
+
     var formData = new FormData(form);
     var xhr = new XMLHttpRequest();
-    
+
     xhr.open('POST', 'send-brief.php', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    
+
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
@@ -1014,34 +1051,48 @@
           if (response.success) {
             form.style.display = 'none';
             $('#formOk').classList.add('show');
+            loadCSRFToken();
           } else {
             alert(response.message || 'Ошибка при отправке. Попробуйте позже.');
             btn.disabled = false;
             btn.querySelector('.submit-label').style.display = '';
             btn.querySelector('.submit-loading').style.display = 'none';
+            loadCSRFToken();
           }
         } catch(e) {
+          console.error('Ошибка парсинга ответа:', e);
           form.style.display = 'none';
           $('#formOk').classList.add('show');
         }
       } else {
-        alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+        var errorMsg = 'Ошибка соединения. Проверьте интернет и попробуйте снова.';
+        if (xhr.status === 403) {
+          errorMsg = 'Ошибка безопасности. Обновите страницу и попробуйте снова.';
+        } else if (xhr.status === 400) {
+          try {
+            var errResponse = JSON.parse(xhr.responseText);
+            if (errResponse.errors) {
+              errorMsg = errResponse.errors.join('\n');
+            }
+          } catch(e) {}
+        }
+        alert(errorMsg);
         btn.disabled = false;
         btn.querySelector('.submit-label').style.display = '';
         btn.querySelector('.submit-loading').style.display = 'none';
+        loadCSRFToken();
       }
     };
-    
+
     xhr.onerror = function() {
       alert('Ошибка сети. Проверьте подключение к интернету.');
       btn.disabled = false;
       btn.querySelector('.submit-label').style.display = '';
       btn.querySelector('.submit-loading').style.display = 'none';
     };
-    
+
     xhr.send(formData);
-  });
+  }
 })();
-</script>
 </body>
 </html>
