@@ -9,7 +9,9 @@
 // Запускаем сессию в самом начале, до любого вывода
 session_start();
 
-// Только HTTPS
+// Проверка HTTPS (закомментировано для локальной разработки / тестирования)
+// Раскомментируйте строки ниже при размещении на продакшене с HTTPS
+/*
 $is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
     || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
     || (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https');
@@ -20,6 +22,7 @@ if (!$is_https) {
     echo json_encode(['success' => false, 'message' => 'Требуется HTTPS']);
     exit;
 }
+*/
 
 // Только GET запросы
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
