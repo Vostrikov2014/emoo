@@ -1,6 +1,6 @@
 schema_version: 1
 module_path: ""
-title: EMOO Exhibition Stands Landing Site
+title: EMOO Exhibition Stand Builder — Single-Page Marketing Site
 scope:
     - .
     - .gitignore

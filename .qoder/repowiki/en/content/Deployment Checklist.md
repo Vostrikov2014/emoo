@@ -10,6 +10,14 @@
 - [sitemap.xml](file://sitemap.xml)
 </cite>
 
+## Update Summary
+**Changes Made**
+- Updated robots.txt section to reflect new search engine crawling control configuration
+- Enhanced sitemap.xml documentation with multilingual SEO support details
+- Expanded .htaccess production configuration coverage including proxy-safe HTTPS and security headers
+- Added comprehensive SEO and crawling verification procedures
+- Updated performance monitoring to include caching and compression effectiveness
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
@@ -23,7 +31,7 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This deployment checklist ensures the EMOO exhibition company website is securely and reliably deployed to production. It covers server requirements, SSL/HTTPS configuration, file upload and permissions, domain setup, testing procedures (form submission, email delivery, cross-browser compatibility, mobile responsiveness), post-deployment verification, performance monitoring, backups, and security hardening. The guidance is based on the project’s configuration and scripts included in the repository.
+This deployment checklist ensures the EMOO exhibition company website is securely and reliably deployed to production. It covers server requirements, SSL/HTTPS configuration, file upload and permissions, domain setup, testing procedures (form submission, email delivery, cross-browser compatibility, mobile responsiveness), post-deployment verification, performance monitoring, backups, and security hardening. The guidance is based on the project's configuration and scripts included in the repository, including the newly added SEO and crawling control features.
 
 ## Project Structure
 The site is a lightweight static frontend with a single PHP form handler for brief submissions. Key files:
@@ -31,7 +39,7 @@ The site is a lightweight static frontend with a single PHP form handler for bri
 - send-brief.php: Server-side handler that validates input, sanitizes data, and sends emails via local mail()
 - .htaccess: Enforces HTTPS, sets security headers, enables caching and compression, and blocks direct access to sensitive files
 - robots.txt: Instructs crawlers to avoid backend endpoints and points to sitemap
-- sitemap.xml: Declares canonical URLs and language alternates
+- sitemap.xml: Declares canonical URLs and language alternates for multilingual SEO
 - README.md: Installation notes, requirements, and security measures
 
 ```mermaid
@@ -43,19 +51,20 @@ Handler --> Mail["Local mail()"]
 Web --> |Caching & Compression| Assets["images/*"]
 SearchEngines["Search Engines"] --> |Respect robots.txt| Web
 SearchEngines --> Sitemap["sitemap.xml"]
+Sitemap --> |Multilingual URLs| Web
 ```
 
 **Diagram sources**
-- [.htaccess:1-53](file://.htaccess#L1-L53)
-- [index.html:782-800](file://index.html#L782-L800)
+- [.htaccess:1-56](file://.htaccess#L1-L56)
+- [index.html:11-29](file://index.html#L11-L29)
 - [send-brief.php:1-126](file://send-brief.php#L1-L126)
 - [robots.txt:1-11](file://robots.txt#L1-L11)
 - [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
 
 **Section sources**
 - [README.md:21-73](file://README.md#L21-L73)
-- [.htaccess:1-53](file://.htaccess#L1-L53)
-- [index.html:782-800](file://index.html#L782-L800)
+- [.htaccess:1-56](file://.htaccess#L1-L56)
+- [index.html:11-29](file://index.html#L11-L29)
 - [send-brief.php:1-126](file://send-brief.php#L1-L126)
 - [robots.txt:1-11](file://robots.txt#L1-L11)
 - [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
@@ -63,22 +72,23 @@ SearchEngines --> Sitemap["sitemap.xml"]
 ## Core Components
 - Frontend (index.html): Responsive layout, multilingual support, and a brief form posting to send-brief.php
 - Form Handler (send-brief.php): Validates and sanitizes inputs, enforces rate limiting via honeypot, constructs email, and returns JSON responses
-- Security and Performance (.htaccess): Forces HTTPS, sets security headers, enables browser caching and gzip compression, restricts access to sensitive files
-- SEO and Crawling (robots.txt, sitemap.xml): Controls crawler behavior and declares canonical URLs with language alternates
+- Security and Performance (.htaccess): Forces HTTPS with proxy support, sets security headers, enables browser caching and gzip compression, restricts access to sensitive files
+- SEO and Crawling (robots.txt, sitemap.xml): Controls crawler behavior, prevents indexing of backend endpoints, declares canonical URLs with language alternates for multilingual support
 
 **Section sources**
-- [index.html:782-800](file://index.html#L782-L800)
+- [index.html:11-29](file://index.html#L11-L29)
 - [send-brief.php:1-126](file://send-brief.php#L1-L126)
-- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [.htaccess:1-56](file://.htaccess#L1-L56)
 - [robots.txt:1-11](file://robots.txt#L1-L11)
 - [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
 
 ## Architecture Overview
-The request flow emphasizes secure, fast, and reliable delivery:
-- All HTTP requests are redirected to HTTPS
+The request flow emphasizes secure, fast, and reliable delivery with enhanced SEO capabilities:
+- All HTTP requests are redirected to HTTPS with proxy-aware configuration
 - Static assets benefit from long-term caching and compression
-- The form endpoint validates and sanitizes inputs before sending emails via the host’s local mail system
-- Crawler directives prevent indexing of backend endpoints
+- The form endpoint validates and sanitizes inputs before sending emails via the host's local mail system
+- Crawler directives prevent indexing of backend endpoints while optimizing search engine visibility
+- Multilingual content is properly declared through hreflang tags and sitemap alternates
 
 ```mermaid
 sequenceDiagram
@@ -86,6 +96,7 @@ participant U as "User Browser"
 participant A as "Apache (.htaccess)"
 participant H as "send-brief.php"
 participant M as "Local Mail System"
+participant SE as "Search Engines"
 U->>A : "GET /index.html (HTTP)"
 A-->>U : "301 Redirect to https : //..."
 U->>A : "GET /index.html (HTTPS)"
@@ -96,13 +107,19 @@ H->>H : "Validate & sanitize inputs"
 H->>M : "mail(to, subject, body, headers)"
 M-->>H : "Delivery result"
 H-->>U : "JSON response {success, message/errors}"
+SE->>A : "GET /robots.txt"
+A-->>SE : "Crawling rules"
+SE->>A : "GET /sitemap.xml"
+A-->>SE : "Multilingual URL structure"
 ```
 
 **Diagram sources**
-- [.htaccess:4-8](file://.htaccess#L4-L8)
+- [.htaccess:4-11](file://.htaccess#L4-L11)
 - [send-brief.php:9-15](file://send-brief.php#L9-L15)
 - [send-brief.php:30-81](file://send-brief.php#L30-L81)
 - [send-brief.php:83-125](file://send-brief.php#L83-L125)
+- [robots.txt:4-11](file://robots.txt#L4-L11)
+- [sitemap.xml:4-12](file://sitemap.xml#L4-L12)
 
 ## Detailed Component Analysis
 
@@ -121,9 +138,11 @@ Verification steps:
 - Test mail() with a simple script if needed
 - Confirm .htaccess rules are processed by Apache
 
+**Updated** Enhanced .htaccess now includes proxy-safe HTTPS redirection with X-Forwarded-Proto support for load balancers and reverse proxies.
+
 **Section sources**
 - [README.md:21-27](file://README.md#L21-L27)
-- [.htaccess:14-43](file://.htaccess#L14-L43)
+- [.htaccess:1-56](file://.htaccess#L1-L56)
 
 ### SSL Certificate Installation and HTTPS Configuration
 - Install a valid SSL certificate for your domain
@@ -135,9 +154,11 @@ Validation:
 - Inspect security headers set by .htaccess
 - Use browser dev tools to verify no insecure resource loads
 
+**Updated** HTTPS configuration now includes proxy-aware redirection that works correctly behind load balancers and reverse proxies using X-Forwarded-Proto header detection.
+
 **Section sources**
-- [.htaccess:4-8](file://.htaccess#L4-L8)
-- [.htaccess:14-21](file://.htaccess#L14-L21)
+- [.htaccess:4-11](file://.htaccess#L4-L11)
+- [.htaccess:17-24](file://.htaccess#L17-L24)
 
 ### File Upload Procedures and Permissions
 - Upload all site files to the web root directory where index.html resides
@@ -152,7 +173,7 @@ Post-upload checks:
 
 **Section sources**
 - [README.md:41-43](file://README.md#L41-L43)
-- [.htaccess:45-49](file://.htaccess#L45-L49)
+- [.htaccess:48-52](file://.htaccess#L48-L52)
 
 ### Domain Configuration Steps
 - Point your domain DNS to the hosting server
@@ -164,6 +185,8 @@ Validation:
 - Confirm canonical URL and hreflang tags in index.html
 - Verify sitemap.xml lists the correct domain and alternates
 - Check robots.txt disallows sensitive endpoints
+
+**Updated** Domain configuration now includes verification of multilingual SEO elements including hreflang tags and sitemap alternates for proper international targeting.
 
 **Section sources**
 - [index.html:11-29](file://index.html#L11-L29)
@@ -213,6 +236,20 @@ Validation:
 **Section sources**
 - [index.html:350-370](file://index.html#L350-L370)
 
+#### SEO and Crawling Verification
+- Verify robots.txt is accessible and contains correct directives
+- Confirm sitemap.xml is properly formatted with multilingual support
+- Test that search engines can crawl public pages but not backend endpoints
+- Validate hreflang tags and canonical URLs in HTML source
+- Check Google Search Console for indexing status
+
+**New Section** Added comprehensive SEO verification procedures to ensure proper search engine visibility and crawling behavior.
+
+**Section sources**
+- [robots.txt:1-11](file://robots.txt#L1-L11)
+- [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
+- [index.html:11-29](file://index.html#L11-L29)
+
 ### Post-Deployment Verification
 - Confirm HTTPS redirect works globally
 - Validate security headers are present (X-Content-Type-Options, X-Frame-Options, etc.)
@@ -220,10 +257,13 @@ Validation:
 - Ensure robots.txt prevents crawling of backend endpoints
 - Verify sitemap.xml accessibility and correctness
 - Perform end-to-end form submission and email receipt tests
+- Test multilingual functionality and hreflang tag implementation
+
+**Updated** Post-deployment verification now includes comprehensive SEO and crawling checks to ensure optimal search engine visibility and proper multilingual content handling.
 
 **Section sources**
-- [.htaccess:4-21](file://.htaccess#L4-L21)
-- [.htaccess:23-43](file://.htaccess#L23-L43)
+- [.htaccess:4-24](file://.htaccess#L4-L24)
+- [.htaccess:26-46](file://.htaccess#L26-L46)
 - [robots.txt:4-11](file://robots.txt#L4-L11)
 - [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
 
@@ -232,6 +272,9 @@ Validation:
 - Monitor uptime and response times using a monitoring service
 - Track core web vitals via analytics or performance tools
 - Review caching effectiveness and compression ratios
+- Monitor bandwidth usage and optimize asset delivery
+
+**Updated** Performance monitoring now includes specific checks for caching effectiveness and compression ratios to validate .htaccess performance optimizations.
 
 [No sources needed since this section provides general guidance]
 
@@ -249,7 +292,7 @@ Validation:
 - index.html depends on send-brief.php for form processing
 - send-brief.php depends on PHP mail() and server environment
 - .htaccess affects all requests (redirects, headers, caching, compression)
-- robots.txt influences search engine behavior
+- robots.txt influences search engine behavior and crawling
 - sitemap.xml informs search engines about canonical URLs and language variants
 
 ```mermaid
@@ -260,28 +303,32 @@ A[".htaccess"] --> I
 A --> P
 R["robots.txt"] --> SE["Search Engines"]
 S["sitemap.xml"] --> SE
+SE --> |Indexing| I
 ```
 
 **Diagram sources**
 - [index.html:782-800](file://index.html#L782-L800)
 - [send-brief.php:1-126](file://send-brief.php#L1-L126)
-- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [.htaccess:1-56](file://.htaccess#L1-L56)
 - [robots.txt:1-11](file://robots.txt#L1-L11)
 - [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
 
 **Section sources**
 - [index.html:782-800](file://index.html#L782-L800)
 - [send-brief.php:1-126](file://send-brief.php#L1-L126)
-- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [.htaccess:1-56](file://.htaccess#L1-L56)
 - [robots.txt:1-11](file://robots.txt#L1-L11)
 - [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
 
 ## Performance Considerations
-- Leverage browser caching via Expires headers for static assets
-- Enable gzip compression for text-based resources
+- Leverage browser caching via Expires headers for static assets (1 year cache duration)
+- Enable gzip compression for text-based resources (HTML, CSS, JavaScript, JSON)
 - Keep payloads minimal; defer non-critical JS/CSS if added later
 - Monitor server CPU and memory usage under load
 - Consider CDN for global image delivery if traffic increases
+- Optimize multilingual content delivery with proper hreflang implementation
+
+**Updated** Performance considerations now include specific caching durations and compression types configured in .htaccess, plus multilingual content optimization strategies.
 
 [No sources needed since this section provides general guidance]
 
@@ -293,22 +340,27 @@ Common issues and resolutions:
 - Mixed content warnings: Confirm all assets load over HTTPS; update any absolute URLs
 - Caching issues: Clear browser cache or add cache-busting parameters after updates
 - Robots blocking: Ensure robots.txt allows crawling of public pages while blocking sensitive endpoints
+- SEO indexing problems: Verify sitemap.xml is accessible and robots.txt doesn't block critical pages
+- Proxy-related HTTPS loops: Check X-Forwarded-Proto configuration if behind load balancer
+
+**Updated** Troubleshooting guide now includes SEO-specific issues and proxy-related HTTPS loop prevention.
 
 Security checks:
 - Confirm security headers are applied
 - Validate that backend endpoints are not indexed
 - Restrict direct access to sensitive files via .htaccess
+- Verify robots.txt properly blocks sensitive endpoints
 
 **Section sources**
-- [.htaccess:4-8](file://.htaccess#L4-L8)
-- [.htaccess:14-21](file://.htaccess#L14-L21)
-- [.htaccess:45-49](file://.htaccess#L45-L49)
+- [.htaccess:4-11](file://.htaccess#L4-L11)
+- [.htaccess:17-24](file://.htaccess#L17-L24)
+- [.htaccess:48-52](file://.htaccess#L48-L52)
 - [robots.txt:4-11](file://robots.txt#L4-L11)
 - [send-brief.php:9-15](file://send-brief.php#L9-L15)
 - [send-brief.php:112-125](file://send-brief.php#L112-L125)
 
 ## Conclusion
-By following this checklist, you will deploy the EMOO website with strong security, optimal performance, and reliable form/email functionality. Ensure all prerequisites are met, validate each step thoroughly, and maintain ongoing monitoring and backups to keep the site stable and secure in production.
+By following this checklist, you will deploy the EMOO website with strong security, optimal performance, reliable form/email functionality, and enhanced SEO capabilities. The updated configuration includes robust crawling control, multilingual SEO support, and production-ready server optimizations. Ensure all prerequisites are met, validate each step thoroughly, and maintain ongoing monitoring and backups to keep the site stable and secure in production.
 
 [No sources needed since this section summarizes without analyzing specific files]
 
@@ -321,9 +373,13 @@ By following this checklist, you will deploy the EMOO website with strong securi
 - Restrict access to sensitive files and directories
 - Ensure robots.txt blocks backend endpoints
 - Verify SSL certificate validity and auto-renewal
+- Test proxy-aware HTTPS redirection if behind load balancer
+
+**Updated** Security checklist now includes proxy-aware HTTPS redirection testing for environments behind load balancers or reverse proxies.
 
 **Section sources**
-- [.htaccess:4-21](file://.htaccess#L4-L21)
+- [.htaccess:4-11](file://.htaccess#L4-L11)
+- [.htaccess:17-24](file://.htaccess#L17-L24)
 - [robots.txt:4-11](file://robots.txt#L4-L11)
 - [send-brief.php:30-81](file://send-brief.php#L30-L81)
 
@@ -333,5 +389,23 @@ By following this checklist, you will deploy the EMOO website with strong securi
 - Update dependencies and security patches regularly
 - Back up files and configurations frequently
 - Test form and email delivery periodically
+- Monitor SEO performance and crawling status
+- Verify multilingual content indexing across search engines
+
+**Updated** Maintenance tasks now include SEO monitoring and multilingual content verification to ensure ongoing search engine visibility.
 
 [No sources needed since this section provides general guidance]
+
+### SEO Configuration Reference
+- robots.txt: Controls crawler access to sensitive endpoints
+- sitemap.xml: Declares canonical URLs and language alternates
+- hreflang tags: Implement proper multilingual content signaling
+- Canonical URLs: Prevent duplicate content issues
+- Structured data: Enhance search result appearance
+
+**New Section** Added comprehensive SEO configuration reference covering all search engine optimization elements in the deployment.
+
+**Section sources**
+- [robots.txt:1-11](file://robots.txt#L1-L11)
+- [sitemap.xml:1-14](file://sitemap.xml#L1-L14)
+- [index.html:11-29](file://index.html#L11-L29)

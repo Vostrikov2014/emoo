@@ -3,11 +3,11 @@ schema_version: 1
 locale: en-US
 branch: seo
 nodes_managed: true
-exported_at: "2026-09-03T17:37:29Z"
+exported_at: "2026-09-03T18:18:51Z"
 modules:
     "":
-        dir_name: EMOO Exhibition Stands Landing Site
-        title: EMOO Exhibition Stands Landing Site
+        dir_name: EMOO Exhibition Stand Builder — Single-Page Marketing Site
+        title: EMOO Exhibition Stand Builder — Single-Page Marketing Site
         scope:
             - .
             - .gitignore

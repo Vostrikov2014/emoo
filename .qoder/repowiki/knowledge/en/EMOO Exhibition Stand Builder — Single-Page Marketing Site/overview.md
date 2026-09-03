@@ -1,0 +1,1 @@
+Bilingual (RU/EN) single-page marketing site for EMOO exhibition stand builder, built as a static HTML/CSS/JS page with one PHP form endpoint and Apache deployment rules.
