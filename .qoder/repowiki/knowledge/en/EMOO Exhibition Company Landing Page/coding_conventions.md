@@ -1,5 +1,0 @@
-- Bilingual text is stored as paired `<span class="ru">` / `<span class="en">` siblings and switched by toggling `data-lang` on `<body>` rather than via a translation library.
-- Section-level animations are triggered by adding the `in` class to elements carrying the `rv` or `lm-wrap` classes, observed via a shared `IntersectionObserver` with a 0.15 threshold.
-- Form fields use floating labels driven by the `:focus` / `:not(:placeholder-shown)` pseudo-class selectors on `.f-field`, keeping label positioning purely CSS-based.
-- The PHP handler rejects non-POST requests, applies honeypot detection on a hidden `website_url` field, sanitizes every input with `trim(strip_tags(...))`, and always responds with `Content-Type: application/json` and an HTTP status code matching the outcome (200/400/405/500).
-- Visual identity is centralized in CSS custom properties under `:root` (e.g. `--deep`, `--sand`, `--foam`) and reused across sections instead of hard-coded color literals.

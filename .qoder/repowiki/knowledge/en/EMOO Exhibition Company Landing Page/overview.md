@@ -1,1 +1,0 @@
-Static bilingual (RU/EN) marketing landing page for EMOO exhibition stand and event production company, with an AJAX-submitted brief form backed by a PHP mail handler.

@@ -1,0 +1,15 @@
+schema_version: 1
+module_path: ""
+title: EMOO Exhibition Stands Landing Site
+scope:
+    - .
+    - .gitignore
+    - .htaccess
+    - README.md
+    - index.html
+    - robots.txt
+    - send-brief.php
+    - sitemap.xml
+source_files: []
+depends_on: []
+related_to: []

@@ -1,0 +1,52 @@
+# .htaccess — emoo.ru
+# HTTPS, security, caching, compression
+
+RewriteEngine On
+
+# ── Force HTTPS ─────────────────────────────────────────────────────────────
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── Remove trailing slash (optional, keep consistent URLs) ─────────────────
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+# ── Security Headers ────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# ── Cache static assets (1 year) ────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType application/x-font-woff2  "access plus 1 year"
+  ExpiresByType application/font-woff2    "access plus 1 year"
+  ExpiresByType font/woff2                "access plus 1 year"
+</IfModule>
+
+# ── Gzip / Brotli compression ───────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# ── Prevent access to sensitive files ───────────────────────────────────────
+<FilesMatch "\.(php|log|ini|bak)$">
+  # Allow PHP execution but block direct browsing to logs/configs
+  # send-brief.php and get-csrf-token.php remain accessible via AJAX
+</FilesMatch>
+
+# ── Custom error page (optional) ────────────────────────────────────────────
+# ErrorDocument 404 /index.html

@@ -1,1 +1,0 @@
-Vanilla HTML5 + CSS3 (CSS custom properties, Grid, clip-path animations) + vanilla JavaScript (IntersectionObserver, XMLHttpRequest); PHP 7.4+ backend using built-in `mail()` for outbound email; Google Fonts (Unbounded, Manrope, JetBrains Mono).

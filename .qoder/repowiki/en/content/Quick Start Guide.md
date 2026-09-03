@@ -3,8 +3,9 @@
 <cite>
 **Referenced Files in This Document**
 - [README.md](file://README.md)
-- [index.html](file://index.html)
+- [.htaccess](file://.htaccess)
 - [send-brief.php](file://send-brief.php)
+- [index.html](file://index.html)
 </cite>
 
 ## Table of Contents
@@ -17,216 +18,217 @@
 7. [Performance Considerations](#performance-considerations)
 8. [Troubleshooting Guide](#troubleshooting-guide)
 9. [Conclusion](#conclusion)
-10. [Appendices](#appendices)
 
 ## Introduction
-This guide helps you get the EMOO website up and running quickly on shared hosting. It covers prerequisites, file placement, basic configuration, verification steps, and common issues. The site includes a secure form that sends briefs to a local email address using PHP’s mail() function with CSRF protection, HTTPS enforcement, rate limiting, input sanitization, and validation.
+This guide helps you deploy the EMOO exhibition company website quickly and securely on a standard web hosting environment. It covers server requirements, file placement, HTTPS setup with automatic redirect, permissions, verification steps for form submission, and common troubleshooting tips. The site uses a static front-end (HTML/CSS/JS) and a lightweight PHP handler to send brief submissions via local mail delivery.
 
 ## Project Structure
-Place all required files in the same directory as your site’s index page (for example, /docs). The README specifies the following structure:
-- index.html — the main page containing the contact form
-- send-brief.php — server-side handler for form submissions
-- get-csrf-token.php — generates CSRF tokens used by the frontend
-- .htaccess — enforces HTTPS redirect and security rules
+Place all required files in your website’s public directory (for example, the root or a subfolder like /docs). The minimal set includes:
+- index.html — the main page and contact form
+- send-brief.php — server-side handler that validates and sends emails
+- .htaccess — enforces HTTPS and sets security headers, caching, and compression
 
 ```mermaid
 graph TB
-A["Browser"] --> B["HTTPS Server<br/>index.html"]
-B --> C["PHP Handler<br/>send-brief.php"]
-C --> D["Local Mail System<br/>mail()"]
-D --> E["Recipient Email<br/>emoo@emoo.ru"]
+A["Browser"] --> B[".htaccess<br/>HTTPS + Security Headers"]
+B --> C["index.html<br/>Form UI + AJAX"]
+C --> D["send-brief.php<br/>Validation + Mail"]
+D --> E["Local mail() on host"]
 ```
 
 **Diagram sources**
-- [index.html:728-765](file://index.html#L728-L765)
-- [send-brief.php:17-103](file://send-brief.php#L17-L103)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [index.html:782-1067](file://index.html#L782-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 **Section sources**
-- [README.md:9-20](file://README.md#L9-L20)
+- [README.md:9-27](file://README.md#L9-L27)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [index.html:782-1067](file://index.html#L782-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 ## Core Components
-- Frontend form: The HTML page contains a contact/brief form that posts to send-brief.php. It uses a hidden honeypot field to reduce spam.
-- Backend handler: The PHP script validates inputs, sanitizes data, constructs an email, and sends it via mail(). It returns JSON responses for success or errors.
-- Security and performance features:
-  - HTTPS enforced via .htaccess
-  - CSRF token generation via get-csrf-token.php
-  - Rate limiting (one submission per minute per IP)
-  - Input sanitization and validation
-  - Local mail delivery for reliability
+- index.html: Presents the site content and the “Brief” form. On submit, it sends data via AJAX to send-brief.php and shows success or error feedback.
+- send-brief.php: Accepts POST requests, sanitizes and validates input, constructs an email, and sends it using the host’s local mail() function. Returns JSON responses for success or errors.
+- .htaccess: Forces HTTPS, adds security headers, enables caching and compression, and restricts direct access to sensitive file types.
+
+Key behaviors:
+- Form validation occurs both client-side (in HTML/JS) and server-side (in PHP).
+- Email is sent locally to configured recipients; sender is set to a domain-matched address to improve deliverability.
+- All HTTP traffic is redirected to HTTPS automatically.
 
 **Section sources**
-- [index.html:728-765](file://index.html#L728-L765)
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
-- [README.md:21-37](file://README.md#L21-L37)
+- [index.html:782-1067](file://index.html#L782-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 ## Architecture Overview
-The form workflow ensures secure, reliable submissions even on shared hosting where the website and email share the same server.
+The deployment relies on a simple request flow:
+1. User visits the site over HTTP; .htaccess redirects to HTTPS.
+2. Browser loads index.html and renders the form.
+3. On form submit, JavaScript posts data to send-brief.php via AJAX.
+4. send-brief.php validates input, builds an email, and calls the local mail() function.
+5. Response is returned as JSON; the UI updates accordingly.
 
 ```mermaid
 sequenceDiagram
-participant U as "User Browser"
-participant S as "Web Server"
-participant P as "PHP Handler<br/>send-brief.php"
-participant M as "Local Mail System"
-participant E as "Email Recipient"
-U->>S : GET index.html
-S-->>U : HTML + JS
-U->>S : POST send-brief.php (form data)
-S->>P : Execute PHP script
-P->>P : Validate & sanitize inputs
-P->>M : mail(to, subject, body, headers)
-M-->>P : Sent/Failed
-P-->>U : JSON response {success, message}
-M->>E : Deliver email locally
+participant U as "User"
+participant H as ".htaccess"
+participant W as "Web Server"
+participant F as "index.html"
+participant P as "send-brief.php"
+participant M as "Local mail()"
+U->>W : GET https : //example.com/index.html
+W-->>U : 200 OK (HTML)
+U->>F : Fill form and click Submit
+F->>P : POST /send-brief.php (JSON payload)
+P->>P : Validate & sanitize
+P->>M : Send email via mail()
+M-->>P : Result
+P-->>F : JSON {success : true/false}
+F-->>U : Show success or error
 ```
 
 **Diagram sources**
-- [index.html:728-765](file://index.html#L728-L765)
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [index.html:1009-1067](file://index.html#L1009-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 ## Detailed Component Analysis
 
-### Form Submission Flow
-- The form posts to send-brief.php with fields such as name, phone/email, company, area, and message.
-- A hidden honeypot field is used to detect bots; if filled, the request is silently accepted without processing.
-- The backend validates and sanitizes inputs, then sends an email via mail() and returns a JSON response.
+### HTTPS and Redirect Configuration (.htaccess)
+- Enforces HTTPS by redirecting all HTTP requests to HTTPS with a 301 status.
+- Adds security headers (e.g., X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy).
+- Enables browser caching for static assets and optional compression.
+- Restricts direct browsing of sensitive file extensions while allowing PHP execution for handlers.
+
+Operational notes:
+- Ensure mod_rewrite and mod_headers are enabled on Apache.
+- If you already have a .htaccess, prepend the HTTPS redirect rules at the top.
+
+**Section sources**
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+
+### Form Submission Flow (index.html + send-brief.php)
+- The form posts to send-brief.php via AJAX.
+- Client-side validation ensures required fields are present before sending.
+- Server-side validation checks field lengths, formats (email/phone), allowed values, and applies sanitization.
+- On success, send-brief.php returns a JSON success message; otherwise, it returns errors or a failure message.
+- The UI displays a success state or alerts based on the response.
 
 ```mermaid
 flowchart TD
-Start(["Form Submit"]) --> CheckMethod{"POST only?"}
-CheckMethod --> |No| MethodError["Return 405 JSON"]
-CheckMethod --> |Yes| Honeypot{"Honeypot empty?"}
-Honeypot --> |No| SilentOK["Return 200 OK (bot)"]
-Honeypot --> |Yes| Sanitize["Sanitize & trim inputs"]
-Sanitize --> Validate{"Valid?"}
-Validate --> |No| Err400["Return 400 JSON with errors"]
-Validate --> |Yes| BuildMail["Build email body & headers"]
-BuildMail --> SendMail["mail() to emoo@emoo.ru"]
-SendMail --> Result{"Sent?"}
-Result --> |Yes| Success["Return 200 JSON success"]
-Result --> |No| Error500["Return 500 JSON error"]
+Start(["Form Submit"]) --> ValidateClient["Client-side validation"]
+ValidateClient --> Valid{"Valid?"}
+Valid -- No --> ShowError["Show validation errors"]
+Valid -- Yes --> SendAjax["POST to send-brief.php"]
+SendAjax --> ServerValidate["Server-side validation"]
+ServerValidate --> Ok{"All valid?"}
+Ok -- No --> ReturnErrors["Return JSON errors"]
+Ok -- Yes --> BuildEmail["Build email body and headers"]
+BuildEmail --> SendMail["mail() to configured recipients"]
+SendMail --> Success{"Sent?"}
+Success -- Yes --> ReturnSuccess["Return JSON success"]
+Success -- No --> ReturnFail["Return JSON failure"]
+ReturnErrors --> End(["UI shows errors"])
+ReturnSuccess --> End
+ReturnFail --> End
 ```
 
 **Diagram sources**
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
+- [index.html:1009-1067](file://index.html#L1009-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 **Section sources**
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
-- [index.html:728-765](file://index.html#L728-L765)
+- [index.html:782-1067](file://index.html#L782-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
-### Security and Validation Details
-- Only POST requests are accepted; other methods return 405.
-- Honeypot field prevents automated spam.
-- Inputs are trimmed and stripped of tags.
-- Strict validation for name length, contact format (email or phone), allowed area values, and message length.
-- Headers include From and Reply-To based on user input; content type set to UTF-8 plain text.
+### File Placement and Directory Structure
+- Place index.html, send-brief.php, and .htaccess in the same directory where your site is served (for example, the document root or a subfolder such as /docs).
+- Keep images under an images folder relative to the site root so links resolve correctly.
 
-**Section sources**
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
-
-### HTTPS Enforcement and File Placement
-- All requests should be served over HTTPS; .htaccess enforces redirection from HTTP to HTTPS.
-- Place all files (index.html, send-brief.php, get-csrf-token.php, .htaccess) in the same directory as your site root or subdirectory (e.g., /docs).
+Verification checklist:
+- Confirm index.html is accessible at your domain URL.
+- Confirm send-brief.php is reachable at the same path.
+- Confirm .htaccess is active (HTTP requests should redirect to HTTPS).
 
 **Section sources**
-- [README.md:9-20](file://README.md#L9-L20)
-- [README.md:48-57](file://README.md#L48-L57)
+- [README.md:9-27](file://README.md#L9-L27)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 ## Dependency Analysis
-- index.html depends on send-brief.php for form processing.
+- index.html depends on:
+  - send-brief.php for form processing
+  - .htaccess for HTTPS enforcement and security headers
 - send-brief.php depends on:
   - PHP runtime (version 7.4+)
-  - mail() function enabled on the host
-  - PHP sessions (for CSRF token storage)
-  - Optional .htaccess for HTTPS enforcement
-  - get-csrf-token.php for generating tokens
+  - Local mail() function enabled on the host
+  - PHP sessions if CSRF protection is used elsewhere (not required for current handler)
+- .htaccess depends on Apache modules:
+  - mod_rewrite for redirects
+  - mod_headers for security headers
+  - mod_expires/mod_deflate for caching/compression (optional but recommended)
 
 ```mermaid
 graph LR
-HTML["index.html"] --> PHP["send-brief.php"]
-PHP --> MAIL["mail()"]
-HTML --> HTACCESS[".htaccess"]
-HTML --> CSRF["get-csrf-token.php"]
+I["index.html"] --> S["send-brief.php"]
+I --> H[".htaccess"]
+S --> M["PHP mail()"]
+H --> R["Apache mod_rewrite"]
+H --> X["Apache mod_headers"]
 ```
 
 **Diagram sources**
-- [index.html:728-765](file://index.html#L728-L765)
-- [send-brief.php:17-103](file://send-brief.php#L17-L103)
-- [README.md:21-26](file://README.md#L21-L26)
+- [index.html:1009-1067](file://index.html#L1009-L1067)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 **Section sources**
-- [README.md:21-26](file://README.md#L21-L26)
-- [send-brief.php:17-103](file://send-brief.php#L17-L103)
+- [README.md:21-27](file://README.md#L21-L27)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 ## Performance Considerations
-- Keep the form lightweight; avoid heavy assets on the contact section.
-- Ensure your hosting provider has mail() configured and not rate-limited excessively.
-- Use HTTPS to benefit from modern browser optimizations and security.
-- Enable caching for static assets (images, CSS, JS) at the server level.
+- Enable caching for static assets via .htaccess to reduce load times.
+- Use compression for text-based resources to minimize bandwidth.
+- Keep images optimized and use appropriate dimensions to avoid unnecessary transfers.
+- Ensure your hosting provider has sufficient resources for PHP execution and mail delivery.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
-Common setup issues and resolutions:
+
+Common issues and resolutions:
+- HTTP to HTTPS redirect not working:
+  - Verify .htaccess is present and mod_rewrite is enabled on Apache.
+  - Ensure your SSL certificate is installed and active for the domain.
 - 403 Forbidden when accessing the site:
-  - Ensure you are using https:// and that .htaccess exists to enforce HTTPS redirection.
-- Form does not send email:
-  - Verify PHP version is 7.4+ and mail() is enabled on your hosting.
-  - Confirm that the recipient email matches the domain hosted on the same server (as specified).
-  - Check server logs for mail delivery errors.
-- CSRF errors:
-  - Ensure get-csrf-token.php is present and accessible.
-  - Confirm PHP sessions are enabled on the host.
-- Rate limiting triggered:
-  - Wait a minute before resubmitting; the script limits submissions to one per minute per IP.
+  - Access the site via HTTPS only; HTTP is blocked by redirect rules.
+  - Confirm .htaccess exists in the correct directory.
+- Form submission fails:
+  - Check that send-brief.php is reachable and executable.
+  - Ensure PHP version is 7.4+ and the mail() function is enabled on your host.
+  - Verify that the recipient addresses in send-brief.php are correct for your environment.
+  - Review server logs for PHP errors or mail delivery failures.
+- Emails not received:
+  - Confirm local mail delivery works on your hosting account.
+  - Check spam/junk folders and any server-side mail filtering.
+- Incorrect permissions:
+  - Set PHP files to 644 and directories to 755.
+  - Ensure the web server can read these files and execute PHP.
+
+Verification steps:
+- Open your site via HTTPS and confirm the redirect from HTTP.
+- Fill out the form and submit; expect a success message and an email to the configured recipients.
+- Inspect network tab in developer tools to verify the POST request to send-brief.php returns a JSON response.
 
 **Section sources**
-- [README.md:63-72](file://README.md#L63-L72)
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
+- [README.md:39-73](file://README.md#L39-L73)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
+- [index.html:1009-1067](file://index.html#L1009-L1067)
 
 ## Conclusion
-You now have the essentials to deploy the EMOO website securely on shared hosting. Place all required files in the correct directory, ensure PHP and mail() are enabled, enforce HTTPS, and test the form submission. Refer to the troubleshooting section if you encounter common issues.
+You now have a secure, fast-deploying EMOO website with HTTPS enforcement, robust form handling, and clear verification steps. Follow the installation instructions, ensure proper permissions, and validate the form submission workflow. For ongoing maintenance, keep your hosting environment updated and monitor server logs for any issues.
 
 [No sources needed since this section summarizes without analyzing specific files]
-
-## Appendices
-
-### Installation Checklist
-- Upload files:
-  - index.html
-  - send-brief.php
-  - get-csrf-token.php
-  - .htaccess
-- Set permissions:
-  - PHP files: 644
-  - Directories: 755
-- Verify HTTPS:
-  - Ensure SSL certificate is active and .htaccess redirects HTTP to HTTPS
-- Test the form:
-  - Open https://yourdomain.com/docs/index.html
-  - Fill out the brief form and submit
-  - Confirm receipt at emoo@emoo.ru
-
-**Section sources**
-- [README.md:39-46](file://README.md#L39-L46)
-
-### Basic Setup Verification
-- Confirm the page loads over HTTPS
-- Inspect network tab to verify POST to send-brief.php returns JSON
-- Check server logs for successful mail() calls
-- Validate CSRF token flow by ensuring get-csrf-token.php is reachable
-
-**Section sources**
-- [index.html:728-765](file://index.html#L728-L765)
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
-- [README.md:21-26](file://README.md#L21-L26)
-
-### Initial Testing Procedures
-- Submit a valid brief and confirm success JSON response
-- Intentionally trigger validation errors (empty name, invalid phone/email) and check error JSON
-- Attempt to access the form via HTTP to verify HTTPS redirect
-- Temporarily disable .htaccess to observe behavior differences (restore afterward)
-
-**Section sources**
-- [send-brief.php:9-115](file://send-brief.php#L9-L115)
-- [README.md:48-57](file://README.md#L48-L57)

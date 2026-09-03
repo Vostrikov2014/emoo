@@ -1,0 +1,1 @@
+Single-page marketing site for EMOO, a turnkey exhibition stand builder, with bilingual (RU/EN) content, animated sections, and a PHP-based brief submission form.

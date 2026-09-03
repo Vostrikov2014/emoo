@@ -1,0 +1,1 @@
+Deploy to any PHP-capable web host with SSL enabled; ensure `send-brief.php` is executable and the hosting `mail()` function is configured so emails reach `emoo@emoo.ru, tishkova.d@emoo.ru`. The default language is Russian — change `setLang('ru')` to `'en'` in the inline script to switch the default locale.

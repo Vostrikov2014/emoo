@@ -20,311 +20,270 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This guide explains how to customize the EMOO website to meet specific business needs. It covers content updates (text, images, services, portfolio), styling customization (CSS variables, colors, typography, responsive behavior), form field and validation changes, email template editing, and language content updates. Practical examples and best practices are included to help you maintain consistency and performance while making long-term improvements.
+This guide explains how to customize the EMOO exhibition company website for your business needs. It covers adding new languages, editing content sections (hero, services, portfolio), styling via CSS custom properties and theme variables, updating contact form fields and email templates, integrating analytics/tracking scripts, maintaining responsive design, optimizing images/assets, and updating SEO meta tags. The goal is to extend functionality while preserving the site’s clean architecture and performance characteristics.
 
 ## Project Structure
-The site is a single-page HTML application with embedded CSS and JavaScript, plus a PHP handler for form submissions:
-- index.html: Main page containing all sections, styles, and client-side logic
-- send-brief.php: Server-side handler that validates, sanitizes, and emails brief submissions
-- README.md: Setup notes, security measures, and installation guidance
+The project is a single-page site with all styles and scripts embedded in one HTML file and a PHP handler for form submissions:
+- index.html: Contains markup, inline CSS, and inline JavaScript for language switching, animations, navigation, and form handling.
+- send-brief.php: Server-side script that validates, sanitizes, and emails brief submissions.
+- README.md: Installation and security notes for the form handler.
 
 ```mermaid
 graph TB
-A["index.html"] --> B["Browser UI<br/>Sections, Styles, Scripts"]
-A --> C["send-brief.php"]
-C --> D["Email System<br/>(mail function)"]
-B --> |AJAX POST| C
+A["index.html<br/>Markup + CSS + JS"] --> B["Browser UI"]
+A --> C["send-brief.php<br/>Form Handler"]
+C --> D["Email System<br/>emoo@emoo.ru"]
+B --> E["Images Folder<br/>images/*"]
 ```
 
 **Diagram sources**
-- [index.html:729-1009](file://index.html#L729-L1009)
-- [send-brief.php:1-116](file://send-brief.php#L1-L116)
+- [index.html:1-1082](file://index.html#L1-L1082)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 **Section sources**
-- [index.html:1-1013](file://index.html#L1-L1013)
-- [send-brief.php:1-116](file://send-brief.php#L1-L116)
+- [index.html:1-1082](file://index.html#L1-L1082)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 - [README.md:1-73](file://README.md#L1-L73)
 
 ## Core Components
-- Content sections: Hero, Services, Formula, Stages, Works, Stats, Contacts, Footer
-- Styling system: CSS custom properties (variables) for colors, fonts, lines, and theme tokens
-- Language system: Dual-language support (Russian/English) controlled by data attributes and JS
-- Form system: Client-side validation and AJAX submission to send-brief.php
-- Interactive behaviors: Scroll reveals, active nav tracking, counters, service preview, mobile menu
-
-Key areas to modify:
-- Text and media: Edit section text and image paths within index.html
-- Colors and typography: Adjust CSS variables in the :root block
-- Responsive layout: Modify media queries for breakpoints and component behavior
-- Form fields and rules: Update inputs, labels, and validation in both index.html and send-brief.php
-- Email content: Customize subject and body in send-brief.php
-- Language strings: Update data-en/data-ru attributes across the page
+- Language system: Uses data attributes on elements to switch between Russian and English at runtime.
+- Content sections: Hero, Services, Formula, Process stages, Works (portfolio), Stats, Contacts, Footer.
+- Styling: CSS custom properties define colors, fonts, and visual tokens used across components.
+- Form: Client-side validation and AJAX submission to send-brief.php; success state shown inline.
+- Analytics/Tracking: Ready to add third-party scripts in the head or before closing body tag.
 
 **Section sources**
-- [index.html:16-328](file://index.html#L16-L328)
-- [index.html:333-819](file://index.html#L333-L819)
-- [index.html:823-1013](file://index.html#L823-L1013)
-- [send-brief.php:17-116](file://send-brief.php#L17-L116)
+- [index.html:68-381](file://index.html#L68-L381)
+- [index.html:879-1080](file://index.html#L879-L1080)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
 
 ## Architecture Overview
-The site uses a simple architecture:
-- Frontend: Single HTML file with embedded CSS and JS
-- Backend: Lightweight PHP script handling form submissions via mail()
-- Data flow: User interacts with the form; JS validates and sends data via AJAX; PHP processes and emails results
+The site follows a simple client-server model:
+- The browser renders index.html, applies CSS variables for theming, and runs inline JS for interactivity.
+- When users submit the brief form, the client sends an AJAX POST to send-brief.php.
+- The server validates input, constructs an email, and returns a JSON response indicating success or errors.
 
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant H as "index.html"
-participant S as "send-brief.php"
+participant B as "Browser (index.html)"
+participant S as "Server (send-brief.php)"
 participant M as "Mail System"
-U->>H : Fill out brief form
-H->>H : Validate required fields
-H->>S : AJAX POST (FormData)
-S->>S : Sanitize & validate input
+U->>B : Fill brief form
+B->>B : Validate fields (client)
+B->>S : POST /send-brief.php (FormData)
+S->>S : Sanitize & validate
 alt Valid
-S->>M : Send email with formatted body
-S-->>H : JSON { success : true }
-H->>H : Show success state
+S->>M : Send email
+M-->>S : OK
+S-->>B : {success : true}
+B->>B : Show success state
 else Invalid
-S-->>H : JSON { success : false, errors }
-H->>H : Show error feedback
+S-->>B : {success : false, errors : [...]}
+B->>B : Show error messages
 end
 ```
 
 **Diagram sources**
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:29-71](file://send-brief.php#L29-L71)
-- [send-brief.php:73-116](file://send-brief.php#L73-L116)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
 
 ## Detailed Component Analysis
 
-### Content Customization
-- Text modifications:
-  - Update bilingual text using spans with data-en and data-ru attributes throughout the page
-  - Example locations: hero kicker, headings, descriptions, buttons, labels, footer links
-- Image updates:
-  - Replace image src values for hero, services previews, and works gallery
-  - Ensure aspect ratios and alt texts remain descriptive and accessible
-- Service descriptions:
-  - Edit titles, descriptions, and preview images in the services list
-  - Maintain consistent structure for hover effects and previews
-- Portfolio additions:
-  - Add new work items in the works grid with appropriate classes and aspect ratios
-  - Keep captions concise and include location and size where relevant
+### Adding New Languages
+- Add a new language code (e.g., fr) and update default language selection if needed.
+- For each translatable element, add a data attribute for the new language (data-fr).
+- Update the language switcher buttons to include the new language option.
+- Ensure the title and any dynamic text are updated when the language changes.
 
-Practical tips:
-- Keep bilingual pairs aligned to avoid mismatched translations
-- Use meaningful alt text for accessibility and SEO
-- Optimize images for web (size, format) to maintain performance
+Key areas to update:
+- Language buttons: header, mobile nav, footer.
+- Elements with data-en/data-ru: kicker, headings, paragraphs, labels, placeholders, options.
+- Title updates in the language switch logic.
+
+Where to look:
+- Language toggle buttons and initial language setup.
+- Text elements with bilingual spans and data attributes.
+- Dynamic title assignment during language change.
 
 **Section sources**
-- [index.html:372-424](file://index.html#L372-L424)
-- [index.html:446-488](file://index.html#L446-L488)
-- [index.html:642-672](file://index.html#L642-L672)
+- [index.html:398-421](file://index.html#L398-L421)
+- [index.html:429-462](file://index.html#L429-L462)
+- [index.html:879-922](file://index.html#L879-L922)
 
-### Styling Customization
-- CSS variables:
-  - Colors: deep, sea, foam, sand, ink, muted, line variants
-  - Typography: display, body, mono font families
-  - Lines and borders: line and line-light for subtle separators
-- Color schemes:
-  - Change primary accent color by updating sand-related variables
-  - Adjust dark/light contrast by modifying deep and foam values
-- Typography changes:
-  - Swap font families or weights in the :root block
-  - Update sizes and spacing if needed in section styles
-- Responsive design adjustments:
-  - Modify media queries for breakpoints at 1080px, 900px, 560px
-  - Adjust grid layouts, navigation visibility, and spacing per device
-
-Best practices:
-- Centralize theme tokens in :root for easy maintenance
-- Test changes across devices and screen sizes
-- Respect reduced motion preferences for accessibility
-
-**Section sources**
-- [index.html:16-328](file://index.html#L16-L328)
-
-### Form Field Modifications
-- Adding/removing fields:
-  - Insert new input/select/textarea elements inside the form card
-  - Provide placeholders and labels in both languages using data-en/data-ru
-- Validation rules:
-  - Extend client-side checks in the submit handler to include new fields
-  - Update server-side validation in send-brief.php to accept and sanitize new inputs
-- Error feedback:
-  - Style invalid states consistently using border color and messages
-  - Ensure accessibility with proper labels and aria attributes when needed
-
-Example steps:
-- Add a new field in index.html under the form card
-- Update JS validation to check the new field’s value
-- In send-brief.php, add sanitization and validation for the new field
-- Include the new field in the email body formatting
-
-**Section sources**
-- [index.html:728-775](file://index.html#L728-L775)
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:29-71](file://send-brief.php#L29-L71)
-
-### Validation Rule Customization
-- Client-side:
-  - Check required fields and formats before submission
-  - Highlight invalid inputs and prevent sending until corrected
-- Server-side:
-  - Validate presence and format of each field
-  - Enforce length limits and allowed values (e.g., area options)
-  - Return structured JSON responses for success or errors
+### Modifying Content Sections
+- Hero: Edit kicker, headline lines, lead paragraph, button texts, and metadata items. Use bilingual spans for RU/EN.
+- Services: Update service titles, descriptions, and preview image paths per row.
+- Portfolio (Works): Uncomment and edit the works section to add or remove projects, captions, and images.
+- Stats: Adjust counters by changing numeric targets and labels.
+- Contact: Update contact links, locations, and form field labels.
 
 Guidelines:
-- Mirror validation rules on both frontend and backend for consistency
-- Provide clear, user-friendly error messages in both languages
-- Log errors appropriately for debugging without exposing sensitive details
+- Keep bilingual structure intact (span.en and span.ru).
+- Maintain aspect ratios for images to avoid layout shifts.
+- Preserve semantic markup and aria attributes for accessibility.
 
 **Section sources**
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:36-71](file://send-brief.php#L36-L71)
+- [index.html:425-477](file://index.html#L425-L477)
+- [index.html:499-541](file://index.html#L499-L541)
+- [index.html:695-725](file://index.html#L695-L725)
+- [index.html:742-754](file://index.html#L742-L754)
+- [index.html:756-831](file://index.html#L756-L831)
 
-### Email Template Editing
-- Subject and body:
-  - Customize the email subject line and message body in send-brief.php
-  - Include dynamic fields like name, contact, company, area, message, date, IP
-- Headers:
-  - Set From and Reply-To headers appropriately
-  - Ensure UTF-8 encoding for international characters
-
-Tips:
-- Keep the email body readable and well-structured
-- Avoid including unnecessary or sensitive information
-- Test email rendering across clients
-
-**Section sources**
-- [send-brief.php:73-100](file://send-brief.php#L73-L100)
-
-### Language Content Updates
-- Switching language:
-  - Toggle between RU and EN using language buttons
-  - The script updates document attributes and content dynamically
-- Updating strings:
-  - Edit data-en and data-ru attributes for all translatable elements
-  - Ensure consistent phrasing and tone across languages
-- Default language:
-  - Change default language in the script initialization
+### Styling Customization via CSS Custom Properties and Theme Variables
+- Colors: Modify deep, sea, sand, ink, foam, line, and other color tokens in :root.
+- Typography: Change font families and weights for display, body, and mono fonts.
+- Spacing and layout: Adjust container widths, section padding, grid gaps, and media queries for responsiveness.
+- Effects: Tweak noise overlay, marquee speed, hover transitions, and reduced motion behavior.
 
 Best practices:
-- Keep translations synchronized to avoid missing content
-- Use concise, clear language suitable for UI contexts
-- Test language switching thoroughly for all interactive elements
+- Keep variable names consistent and grouped logically.
+- Test contrast and readability after color changes.
+- Verify responsive breakpoints still work as expected.
 
 **Section sources**
-- [index.html:831-866](file://index.html#L831-L866)
+- [index.html:68-381](file://index.html#L68-L381)
 
-### Extending Functionality
-Common extensions:
-- Add analytics: Insert tracking scripts in the head or before closing body
-- Integrate CRM: Replace mail() with API calls to your CRM platform
-- Enhance UX: Add additional animations or micro-interactions carefully
-- Security hardening: Implement CSRF tokens and rate limiting as noted in documentation
+### Updating Contact Form Fields
+To add or modify fields:
+- Add corresponding inputs/selects in the form markup with appropriate name attributes.
+- If you add new fields, update server-side validation and email template in send-brief.php to include them.
+- Optionally add client-side validation rules in the inline script.
 
-Implementation approach:
-- Keep changes modular and well-commented
-- Test integrations in staging before production deployment
-- Monitor performance impact of added features
+Important considerations:
+- Keep honeypot field hidden to reduce spam.
+- Ensure labels and placeholders are bilingual where applicable.
+- Maintain accessible labeling and focus states.
+
+**Section sources**
+- [index.html:781-827](file://index.html#L781-L827)
+- [send-brief.php:30-74](file://send-brief.php#L30-L74)
+- [send-brief.php:83-113](file://send-brief.php#L83-L113)
+
+### Modifying Email Templates
+- Subject and body construction occur in send-brief.php.
+- Update subject prefix, message formatting, and additional fields included in the email body.
+- You can add headers like CC/BCC or adjust Reply-To behavior based on contact type.
+
+Security and deliverability:
+- Keep From address aligned with domain to improve deliverability.
+- Sanitize and validate inputs to prevent injection and malformed emails.
+
+**Section sources**
+- [send-brief.php:17-21](file://send-brief.php#L17-L21)
+- [send-brief.php:83-113](file://send-brief.php#L83-L113)
+
+### Integrating Additional Analytics or Tracking Scripts
+- Insert tracking snippets (Google Analytics, Meta Pixel, etc.) in the <head> or just before </body>.
+- Respect user privacy and regional compliance (GDPR, CCPA) by implementing consent management if required.
+- Avoid blocking critical rendering; use async or defer where possible.
+
+Recommendations:
+- Place analytics after core styles and scripts to minimize impact on first paint.
+- Use event listeners to track interactions (form submissions, language switches) without altering existing logic.
 
 [No sources needed since this section provides general guidance]
 
+### Maintaining Responsive Design When Adding New Content
+- Follow existing grid patterns and aspect ratio classes for images.
+- Use clamp() for fluid typography and ensure text remains readable on small screens.
+- Test new content across breakpoints defined in media queries.
+- Prefer semantic HTML and avoid fixed widths that break layouts.
+
+**Section sources**
+- [index.html:339-380](file://index.html#L339-L380)
+
+### Optimizing Images and Assets
+- Use modern formats (WebP/AVIF) with fallbacks.
+- Set appropriate dimensions and loading="lazy" for below-the-fold images.
+- Compress images and maintain aspect ratios to prevent layout shifts.
+- Provide descriptive alt text for accessibility and SEO.
+
+**Section sources**
+- [index.html:466-468](file://index.html#L466-L468)
+- [index.html:705-723](file://index.html#L705-L723)
+
+### Updating SEO Meta Tags
+- Update page title, description, keywords, author, robots, canonical URL.
+- Configure Open Graph and Twitter Card metadata for social sharing.
+- Add hreflang tags for multi-language support and structured data for organization and website.
+
+Where to find:
+- Head section with meta tags, OG/Twitter cards, hreflang, and schema.org JSON-LD.
+
+**Section sources**
+- [index.html:3-67](file://index.html#L3-L67)
+
 ## Dependency Analysis
 - index.html depends on:
-  - Google Fonts for typography
-  - Local images for hero, services, and works
-  - send-brief.php for form processing
+  - Inline CSS for styling and responsive behavior.
+  - Inline JavaScript for language switching, scroll-based animations, active navigation, counters, and form submission.
+  - External fonts loaded from Google Fonts.
 - send-brief.php depends on:
-  - PHP environment with mail() enabled
-  - Proper server configuration for HTTPS and security headers
+  - PHP mail() function enabled on the hosting environment.
+  - Proper server configuration for HTTPS and security headers.
 
 ```mermaid
 graph LR
-F["index.html"] --> G["Google Fonts"]
-F --> I["Local Images"]
-F --> J["send-brief.php"]
-J --> K["PHP mail()"]
+H["index.html"] --> F["Fonts (Google Fonts)"]
+H --> I["Images (images/*)"]
+H --> P["send-brief.php"]
+P --> E["Email System"]
 ```
 
 **Diagram sources**
-- [index.html:7-9](file://index.html#L7-L9)
-- [index.html:413-415](file://index.html#L413-L415)
-- [index.html:457-483](file://index.html#L457-L483)
-- [index.html:653-669](file://index.html#L653-L669)
-- [send-brief.php:102-104](file://send-brief.php#L102-L104)
+- [index.html:33-38](file://index.html#L33-L38)
+- [index.html:466-468](file://index.html#L466-L468)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:112-125](file://send-brief.php#L112-L125)
 
 **Section sources**
-- [index.html:7-9](file://index.html#L7-L9)
-- [send-brief.php:102-104](file://send-brief.php#L102-L104)
+- [index.html:33-38](file://index.html#L33-L38)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:112-125](file://send-brief.php#L112-L125)
 
 ## Performance Considerations
-- Image optimization:
-  - Use modern formats (WebP/AVIF) and compress images
-  - Set appropriate dimensions and lazy loading where applicable
-- CSS efficiency:
-  - Minify and combine styles if necessary
-  - Avoid excessive animations on low-power devices
-- JavaScript performance:
-  - Debounce scroll listeners if adding heavy computations
-  - Respect prefers-reduced-motion for accessibility and performance
-- Network requests:
-  - Preconnect to external domains (fonts) already configured
-  - Limit third-party scripts to essential ones
-
-Recommendations:
-- Audit assets regularly for size and relevance
-- Use browser caching for static resources
-- Monitor Core Web Vitals after changes
+- Minimize render-blocking resources: keep essential CSS inline but consider moving non-critical styles to external files if the site grows.
+- Defer or async-load analytics and non-essential scripts.
+- Optimize images and use lazy loading for offscreen content.
+- Respect prefers-reduced-motion to improve accessibility and performance on low-power devices.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 Common issues and resolutions:
 - Form not sending:
-  - Verify send-brief.php is accessible and PHP is enabled
-  - Check server logs for mail() errors
-  - Ensure AJAX endpoint URL is correct in index.html
+  - Check network tab for errors; ensure send-brief.php is reachable and returns valid JSON.
+  - Verify PHP mail() is enabled and configured on the host.
+  - Confirm HTTPS is enforced and no mixed-content warnings block requests.
 - Validation errors:
-  - Confirm client-side and server-side rules match
-  - Inspect network tab for response payloads
+  - Review client-side validation and server-side checks in send-brief.php for required fields and formats.
 - Language not switching:
-  - Ensure data-en/data-ru attributes exist for all elements
-  - Check console for JS errors preventing language updates
-- Images not loading:
-  - Validate file paths and permissions
-  - Check browser dev tools for 404 errors
-
-Debugging steps:
-- Open browser console and network panel during form submission
-- Temporarily enable verbose logging in send-brief.php for diagnostics
-- Test on different browsers and devices to isolate issues
+  - Ensure all translatable elements have data-en and data-ru attributes.
+  - Verify language buttons call setLang with correct language codes.
+- Layout shifts:
+  - Check image aspect ratios and container sizes; ensure responsive breakpoints are respected.
 
 **Section sources**
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:10-15](file://send-brief.php#L10-L15)
-- [send-brief.php:105-116](file://send-brief.php#L105-L116)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:37-81](file://send-brief.php#L37-L81)
+- [README.md:28-38](file://README.md#L28-L38)
 
 ## Conclusion
-This guide provides a comprehensive approach to customizing the EMOO website for business needs. By focusing on content, styling, forms, email templates, and language updates, you can tailor the site effectively while maintaining performance and accessibility. Follow best practices for consistency, test changes thoroughly, and leverage the provided diagrams and references to implement modifications confidently.
+You can confidently customize the EMOO website by extending its bilingual content model, leveraging CSS custom properties for theming, and using the provided form handler for reliable submissions. Follow the guidelines above to maintain responsiveness, optimize assets, and enhance SEO while keeping the site performant and accessible.
 
 [No sources needed since this section summarizes without analyzing specific files]
 
 ## Appendices
 
-### Quick Reference: Key Modification Points
-- Colors and fonts: index.html :root block
-- Section text: index.html spans with data-en/data-ru
-- Images: index.html img src attributes
-- Form fields: index.html form card and send-brief.php validation
-- Email content: send-brief.php subject/body formatting
-- Language default: index.html script initialization
+### Quick Reference: Where to Edit Key Areas
+- Hero text and CTAs: [index.html:425-477](file://index.html#L425-L477)
+- Services list: [index.html:499-541](file://index.html#L499-L541)
+- Portfolio (works): [index.html:695-725](file://index.html#L695-L725)
+- Stats counters: [index.html:742-754](file://index.html#L742-L754)
+- Contact form fields: [index.html:781-827](file://index.html#L781-L827)
+- Email template: [send-brief.php:83-113](file://send-brief.php#L83-L113)
+- SEO meta tags: [index.html:3-67](file://index.html#L3-L67)
+- Theme variables: [index.html:68-76](file://index.html#L68-L76)
 
-**Section sources**
-- [index.html:16-328](file://index.html#L16-L328)
-- [index.html:728-775](file://index.html#L728-L775)
-- [send-brief.php:73-100](file://send-brief.php#L73-L100)
+[No sources needed since this section lists references already cited above]

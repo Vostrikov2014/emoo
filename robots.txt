@@ -1,0 +1,10 @@
+# robots.txt — emoo.ru
+# https://emoo.ru/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /send-brief.php
+Disallow: /get-csrf-token.php
+Disallow: /.htaccess
+
+Sitemap: https://emoo.ru/sitemap.xml

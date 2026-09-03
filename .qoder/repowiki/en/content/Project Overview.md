@@ -2,9 +2,10 @@
 
 <cite>
 **Referenced Files in This Document**
-- [README.md](file://README.md)
 - [index.html](file://index.html)
 - [send-brief.php](file://send-brief.php)
+- [.htaccess](file://.htaccess)
+- [README.md](file://README.md)
 </cite>
 
 ## Table of Contents
@@ -19,239 +20,256 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-EMOO is a professional business website for an exhibition stand company that designs, builds, and supports exhibition stands across 17 countries. The site targets potential clients and partners who need turnkey exhibition solutions, from concept to on-site support. It showcases services, process stages, portfolio highlights, and provides a secure form to request a free concept within 24 hours.
+EMOO is a professional exhibition stand construction company landing page with bilingual support (Russian/English). The site showcases services, process, portfolio, and statistics, and captures leads via a contact form that sends briefs to the company email. It is designed as a single-page application built with HTML5, CSS3, and vanilla JavaScript on the frontend, and PHP for backend processing. The goal is to provide a simple yet effective marketing solution tailored to exhibition companies’ needs: fast concept delivery, clear process transparency, and reliable lead capture.
 
-Key features:
-- Bilingual support (Russian/English) with client-side language switching
-- Secure form processing via PHP with validation, sanitization, and honeypot anti-bot protection
-- Responsive design optimized for desktop, tablet, and mobile
-- Interactive sections including animated counters, scroll reveals, and a cursor-following service preview
-- Simple static frontend with a lightweight backend for form handling, suitable for shared hosting environments
+Target audience includes B2B clients planning exhibitions who need turnkey stand design, build, event programming, visualization, logistics, and 24/7 support across multiple countries. Business goals are brand positioning, lead generation, and conversion through a frictionless user experience and secure form submission.
 
-[No sources needed since this section summarizes without analyzing specific files]
+**Section sources**
+- [index.html:1-100](file://index.html#L1-L100)
+- [index.html:425-477](file://index.html#L425-L477)
+- [index.html:757-831](file://index.html#L757-L831)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
+- [README.md:1-73](file://README.md#L1-L73)
 
 ## Project Structure
-The project follows a minimal, monolithic structure optimized for simple deployment on shared hosting:
-- index.html: Single-page site containing all content, styles, and client-side logic
-- send-brief.php: Backend script that processes the brief form and sends email notifications
-- README.md: Installation and security notes for deploying the form handler
+The project is intentionally minimal:
+- index.html: Single-page layout with embedded styles and scripts, bilingual content, sections for hero, services, formula, process stages, stats, and contact form.
+- send-brief.php: Backend handler for form submissions, validation, sanitization, and email dispatch.
+- .htaccess: Server configuration enforcing HTTPS, security headers, caching, compression, and file access rules.
+- README.md: Installation and security notes for the form handler.
 
 ```mermaid
 graph TB
-A["index.html<br/>Static site + client JS"] --> B["send-brief.php<br/>Form handler (PHP 7.4+)"]
-B --> C["Local mail()<br/>emoo@emoo.ru"]
-D["Browser"] --> A
-A --> |AJAX POST| B
+A["index.html<br/>Single-page UI"] --> B["send-brief.php<br/>Form handler"]
+A --> C[".htaccess<br/>HTTPS + Security + Cache"]
+A --> D["images/<br/>Visual assets"]
 ```
 
 **Diagram sources**
-- [index.html:728-772](file://index.html#L728-L772)
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:1-116](file://send-brief.php#L1-L116)
+- [index.html:1-100](file://index.html#L1-L100)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 **Section sources**
-- [README.md:9-27](file://README.md#L9-L27)
-- [index.html:1-30](file://index.html#L1-L30)
-- [send-brief.php:1-15](file://send-brief.php#L1-L15)
+- [index.html:1-100](file://index.html#L1-L100)
+- [send-brief.php:1-126](file://send-brief.php#L1-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+- [README.md:1-73](file://README.md#L1-L73)
 
 ## Core Components
-- Frontend (index.html):
-  - Sections: Hero, Services, Formula, Process Stages, Portfolio (placeholder), Stats, Contact Form, Footer
-  - Bilingual UI using data attributes and CSS visibility toggles
-  - Animations: entrance reveals, counters, marquee ticker, header shrink on scroll
-  - Mobile navigation with burger menu
-  - Interactive service preview that follows cursor on fine-pointer devices
-- Backend (send-brief.php):
-  - Accepts POST only, validates inputs, sanitizes data
-  - Honeypot field to block bots
-  - Sends email via local mail() with proper headers and reply-to handling
-  - Returns JSON responses for success or errors
+- Hero section with headline, value proposition, and CTAs driving users to the brief form.
+- Services list with hover preview images to enhance interactivity.
+- Formula section explaining EMOO methodology with definitions.
+- Process stages with scroll-linked rail animation and step details.
+- Stats counters with animated numbers.
+- Contact form with client-side validation and AJAX submission to the PHP handler.
+- Footer with navigation, contacts, and social links.
+
+Key features:
+- Bilingual toggle between Russian and English without page reload.
+- Smooth animations and reveal-on-scroll effects using IntersectionObserver.
+- Mobile-friendly responsive layout with hamburger menu.
+- SEO metadata, Open Graph, Twitter Cards, and structured data for Organization and Website.
 
 **Section sources**
-- [index.html:333-819](file://index.html#L333-L819)
-- [index.html:823-1010](file://index.html#L823-L1010)
-- [send-brief.php:9-116](file://send-brief.php#L9-L116)
+- [index.html:425-477](file://index.html#L425-L477)
+- [index.html:499-541](file://index.html#L499-L541)
+- [index.html:543-586](file://index.html#L543-L586)
+- [index.html:588-693](file://index.html#L588-L693)
+- [index.html:742-754](file://index.html#L742-L754)
+- [index.html:757-831](file://index.html#L757-L831)
+- [index.html:833-875](file://index.html#L833-L875)
+- [index.html:879-1082](file://index.html#L879-L1082)
 
 ## Architecture Overview
-The site is a static single-page application with a small PHP endpoint for form submission. The flow is:
-- User fills out the brief form
-- Client JavaScript validates required fields and submits via AJAX to send-brief.php
-- PHP validates and sanitizes input, constructs email body, and sends via mail()
-- Response is returned as JSON; client shows success state or error message
+EMOO uses a single-page architecture with no frameworks or libraries. The frontend handles all UI logic, language switching, animations, and form interactions. The backend is a lightweight PHP script that validates input, sanitizes data, and sends emails via the hosting’s mail() function. Server-level protections are enforced by .htaccess for HTTPS, security headers, caching, and compression.
 
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant F as "index.html<br/>Form + JS"
-participant S as "send-brief.php"
-participant M as "Mail Server<br/>local mail()"
+participant F as "index.html<br/>Frontend"
+participant S as "send-brief.php<br/>Backend"
+participant M as "Mail server<br/>hosting"
 U->>F : Fill brief form
-F->>F : Validate required fields
-F->>S : AJAX POST /send-brief.php
+F->>F : Client-side validation
+F->>S : POST /send-brief.php (FormData)
 S->>S : Sanitize & validate inputs
-S->>M : Send email to emoo@emoo.ru
+S->>M : Send email via mail()
 M-->>S : Delivery result
-S-->>F : JSON {success, message/errors}
-F->>U : Show success or error feedback
+S-->>F : JSON response {success, message/errors}
+F->>F : Show success state or error alert
 ```
 
 **Diagram sources**
-- [index.html:728-772](file://index.html#L728-L772)
-- [index.html:953-1009](file://index.html#L953-L1009)
-- [send-brief.php:9-116](file://send-brief.php#L9-L116)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
+
+**Section sources**
+- [index.html:879-1082](file://index.html#L879-L1082)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 ## Detailed Component Analysis
 
-### Bilingual Support (Russian/English)
-- Language toggle buttons set a data attribute on the body and update document language
-- Elements with both data-en and data-ru attributes switch text or placeholders based on active language
-- Title updates dynamically per language
+### Bilingual Support (RU/EN)
+- Language toggle updates document attributes and dynamically swaps placeholders, options, and dynamic text.
+- Uses data attributes for localized strings and a scramble effect for the kicker text.
+- Default language can be configured in the script.
 
 ```mermaid
 flowchart TD
-Start(["Click RU/EN"]) --> SetAttr["Set data-lang on body"]
-SetAttr --> UpdateText["Update elements with data-en/data-ru"]
-UpdateText --> UpdatePlaceholders["Update input/textarea placeholders"]
-UpdatePlaceholders --> UpdateTitle["Update document title"]
-UpdateTitle --> End(["UI reflects selected language"])
+Start(["Language Button Click"]) --> UpdateAttr["Set data-lang on body"]
+UpdateAttr --> SwapContent["Swap placeholders/options/text based on data-en/data-ru"]
+SwapContent --> TitleUpdate["Update document title"]
+TitleUpdate --> FadeEffect["Optional fade transition"]
+FadeEffect --> End(["UI updated"])
 ```
 
 **Diagram sources**
-- [index.html:831-866](file://index.html#L831-L866)
+- [index.html:887-923](file://index.html#L887-L923)
 
 **Section sources**
-- [index.html:333-368](file://index.html#L333-L368)
-- [index.html:831-866](file://index.html#L831-L866)
+- [index.html:887-923](file://index.html#L887-L923)
 
-### Secure Form Processing
-- Honeypot field blocks automated submissions
-- Strict server-side validation for name, contact (email or phone pattern), optional company length, allowed area values, and message length
-- Data sanitized before use
-- Email constructed with proper headers and reply-to logic
-- JSON responses enable smooth UX without page reload
+### Lead Generation Form
+- Fields: name, phone/email, company, area (select), message.
+- Honeypot field to deter bots.
+- Client-side validation highlights required fields; server-side validation enforces format and length constraints.
+- AJAX submission returns JSON responses for success or errors.
+- Success state shows confirmation and allows resubmission.
 
 ```mermaid
 flowchart TD
-Entry(["POST send-brief.php"]) --> CheckMethod{"Is POST?"}
-CheckMethod --> |No| Reject["Return 405 JSON"]
-CheckMethod --> |Yes| Honeypot{"Honeypot filled?"}
-Honeypot --> |Yes| Ignore["Return 200 success (ignore bot)"]
-Honeypot --> |No| Sanitize["Sanitize inputs"]
-Sanitize --> Validate{"Valid?"}
-Validate --> |No| Err["Return 400 JSON with errors"]
-Validate --> |Yes| BuildEmail["Build email body & headers"]
-BuildEmail --> Send["mail() to emoo@emoo.ru"]
-Send --> Result{"Sent?"}
-Result --> |Yes| Ok["Return 200 JSON success"]
-Result --> |No| Fail["Return 500 JSON error"]
+Submit(["Submit Button"]) --> Validate["Client-side validation"]
+Validate --> Valid{"Valid?"}
+Valid -- No --> Highlight["Highlight invalid fields"]
+Valid -- Yes --> Send["AJAX POST to send-brief.php"]
+Send --> Response{"Server response"}
+Response -- Success --> ShowSuccess["Show success state"]
+Response -- Error --> Alert["Alert with errors"]
 ```
 
 **Diagram sources**
-- [send-brief.php:9-116](file://send-brief.php#L9-L116)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:22-81](file://send-brief.php#L22-L81)
 
 **Section sources**
-- [send-brief.php:9-116](file://send-brief.php#L9-L116)
-- [index.html:728-772](file://index.html#L728-L772)
-- [index.html:953-1009](file://index.html#L953-L1009)
+- [index.html:781-831](file://index.html#L781-L831)
+- [index.html:1009-1079](file://index.html#L1009-L1079)
+- [send-brief.php:22-81](file://send-brief.php#L22-L81)
 
-### Responsive Design and Interactions
-- CSS Grid and media queries adapt layout for various screen sizes
-- Header shrinks on scroll; mobile menu toggles via class changes
-- Scroll-triggered reveal animations using IntersectionObserver
-- Animated counters for statistics
-- Cursor-following service preview on devices with fine pointer
+### Backend Processing (send-brief.php)
+- Enforces POST-only requests.
+- Honeypot check to silently accept bot submissions.
+- Sanitizes and validates inputs (name, contact, company, area, message).
+- Normalizes area values to predefined options.
+- Builds email subject/body and sets headers including Reply-To.
+- Sends email via mail() and logs successful submissions.
+- Returns JSON responses indicating success or errors.
 
 ```mermaid
 flowchart TD
-Load(["Page load"]) --> AddJS["Add 'js' class to documentElement"]
-AddJS --> ObserveReveal["Observe .rv/.lm-wrap for reveal"]
-AddJS --> ObserveNav["Observe sections for active nav"]
-AddJS --> Counters["Observe .count for animated counters"]
-AddJS --> Preview["Attach hover/mousemove for service preview"]
-ObserveReveal --> UX["Smooth reveal on scroll"]
-ObserveNav --> UX
-Counters --> UX
-Preview --> UX
+Start(["POST Request"]) --> MethodCheck{"Method is POST?"}
+MethodCheck -- No --> Reject["Return 405 JSON"]
+MethodCheck -- Yes --> Honeypot{"Honeypot filled?"}
+Honeypot -- Yes --> AcceptBot["Accept silently (200)"]
+Honeypot -- No --> Sanitize["Sanitize inputs"]
+Sanitize --> Validate["Validate fields"]
+Validate --> Errors{"Errors?"}
+Errors -- Yes --> ReturnErr["Return 400 JSON with errors"]
+Errors -- No --> BuildEmail["Build subject/body/headers"]
+BuildEmail --> SendMail["mail() to recipients"]
+SendMail --> Result{"Sent?"}
+Result -- Yes --> Log["Log entry"]
+Log --> ReturnOk["Return 200 JSON success"]
+Result -- No --> ReturnFail["Return 500 JSON failure"]
 ```
 
 **Diagram sources**
-- [index.html:823-951](file://index.html#L823-L951)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
 
 **Section sources**
-- [index.html:24-328](file://index.html#L24-L328)
-- [index.html:823-951](file://index.html#L823-L951)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
 
-### Content Sections Overview
-- Hero: Brand messaging, key stats (including “17 countries”), and CTAs
-- Services: Four core offerings with hover previews
-- Formula: Conceptual breakdown of EMOO methodology
-- Process: Five-stage workflow with visual rail indicator
-- Stats: Animated counters highlighting experience and reach
-- Contact: Brief form with step-by-step instructions and contact details
-- Footer: Navigation, contacts, social links, and branding
+### Server Configuration (.htaccess)
+- Forces HTTPS redirect for secure communication.
+- Sets security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy).
+- Enables caching for static assets and compression for text-based resources.
+- Restricts direct browsing to sensitive files while allowing PHP execution for handlers.
+
+```mermaid
+flowchart TD
+Req["Incoming Request"] --> HTTPS{"HTTPS off?"}
+HTTPS -- Yes --> Redirect["301 Redirect to https://"]
+HTTPS -- No --> Headers["Apply security headers"]
+Headers --> Cache["Enable caching for static assets"]
+Cache --> Compress["Enable compression"]
+Compress --> Access["Restrict sensitive file access"]
+```
+
+**Diagram sources**
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 **Section sources**
-- [index.html:372-819](file://index.html#L372-L819)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
+
+### Interactive UX Enhancements
+- Scroll-triggered reveals using IntersectionObserver for sections and line animations.
+- Active navigation highlighting based on current section visibility.
+- Animated counters for statistics.
+- Service row hover previews with cursor-following image.
+- Responsive mobile menu with burger toggle.
+
+**Section sources**
+- [index.html:924-1007](file://index.html#L924-L1007)
 
 ## Dependency Analysis
-- index.html depends on:
-  - Google Fonts (loaded via link tags)
-  - Local images referenced by paths (e.g., hero.jpg, stand images)
-  - Client-side JavaScript embedded in the same file
-- send-brief.php depends on:
-  - PHP 7.4+ runtime
-  - Local mail() function enabled on the host
-  - Valid SMTP configuration on the hosting environment
+The project has minimal dependencies:
+- Frontend: Pure HTML/CSS/vanilla JS with no external libraries except Google Fonts.
+- Backend: PHP mail() function integrated with hosting environment.
+- Server: Apache .htaccess for redirects, headers, caching, and compression.
 
 ```mermaid
 graph LR
-HTML["index.html"] --> FONTS["Google Fonts"]
-HTML --> IMG["Images (hero.jpg, etc.)"]
-HTML --> JS["Embedded JS"]
-JS --> API["send-brief.php"]
-API --> PHP["PHP 7.4+"]
-API --> MAIL["Local mail()"]
+UI["index.html"] --> |AJAX| PHPScript["send-brief.php"]
+PHPScript --> |mail()| Mail["Hosting Mail Server"]
+UI --> |Styles/Scripts| Browser["Browser"]
+Browser --> |Requests| Server["Apache/.htaccess"]
 ```
 
 **Diagram sources**
-- [index.html:7-14](file://index.html#L7-L14)
-- [index.html:728-772](file://index.html#L728-L772)
-- [send-brief.php:1-15](file://send-brief.php#L1-L15)
+- [index.html:879-1082](file://index.html#L879-L1082)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 **Section sources**
-- [index.html:7-14](file://index.html#L7-L14)
-- [send-brief.php:1-15](file://send-brief.php#L1-L15)
+- [index.html:879-1082](file://index.html#L879-L1082)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 ## Performance Considerations
-- Single-file architecture reduces HTTP requests and simplifies caching
-- CSS animations are GPU-friendly where possible; reduced motion respected via prefers-reduced-motion
-- Images should be optimized and lazy-loaded where appropriate
-- Avoid heavy libraries; current implementation uses vanilla JS for performance
-- Ensure fonts are preconnected to reduce render blocking
+- Single-page design reduces network overhead and improves perceived performance.
+- Embedded CSS and JS avoid additional HTTP requests.
+- IntersectionObserver enables efficient scroll-based animations without heavy listeners.
+- .htaccess caching and compression reduce load times for repeat visits.
+- Reduced motion media query respects user preferences for accessibility.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 Common issues and resolutions:
-- Form not sending emails:
-  - Verify PHP version is 7.4+ and mail() is enabled on the host
-  - Confirm SSL is active if HTTPS is enforced by server rules
-  - Check server logs for mail delivery errors
-- 405 Method Not Allowed:
-  - Ensure form submission uses POST method
-- 400 Bad Request:
-  - Review validation errors returned by the backend (name, contact format, area selection, message length)
-- 500 Internal Server Error:
-  - Indicates failure to send email; check mail configuration and server permissions
-- Honeypot bypass:
-  - If bots fill hidden field, submissions are silently ignored; ensure honeypot remains hidden
+- 403 Forbidden when accessing the site: Ensure HTTPS is used and .htaccess is present.
+- Form not sending: Verify PHP mail() is enabled on the hosting and that send-brief.php is accessible.
+- Email not received: Check spam filters and ensure sender address matches domain hosting.
+- Validation errors: Confirm required fields are filled and formats are correct.
+- Network errors: Check internet connectivity and server availability.
 
 **Section sources**
-- [README.md:21-37](file://README.md#L21-L37)
-- [send-brief.php:9-71](file://send-brief.php#L9-L71)
-- [send-brief.php:102-116](file://send-brief.php#L102-L116)
+- [README.md:63-73](file://README.md#L63-L73)
+- [send-brief.php:9-126](file://send-brief.php#L9-L126)
+- [.htaccess:1-53](file://.htaccess#L1-L53)
 
 ## Conclusion
-EMOO’s website delivers a polished, bilingual, and responsive presentation of exhibition stand services across 17 countries, backed by a secure and straightforward form pipeline. The monolithic static structure paired with a minimal PHP handler makes it easy to deploy and maintain on shared hosting while providing a professional user experience for potential clients and partners.
+EMOO’s website delivers a streamlined, high-performance landing page optimized for exhibition companies seeking turnkey solutions. With bilingual support, interactive UX, and a secure lead capture mechanism, it effectively bridges marketing goals and technical simplicity. The architecture leverages modern web standards and minimal dependencies to ensure reliability, speed, and maintainability.
 
 [No sources needed since this section summarizes without analyzing specific files]

@@ -1,28 +1,22 @@
 # 知识卡导出索引文件
 schema_version: 1
 locale: en-US
-branch: not_token
+branch: seo
 nodes_managed: true
-exported_at: "2026-09-02T20:11:26Z"
+exported_at: "2026-09-03T17:37:29Z"
 modules:
     "":
-        dir_name: EMOO Exhibition Company Landing Page
-        title: EMOO Exhibition Company Landing Page
+        dir_name: EMOO Exhibition Stands Landing Site
+        title: EMOO Exhibition Stands Landing Site
         scope:
             - .
             - .gitignore
+            - .htaccess
             - README.md
-            - favicon.png
-            - favicon.svg
-            - hero.jpg
             - index.html
+            - robots.txt
             - send-brief.php
-            - stand-barcelona.jpg
-            - stand-dubai.jpg
-            - stand-hanover.jpg
-            - stand-lisbon.jpg
-            - stand-moscow.jpg
-            - stand-shanghai.jpg
+            - sitemap.xml
         source_files: []
         children: []
         depends_on: []
