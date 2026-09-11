@@ -133,7 +133,7 @@ html:not(.is-preload) .loader-frame{transform:translateY(100%);opacity:0;pointer
 .lang-btn{font-family:var(--mono);background:none;border:1px solid rgba(255,255,255,.35);color:#BFE3E8;font-size:11px;padding:5px 9px;cursor:pointer;transition:.25s}
 .lang-btn:hover{border-color:#fff;color:#fff}
 .lang-btn.active{background:var(--sand);border-color:var(--sand);color:#fff}
-.head-contacts{display:flex;align-items:center;gap:24px;font-family:var(--mono);font-size:13px}
+.head-contacts{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;font-family:var(--mono);font-size:13px;white-space:nowrap}
 .head-contacts a{color:#EAF7F8}
 .header-right{background:var(--deep-ink);display:flex;align-items:center;gap:16px;padding:0 30px;border:0;cursor:pointer;
   font:inherit;transition:background .3s}
@@ -168,9 +168,50 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 /* ===== HERO ===== */
 .hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;background:var(--deep-ink);color:#fff}
 .hero-bg{position:absolute;inset:0;z-index:0}
-.hero-bg img{width:100%;height:100%;object-fit:cover;animation:kb 16s ease-in-out infinite alternate}
-@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.hero-bg img{width:100%;height:100%;object-fit:cover;animation:kb 22s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1.06) translate3d(-1.8%,1.2%,0)}to{transform:scale(1.18) translate3d(1.8%,-1.2%,0)}}
 .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(5,50,60,.94) 18%,rgba(11,113,134,.55))}
+.hero-grid{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+  -webkit-mask-image:radial-gradient(75% 75% at 72% 78%,#000 0%,transparent 78%);mask-image:radial-gradient(75% 75% at 72% 78%,#000 0%,transparent 78%)}
+.hero-grid i{position:absolute;inset:-64px;display:block;
+  background-image:linear-gradient(rgba(241,250,251,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(241,250,251,.05) 1px,transparent 1px);
+  background-size:64px 64px;animation:gridSlide 6s linear infinite}
+@keyframes gridSlide{to{transform:translate3d(64px,64px,0)}}
+.hero-orb{position:absolute;z-index:1;border-radius:50%;pointer-events:none;filter:blur(80px);animation:orb var(--od,22s) ease-in-out var(--dl,0s) infinite alternate}
+.hero-orb.o1{width:560px;height:560px;top:-200px;left:-160px;background:radial-gradient(circle,rgba(25,179,198,.42),transparent 65%)}
+.hero-orb.o2{width:680px;height:680px;bottom:-260px;right:-220px;background:radial-gradient(circle,rgba(201,154,91,.3),transparent 65%);--od:28s;--dl:-9s}
+.hero-orb.o3{width:400px;height:400px;top:34%;left:52%;background:radial-gradient(circle,rgba(99,214,224,.28),transparent 60%);--od:18s;--dl:-5s}
+@keyframes orb{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(110px,70px,0) scale(1.28)}}
+.hero-beam{position:absolute;top:-25%;height:160%;width:200px;z-index:1;pointer-events:none;opacity:0;transform-origin:top center;filter:blur(8px);
+  background:linear-gradient(to bottom,var(--bc,rgba(99,214,224,.2)),transparent 72%);
+  animation:beamSway var(--sw,16s) ease-in-out var(--dl,0s) infinite alternate,beamFade var(--fd,10s) ease-in-out var(--df,0s) infinite}
+.hero-beam.b1{left:12%;--from:14deg;--to:34deg}
+.hero-beam.b2{right:16%;width:170px;--from:-30deg;--to:-8deg;--bc:rgba(201,154,91,.17);--sw:19s;--dl:-4s;--fd:12s;--df:-6s}
+.hero-beam.b3{left:44%;width:250px;--from:6deg;--to:-14deg;--bc:rgba(241,250,251,.12);--sw:23s;--dl:-11s;--fd:14s;--df:-3s}
+@keyframes beamSway{from{transform:rotate(var(--from,12deg))}to{transform:rotate(var(--to,36deg))}}
+@keyframes beamFade{0%,100%{opacity:0}35%,65%{opacity:1}}
+.hero-sheen{position:absolute;inset:-25%;z-index:1;pointer-events:none;transform:translateX(-70%);background:linear-gradient(115deg,transparent 42%,rgba(241,250,251,.08) 50%,transparent 58%);animation:sheen 12s ease-in-out infinite}
+.hero-sheen.s2{background:linear-gradient(65deg,transparent 44%,rgba(99,214,224,.07) 50%,transparent 56%);animation-duration:15s;animation-delay:-6s}
+@keyframes sheen{0%,55%{transform:translateX(-70%)}100%{transform:translateX(70%)}}
+.hero-ring{position:absolute;z-index:1;pointer-events:none;border-radius:50%;border:1px solid var(--rc,rgba(99,214,224,.5));opacity:0;animation:ring var(--rd,7s) cubic-bezier(.2,.6,.35,1) var(--dl,0s) infinite}
+@keyframes ring{0%{transform:scale(.15);opacity:.8}70%{opacity:.22}100%{transform:scale(1.5);opacity:0}}
+.hero-shape{position:absolute;z-index:1;pointer-events:none;opacity:0;animation:shapeDrift var(--fd2,18s) ease-in-out var(--dl,0s) infinite alternate}
+.hero-shape.sq{width:44px;height:44px;border:1px solid rgba(99,214,224,.55)}
+.hero-shape.ci{width:26px;height:26px;border:1px solid rgba(201,154,91,.65);border-radius:50%}
+.hero-shape.di{width:54px;height:54px;border:1px solid rgba(241,250,251,.4)}
+.hero-shape.ri{width:34px;height:34px;border:1px dashed rgba(241,250,251,.5);border-radius:50%}
+.hero-shape.pl{width:22px;height:22px;background:linear-gradient(rgba(99,214,224,.7),rgba(99,214,224,.7)) center/100% 2px no-repeat,linear-gradient(rgba(99,214,224,.7),rgba(99,214,224,.7)) center/2px 100% no-repeat}
+@keyframes shapeDrift{from{transform:translate3d(0,0,0) rotate(0deg);opacity:0}15%,85%{opacity:var(--so,.5)}to{transform:translate3d(var(--tx,50px),var(--ty,-70px),0) rotate(var(--rot,160deg));opacity:0}}
+.hero-streak{position:absolute;z-index:1;pointer-events:none;width:150px;height:2px;border-radius:2px;opacity:0;background:linear-gradient(90deg,transparent,rgba(241,250,251,.9),transparent);animation:streak var(--td,9s) cubic-bezier(.25,.6,.3,1) var(--dl,0s) infinite}
+.hero-streak.aqua{background:linear-gradient(90deg,transparent,rgba(99,214,224,.9),transparent)}
+@keyframes streak{0%,66%{transform:translate3d(0,0,0) rotate(-36deg);opacity:0}70%{opacity:.9}84%,100%{transform:translate3d(var(--sx,-460px),var(--sy,340px),0) rotate(-36deg);opacity:0}}
+.hero-dust{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.hero-dust span{position:absolute;bottom:-3%;width:var(--s,3px);height:var(--s,3px);border-radius:50%;background:var(--sand);opacity:0;animation:dust var(--d,20s) linear var(--dl,0s) infinite}
+.hero-dust span:nth-child(even){background:var(--aqua)}
+.hero-dust span:nth-child(3n){box-shadow:0 0 10px 2px rgba(201,154,91,.5)}
+.hero-dust span.bokeh{filter:blur(2px)}
+@keyframes dust{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:var(--o,.42)}85%{opacity:var(--o,.42)}100%{transform:translate3d(var(--dx,60px),-118vh,0);opacity:0}}
+@media(max-width:760px){.hero-beam.b3,.hero-shape,.hero-ring{display:none}.hero-grid i{animation-duration:9s}}
 .hero-inner{position:relative;z-index:2;width:100%;max-width:1560px;margin:0 auto;padding:150px 48px 150px}
 .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--aqua);min-height:1.4em;margin-bottom:20px}
 .hero-title{font-family:var(--disp);font-weight:900;font-size:clamp(34px,5.4vw,72px);line-height:1.05;text-transform:uppercase}
@@ -235,7 +276,9 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .about-media:hover img{transform:scale(1.05)}
 .about-media::after{content:"";position:absolute;inset:0;background:rgba(5,50,60,.28)}
 .media-btn{position:absolute;right:22px;bottom:22px;z-index:2}
-.media-square{position:absolute;left:-13px;bottom:-13px;width:46px;height:46px;background:var(--sand);z-index:2}
+.media-square{position:absolute;left:-13px;bottom:-13px;width:46px;height:46px;background:var(--sand);z-index:2;
+  animation:msq 3.5s ease-in-out infinite}
+@keyframes msq{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .about-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
 .about-body h2{font-family:var(--disp);font-weight:900;font-size:clamp(26px,3.3vw,42px);line-height:1.14}
 .about-body p{color:var(--muted);line-height:1.7;font-size:15.5px;margin-top:18px;max-width:560px}
@@ -336,6 +379,14 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .work-ph{position:relative;overflow:hidden;aspect-ratio:16/10}
 .work-ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease,filter .5s;filter:saturate(.85)}
 .work-card:hover .work-ph img{transform:scale(1.06);filter:saturate(1)}
+.work-pulse{position:absolute;left:0;bottom:4%;width:6%;max-width:26px;height:58%;background:var(--sand);opacity:.8;z-index:2;
+  pointer-events:none;animation:wpulse 2.6s ease-in-out infinite}
+@keyframes wpulse{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+.work-card:nth-child(2) .work-pulse{animation-delay:-.7s}
+.work-card:nth-child(3) .work-pulse{animation-delay:-1.3s}
+.work-card:nth-child(4) .work-pulse{animation-delay:-.4s}
+.work-card:nth-child(5) .work-pulse{animation-delay:-1.8s}
+.work-card:nth-child(6) .work-pulse{animation-delay:-1s}
 .work-info{background:#fff;margin:-64px 30px 0;position:relative;z-index:2;padding:24px 28px;box-shadow:0 18px 44px rgba(5,50,60,.15)}
 .work-meta{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .work-info h3{font-family:var(--disp);font-weight:700;font-size:19px;line-height:1.25}
@@ -432,12 +483,19 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 [data-aos=slide-right]{transform:translate3d(-100%,0,0)}
 [data-aos=slide-left]{transform:translate3d(100%,0,0)}
 
-/* ===== PARALLAX ELEMENTS ===== */
-[data-stellar-ratio]{will-change:transform}
+/* ===== PARALLAX ELEMENTS (scroll-driven) ===== */
+[data-stellar-ratio],[data-stellar-x]{will-change:transform;transform:translate3d(var(--sx,0px),var(--sy,0px),0)}
+.about-media img[data-stellar-ratio],.svc-media img[data-stellar-ratio]{transform:translate3d(var(--sx,0px),var(--sy,0px),0) scale(1.1);transition:transform .45s ease-out}
+.about-media:hover img[data-stellar-ratio],.svc-row:hover .svc-media img[data-stellar-ratio]{transform:translate3d(var(--sx,0px),var(--sy,0px),0) scale(1.16)}
+
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:3000;pointer-events:none;
+  background:linear-gradient(90deg,var(--sand),var(--aqua));transform:scaleX(0);transform-origin:0 50%}
+body{overflow-x:hidden;overflow-x:clip}
 
 /* ===== RESPONSIVE ===== */
-@media(max-width:1180px){
-  .head-contacts{display:none}
+@media(max-width:960px){
+  .head-contacts .dot-bottom{display:none}
 }
 @media(max-width:1080px){
   .hero-inner{padding:130px 32px 140px}
@@ -452,7 +510,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
   .works-swiper .swiper-slide.work-card{width:420px}
 }
 @media(max-width:900px){
-  .head-cta{display:none}
+  .head-contacts{display:none}
   .stats-grid{grid-template-columns:1fr 1fr;gap:36px 0}
   .stat:nth-child(3){border-left:0;padding-left:0}
   .foot-grid{grid-template-columns:1fr 1fr}
@@ -474,12 +532,14 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none !important;transition:none !important}
   [data-aos]{opacity:1 !important;transform:none !important}
+  [data-stellar-ratio],[data-stellar-x]{transform:none !important}
   .link-block::before{transform:none !important}
   .promo-banner.promo-in .promo-ripple{display:none}
 }
 </style>
 </head>
 <body data-lang="ru">
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <!-- PRELOADER -->
 <div class="loader-frame">
@@ -497,10 +557,10 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         <button class="lang-btn" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
-      <div class="head-contacts">
-        <a class="dot-bottom" href="tel:+79955585896">+7 (995) 558-58-96</a>
-        <a class="dot-bottom" href="mailto:emoo@emoo.ru">emoo@emoo.ru</a>
-      </div>
+    </div>
+    <div class="head-contacts">
+      <a class="dot-bottom" href="tel:+79955585896">+7 (995) 558-58-96</a>
+      <a class="dot-bottom" href="mailto:emoo@emoo.ru">emoo@emoo.ru</a>
       <a class="dot-solid filled sand small head-cta" href="#contacts">
         <span class="bx"><span class="ru">Оставить бриф</span><span class="en">Send brief</span></span>
       </a>
@@ -542,10 +602,51 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-bg">
+  <div class="hero-bg" data-stellar-ratio="1.05">
     <img src="images/hero.jpg" alt="Выставочный стенд EMOO / EMOO exhibition stand">
   </div>
-  <div class="hero-inner">
+  <div class="hero-grid" aria-hidden="true"><i></i></div>
+  <div class="hero-orb o1" aria-hidden="true"></div>
+  <div class="hero-orb o2" aria-hidden="true"></div>
+  <div class="hero-orb o3" aria-hidden="true"></div>
+  <div class="hero-beam b1" aria-hidden="true"></div>
+  <div class="hero-beam b2" aria-hidden="true"></div>
+  <div class="hero-beam b3" aria-hidden="true"></div>
+  <div class="hero-sheen" aria-hidden="true"></div>
+  <div class="hero-sheen s2" aria-hidden="true"></div>
+  <div class="hero-ring" aria-hidden="true" style="right:12%;top:56%;width:170px;height:170px;--rd:7s"></div>
+  <div class="hero-ring" aria-hidden="true" style="right:12%;top:56%;width:170px;height:170px;--rd:7s;--dl:-3.5s"></div>
+  <div class="hero-ring" aria-hidden="true" style="left:6%;top:13%;width:120px;height:120px;--rc:rgba(201,154,91,.5);--rd:8s;--dl:-1s"></div>
+  <div class="hero-ring" aria-hidden="true" style="left:6%;top:13%;width:120px;height:120px;--rc:rgba(201,154,91,.5);--rd:8s;--dl:-5s"></div>
+  <div class="hero-shape sq" aria-hidden="true" style="right:13%;top:22%;--tx:60px;--ty:-56px;--rot:120deg;--fd2:16s;--dl:-3s;--so:.5"></div>
+  <div class="hero-shape ci" aria-hidden="true" style="left:7%;top:16%;--tx:-46px;--ty:64px;--rot:0deg;--fd2:20s;--dl:-9s;--so:.55"></div>
+  <div class="hero-shape di" aria-hidden="true" style="right:32%;top:12%;--tx:-54px;--ty:70px;--rot:210deg;--fd2:18s;--dl:-13s;--so:.4"></div>
+  <div class="hero-shape ri" aria-hidden="true" style="right:6%;top:50%;--tx:44px;--ty:-64px;--rot:180deg;--fd2:24s;--dl:-6s;--so:.45"></div>
+  <div class="hero-shape pl" aria-hidden="true" style="right:23%;top:64%;--tx:-50px;--ty:-58px;--rot:90deg;--fd2:15s;--dl:-2s;--so:.6"></div>
+  <div class="hero-streak" aria-hidden="true" style="left:78%;top:8%;--sx:-520px;--sy:380px;--td:9s;--dl:-2s"></div>
+  <div class="hero-streak aqua" aria-hidden="true" style="left:60%;top:3%;--sx:-430px;--sy:320px;--td:11s;--dl:-7s"></div>
+  <div class="hero-streak" aria-hidden="true" style="left:90%;top:20%;--sx:-560px;--sy:410px;--td:13s;--dl:-5s"></div>
+  <div class="hero-dust" aria-hidden="true">
+    <span style="left:2%;--s:3px;--d:19s;--dl:-2s;--dx:70px;--o:.42"></span>
+    <span style="left:7%;--s:2px;--d:24s;--dl:-12s;--dx:-55px;--o:.3"></span>
+    <span style="left:12%;--s:4px;--d:17s;--dl:-6s;--dx:95px;--o:.5"></span>
+    <span style="left:17%;--s:2px;--d:22s;--dl:-17s;--dx:-75px;--o:.28"></span>
+    <span class="bokeh" style="left:22%;--s:12px;--d:28s;--dl:-9s;--dx:45px;--o:.26"></span>
+    <span style="left:28%;--s:3px;--d:18s;--dl:-4s;--dx:60px;--o:.44"></span>
+    <span style="left:34%;--s:5px;--d:25s;--dl:-15s;--dx:-95px;--o:.48"></span>
+    <span style="left:40%;--s:2px;--d:21s;--dl:-19s;--dx:65px;--o:.26"></span>
+    <span style="left:46%;--s:3px;--d:16s;--dl:-8s;--dx:-60px;--o:.42"></span>
+    <span class="bokeh" style="left:52%;--s:14px;--d:30s;--dl:-5s;--dx:-50px;--o:.22"></span>
+    <span style="left:58%;--s:4px;--d:23s;--dl:-11s;--dx:85px;--o:.5"></span>
+    <span style="left:64%;--s:2px;--d:19s;--dl:-16s;--dx:-55px;--o:.3"></span>
+    <span style="left:70%;--s:3px;--d:20s;--dl:-3s;--dx:70px;--o:.44"></span>
+    <span class="bokeh" style="left:76%;--s:10px;--d:26s;--dl:-13s;--dx:55px;--o:.24"></span>
+    <span style="left:82%;--s:4px;--d:24s;--dl:-7s;--dx:-85px;--o:.48"></span>
+    <span style="left:87%;--s:2px;--d:18s;--dl:-14s;--dx:60px;--o:.3"></span>
+    <span style="left:92%;--s:3px;--d:22s;--dl:-5s;--dx:-75px;--o:.4"></span>
+    <span style="left:96%;--s:5px;--d:26s;--dl:-10s;--dx:80px;--o:.46"></span>
+  </div>
+  <div class="hero-inner" data-stellar-ratio="1.12">
     <div class="kicker" id="kicker"
          data-ru="Выставочные стенды · Ивент-продакшн · Концепт за 24 часа"
          data-en="Exhibition stands · Event production · Concept in 24 hours"></div>
@@ -611,8 +712,8 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
     <div class="sec-index" data-aos="fade-up">01 <span class="ru">/ О нас</span><span class="en">/ About</span></div>
     <div class="about-split">
       <div class="about-media" data-aos="fade-up">
-        <img src="images/stand-hanover.jpg" alt="EMOO exhibition stand">
-        <span class="media-square" aria-hidden="true"></span>
+        <img src="images/stand-hanover.jpg" alt="EMOO exhibition stand" data-stellar-ratio="0.94">
+        <span class="media-square s4" aria-hidden="true"></span>
         <a class="dot-solid filled sand small media-btn" href="#services">
           <span class="bx"><span class="ru">Смотреть презентацию</span><span class="en">View presentation</span></span>
           <span class="pulse-arrow-bottom s5">↓</span>
@@ -657,12 +758,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
   <div class="container">
     <div class="svc-row">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-hanover.jpg" alt="Design & build" loading="lazy">
+        <img src="images/stand-hanover.jpg" alt="Design & build" loading="lazy" data-stellar-ratio="1.08">
         <a class="dot-solid filled sand small media-btn left" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square" aria-hidden="true"></span>
+        <span class="media-square s3" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">01</div>
@@ -678,12 +779,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
     <div class="svc-row rev">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-lisbon.jpg" alt="Event program" loading="lazy">
+        <img src="images/stand-lisbon.jpg" alt="Event program" loading="lazy" data-stellar-ratio="0.94">
         <a class="dot-solid filled sand small media-btn" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square" aria-hidden="true"></span>
+        <span class="media-square s5" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">02</div>
@@ -699,12 +800,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
     <div class="svc-row">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-moscow.jpg" alt="Visualization & 3D" loading="lazy">
+        <img src="images/stand-moscow.jpg" alt="Visualization & 3D" loading="lazy" data-stellar-ratio="1.08">
         <a class="dot-solid filled sand small media-btn left" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square" aria-hidden="true"></span>
+        <span class="media-square s4" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">03</div>
@@ -720,12 +821,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
     <div class="svc-row rev">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-shanghai.jpg" alt="Logistics & support" loading="lazy">
+        <img src="images/stand-shanghai.jpg" alt="Logistics & support" loading="lazy" data-stellar-ratio="0.94">
         <a class="dot-solid filled sand small media-btn" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square" aria-hidden="true"></span>
+        <span class="media-square s6" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">04</div>
@@ -743,8 +844,8 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
 <!-- FORMULA (akant gray production block + why-we cards) -->
 <section class="sec sec-gray formula" id="formula">
-  <div class="deco" data-stellar-ratio="1.1" style="width:32%;height:26%;left:0;bottom:0;background:#fff;opacity:.45"></div>
-  <div class="deco" data-stellar-ratio="1.4" style="width:6%;height:76%;left:7%;bottom:0;background:#fff;opacity:.7"></div>
+  <div class="deco" data-stellar-ratio="1.1" data-stellar-x="0.5" style="width:32%;height:26%;left:0;bottom:0;background:#fff;opacity:.45"></div>
+  <div class="deco" data-stellar-ratio="1.4" data-stellar-x="-0.6" style="width:6%;height:76%;left:7%;bottom:0;background:#fff;opacity:.7"></div>
   <div class="container">
     <div class="sec-index" data-aos="fade-up">03 <span class="ru">/ Формула</span><span class="en">/ Formula</span></div>
     <div class="formula-grid">
@@ -753,7 +854,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
           <span class="ru">Формула EMOO</span>
           <span class="en">The EMOO formula</span>
         </h2>
-        <div class="eq" aria-label="EMOO" style="margin-top:34px">E<span class="x">×</span>M<span class="x">×</span><span class="oo"></span><span class="x">×</span><span class="oo"></span></div>
+        <div class="eq" aria-label="EMOO" style="margin-top:34px" data-stellar-ratio="1.15">E<span class="x">×</span>M<span class="x">×</span><span class="oo"></span><span class="x">×</span><span class="oo"></span></div>
         <div class="eq-result">= <span class="ru">каждый момент работает на вас</span><span class="en">every moment works for you</span></div>
         <p class="formula-intro">
           <span class="ru">Наше имя — не аббревиатура, а метод. Четыре буквы — четыре принципа,
@@ -810,8 +911,8 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
 <!-- STAGES (akant numbered cards + desc blocks) -->
 <section class="sec sec-gray stages" id="stages">
-  <div class="deco" data-stellar-ratio="1.1" style="width:34%;height:28%;left:0;bottom:0;background:#fff;opacity:.45"></div>
-  <div class="deco" data-stellar-ratio="1.4" style="width:6%;height:78%;left:8%;bottom:0;background:#fff;opacity:.7"></div>
+  <div class="deco" data-stellar-ratio="1.1" data-stellar-x="0.45" style="width:34%;height:28%;left:0;bottom:0;background:#fff;opacity:.45"></div>
+  <div class="deco" data-stellar-ratio="1.4" data-stellar-x="-0.5" style="width:6%;height:78%;left:8%;bottom:0;background:#fff;opacity:.7"></div>
   <div class="container">
     <div class="sec-index" data-aos="fade-up">04 <span class="ru">/ Процесс</span><span class="en">/ Process</span></div>
     <div class="stages-head" data-aos="fade-up" data-aos-delay="100">
@@ -833,7 +934,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         <div class="swiper-slide">
           <div class="stage-item">
             <div class="stage-card">
-              <div class="stage-idx">01</div>
+              <div class="stage-idx" data-swiper-parallax="-300">01</div>
               <h3><span class="ru">Адаптивный референс</span><span class="en">Adaptive reference</span></h3>
               <span class="stage-tag">Free · 24h</span>
             </div>
@@ -846,7 +947,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         <div class="swiper-slide">
           <div class="stage-item">
             <div class="stage-card">
-              <div class="stage-idx">02</div>
+              <div class="stage-idx" data-swiper-parallax="-300">02</div>
               <h3><span class="ru">Вариант пространства</span><span class="en">Space variant</span></h3>
               <span class="stage-tag">DWG · Render · PDF · Video</span>
             </div>
@@ -863,7 +964,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         <div class="swiper-slide">
           <div class="stage-item">
             <div class="stage-card">
-              <div class="stage-idx">03</div>
+              <div class="stage-idx" data-swiper-parallax="-300">03</div>
               <h3><span class="ru">Точка сборки</span><span class="en">Assembly point</span></h3>
               <span class="stage-tag">Build</span>
             </div>
@@ -880,7 +981,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         <div class="swiper-slide">
           <div class="stage-item">
             <div class="stage-card">
-              <div class="stage-idx">04</div>
+              <div class="stage-idx" data-swiper-parallax="-300">04</div>
               <h3><span class="ru">Конструктор событий</span><span class="en">Event constructor</span></h3>
               <span class="stage-tag">Event</span>
             </div>
@@ -897,7 +998,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         <div class="swiper-slide">
           <div class="stage-item">
             <div class="stage-card">
-              <div class="stage-idx">05</div>
+              <div class="stage-idx" data-swiper-parallax="-300">05</div>
               <h3><span class="ru">Полное сопровождение</span><span class="en">Full support</span></h3>
               <span class="stage-tag">24/7</span>
             </div>
@@ -957,7 +1058,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
   <div class="swiper works-swiper" id="worksSwiper" data-aos="fade-up" data-aos-delay="150">
     <div class="swiper-wrapper">
       <div class="swiper-slide work-card">
-        <div class="work-ph"><img src="images/stand-hanover.jpg" alt="Industrial forum — Hanover" loading="lazy"></div>
+        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-hanover.jpg" alt="Industrial forum — Hanover" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Ганновер</span><span class="en">Hanover</span></span><span>180 м²</span></div>
           <h3><span class="ru">Промышленный форум</span><span class="en">Industrial forum</span></h3>
@@ -965,7 +1066,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><img src="images/stand-dubai.jpg" alt="Beauty brand — Dubai" loading="lazy"></div>
+        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-dubai.jpg" alt="Beauty brand — Dubai" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Дубай</span><span class="en">Dubai</span></span><span>96 м²</span></div>
           <h3><span class="ru">Бьюти-бренд</span><span class="en">Beauty brand</span></h3>
@@ -973,7 +1074,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><img src="images/stand-moscow.jpg" alt="IT company — Moscow" loading="lazy"></div>
+        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-moscow.jpg" alt="IT company — Moscow" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Москва</span><span class="en">Moscow</span></span><span>140 м²</span></div>
           <h3><span class="ru">ИТ-компания</span><span class="en">IT company</span></h3>
@@ -981,7 +1082,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><img src="images/stand-barcelona.jpg" alt="Pharma congress — Barcelona" loading="lazy"></div>
+        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-barcelona.jpg" alt="Pharma congress — Barcelona" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Барселона</span><span class="en">Barcelona</span></span><span>120 м²</span></div>
           <h3><span class="ru">Фарма-конгресс</span><span class="en">Pharma congress</span></h3>
@@ -989,7 +1090,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><img src="images/stand-shanghai.jpg" alt="Automaker — Shanghai" loading="lazy"></div>
+        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-shanghai.jpg" alt="Automaker — Shanghai" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Шанхай</span><span class="en">Shanghai</span></span><span>260 м²</span></div>
           <h3><span class="ru">Автопроизводитель</span><span class="en">Automaker</span></h3>
@@ -997,7 +1098,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><img src="images/stand-lisbon.jpg" alt="Startup show — Lisbon" loading="lazy"></div>
+        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-lisbon.jpg" alt="Startup show — Lisbon" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Лиссабон</span><span class="en">Lisbon</span></span><span>48 м²</span></div>
           <h3><span class="ru">Стартап-шоу</span><span class="en">Startup show</span></h3>
@@ -1038,15 +1139,15 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
           <input type="text" name="website_url" value="" style="display:none !important" tabindex="-1" autocomplete="off">
           <div class="form-title"><span class="ru">Бриф на стенд</span><span class="en">Stand brief</span></div>
           <div class="f-field req">
-            <input type="text" id="fName" name="name" placeholder=" " required autocomplete="name" data-en="Name" data-ru="Имя">
+            <input type="text" id="fName" name="name" placeholder=" " required autocomplete="name">
             <label for="fName"><span aria-hidden="true">👤</span><span class="ru">Имя</span><span class="en">Name</span></label>
           </div>
           <div class="f-field req">
-            <input type="text" id="fPhone" name="phone" placeholder=" " required autocomplete="tel" data-en="Phone or email" data-ru="Телефон или e-mail">
+            <input type="text" id="fPhone" name="phone" placeholder=" " required autocomplete="tel">
             <label for="fPhone"><span aria-hidden="true">@</span><span class="ru">Телефон или e-mail</span><span class="en">Phone or email</span></label>
           </div>
           <div class="f-field">
-            <input type="text" id="fCompany" name="company" placeholder=" " autocomplete="organization" data-en="Company" data-ru="Компания">
+            <input type="text" id="fCompany" name="company" placeholder=" " autocomplete="organization">
             <label for="fCompany"><span aria-hidden="true">🏢</span><span class="ru">Компания</span><span class="en">Company</span></label>
           </div>
           <div class="f-field static">
@@ -1060,7 +1161,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
             </select>
           </div>
           <div class="f-field">
-            <textarea id="fMsg" name="message" rows="3" placeholder=" " data-en="Your task, exhibition, dates…" data-ru="Ваша задача, выставка, сроки…"></textarea>
+            <textarea id="fMsg" name="message" rows="3" placeholder=" "></textarea>
             <label for="fMsg"><span aria-hidden="true">💬</span><span class="ru">Задача, выставка, сроки</span><span class="en">Your task, exhibition, dates</span></label>
           </div>
           <button class="dot-solid filled wide" type="submit" id="submitBtn">
@@ -1088,7 +1189,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
 
 <!-- FOOTER -->
 <footer>
-  <div class="foot-deco" data-stellar-ratio="1.1"></div>
+  <div class="foot-deco" data-stellar-ratio="1.1" data-stellar-x="0.8"></div>
   <div class="container">
     <div class="foot-sweep" aria-hidden="true">
       <i class="sw-solid" data-aos="slide-right" data-aos-offset="0" data-aos-duration="2200" data-aos-delay="900" data-aos-easing="ease"></i>
@@ -1168,7 +1269,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
   AOS.init({
     duration: 800,
     easing: 'ease-out-cubic',
-    once: true,
+    once: false,
     offset: 80,
     disable: window.matchMedia('(prefers-reduced-motion: reduce)').matches
   });
@@ -1196,8 +1297,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
     document.documentElement.lang = l;
     document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang')===l); });
     document.querySelectorAll('[data-en][data-ru]').forEach(function(el){
-      if(el.tagName==='INPUT' || el.tagName==='TEXTAREA'){ el.placeholder = el.getAttribute('data-'+l); }
-      else if(el.tagName==='OPTION'){ el.textContent = el.getAttribute('data-'+l); }
+      if(el.tagName==='OPTION'){ el.textContent = el.getAttribute('data-'+l); }
       else if(el.id==='kicker'){ scramble(el, el.getAttribute('data-'+l)); }
     });
     document.title = (l==='ru') ? 'EMOO — Выставочные стенды под ключ | Застройка и ивент-продакшн' : 'EMOO — Exhibition Stands & Event Production';
@@ -1237,6 +1337,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
     slidesPerView: 1,
     spaceBetween: 24,
     speed: 2000,
+    parallax: true,
     grabCursor: true,
     breakpoints: {
       640: { slidesPerView: 2 },
@@ -1261,18 +1362,44 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
     }
   });
 
-  /* ========== PARALLAX (lightweight Stellar-like) ========== */
+  /* ========== SCROLL MOTION (progress bar + parallax) ========== */
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var progress = document.getElementById('scrollProgress');
+  function updateProgress(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : '0') + ')';
+  }
+  if(progress){ window.addEventListener('scroll', updateProgress, {passive:true}); updateProgress(); }
+
   if(!RM){
-    var parallaxEls = document.querySelectorAll('[data-stellar-ratio]');
-    window.addEventListener('scroll', function(){
-      parallaxEls.forEach(function(el){
-        var ratio = parseFloat(el.getAttribute('data-stellar-ratio')) || 1;
-        var rect = el.getBoundingClientRect();
-        var offset = (rect.top - window.innerHeight/2) * (ratio - 1) * 0.3;
-        el.style.transform = 'translateY(' + offset + 'px)';
+    var pEls = [].slice.call(document.querySelectorAll('[data-stellar-ratio],[data-stellar-x]'));
+    var pvh = window.innerHeight, pTick = false;
+    function pCache(){
+      pvh = window.innerHeight;
+      pEls.forEach(function(el){ el.style.setProperty('--sy','0px'); el.style.setProperty('--sx','0px'); });
+      pEls.forEach(function(el){
+        var r = el.getBoundingClientRect();
+        el._cy = r.top + r.height/2 + window.scrollY;
+        el._ry = parseFloat(el.getAttribute('data-stellar-ratio')) || 1;
+        el._rx = parseFloat(el.getAttribute('data-stellar-x')) || 0;
       });
+      pMove();
+    }
+    function pMove(){
+      var mid = window.scrollY + pvh/2;
+      pEls.forEach(function(el){
+        var d = mid - el._cy;
+        el.style.setProperty('--sy', (d * (el._ry - 1) * 0.3).toFixed(1) + 'px');
+        el.style.setProperty('--sx', (d * el._rx * 0.15).toFixed(1) + 'px');
+      });
+    }
+    window.addEventListener('scroll', function(){
+      if(!pTick){ pTick = true; requestAnimationFrame(function(){ pMove(); pTick = false; }); }
     }, {passive:true});
+    window.addEventListener('resize', pCache);
+    window.addEventListener('load', pCache);
+    pCache();
+    setTimeout(pCache, 1800); /* re-measure after lazy images settle */
   }
 
   /* ========== COUNTERS ========== */
