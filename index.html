@@ -42,7 +42,7 @@
 <meta name="theme-color" content="#0B7186">
 <!-- Structured Data -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"EMOO","url":"https://emoo.ru","logo":"https://emoo.ru/favicon.svg","description":"Проектирование, застройка и сопровождение выставочных стендов под ключ. Every Moment Of Opportunity.","email":"emoo@emoo.ru","telephone":"+7-995-558-58-96","slogan":"Every Moment Of Opportunity","address":[{"@type":"PostalAddress","addressLocality":"Москва","addressCountry":"RU"},{"@type":"PostalAddress","addressLocality":"Dubai","addressCountry":"AE"},{"@type":"PostalAddress","addressLocality":"Belgrade","addressCountry":"RS"}]}
+{"@context":"https://schema.org","@type":"Organization","name":"EMOO","url":"https://emoo.ru","logo":"https://emoo.ru/logo.svg","description":"Проектирование, застройка и сопровождение выставочных стендов под ключ. Every Moment Of Opportunity.","email":"emoo@emoo.ru","telephone":"+7-995-558-58-96","slogan":"Every Moment Of Opportunity","address":[{"@type":"PostalAddress","addressLocality":"Москва","addressCountry":"RU"},{"@type":"PostalAddress","addressLocality":"Dubai","addressCountry":"AE"},{"@type":"PostalAddress","addressLocality":"Belgrade","addressCountry":"RS"}]}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"EMOO","url":"https://emoo.ru","inLanguage":["ru","en"]}
@@ -126,9 +126,12 @@ html:not(.is-preload) .loader-frame{transform:translateY(100%);opacity:0;pointer
 .site-header.scrolled{background:rgba(5,50,60,.96);box-shadow:0 2px 24px rgba(0,0,0,.18)}
 .header-inner{display:flex;align-items:stretch;justify-content:space-between;max-width:1560px;margin:0 auto;min-height:82px}
 .header-left{display:flex;align-items:center;gap:26px;padding:12px 28px}
-.logo{display:flex;align-items:center;gap:7px;color:#fff;font-family:var(--disp);font-weight:900;font-size:21px;letter-spacing:.06em}
-.logo .o{width:13px;height:13px;border:2.5px solid var(--sand);border-radius:50%;display:inline-block}
+.logo{display:flex;align-items:center;color:#fff}
+.logo-svg{display:block;height:36px;width:auto}
+.logo-svg .r1{stroke:var(--aqua)}
+.logo-svg .r2{stroke:var(--sand)}
 .logo.dark{color:var(--ink)}
+.logo.dark .logo-svg .r1{stroke:var(--deep)}
 .lang{display:flex;gap:6px}
 .lang-btn{font-family:var(--mono);background:none;border:1px solid rgba(255,255,255,.35);color:#BFE3E8;font-size:11px;padding:5px 9px;cursor:pointer;transition:.25s}
 .lang-btn:hover{border-color:#fff;color:#fff}
@@ -298,6 +301,8 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .eq .x{color:var(--sand);font-size:.55em;transform:translateY(-.2em)}
 .eq .oo{width:.92em;height:.92em;border:.09em solid var(--sea);border-radius:50%;transition:.35s}
 .eq .oo:hover{background:var(--sea)}
+.eq .oo.sand{border-color:var(--sand)}
+.eq .oo.sand:hover{background:var(--sand)}
 .eq-result{margin-top:18px;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#41606A}
 .eq-result b{color:var(--sand);font-weight:500}
 .formula-intro{color:#41606A;line-height:1.7;max-width:560px;font-size:15px;margin-top:26px}
@@ -552,7 +557,14 @@ body{overflow-x:hidden;overflow-x:clip}
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
     <div class="header-left">
-      <a class="logo" href="#home" aria-label="EMOO">EM<span class="o"></span><span class="o"></span></a>
+      <a class="logo" href="#home" aria-label="EMOO">
+        <svg class="logo-svg" viewBox="0 12 108 40" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M12.5 32L11.5 41L9 37.5L23 37.5L23 44L5 44L7 32L5 20L23 20L23 26.5L9 26.5L11.5 23ZM22 29L22 35L8 35L8 29Z"/>
+          <path fill="currentColor" d="M26 20H35.5L39.9 39.6H38.1L42.5 20H52V44H45.5V27.2L41.5 44H36.5L32.5 27.2V44H26Z"/>
+          <circle class="r1" cx="66" cy="32" r="9" fill="none" stroke-width="6"/>
+          <circle class="r2" cx="90" cy="32" r="9" fill="none" stroke-width="6"/>
+        </svg>
+      </a>
       <div class="lang">
         <button class="lang-btn" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="en">EN</button>
@@ -854,7 +866,7 @@ body{overflow-x:hidden;overflow-x:clip}
           <span class="ru">Формула EMOO</span>
           <span class="en">The EMOO formula</span>
         </h2>
-        <div class="eq" aria-label="EMOO" style="margin-top:34px" data-stellar-ratio="1.15">E<span class="x">×</span>M<span class="x">×</span><span class="oo"></span><span class="x">×</span><span class="oo"></span></div>
+        <div class="eq" aria-label="EMOO" style="margin-top:34px" data-stellar-ratio="1.15">E<span class="x">×</span>M<span class="x">×</span><span class="oo"></span><span class="x">×</span><span class="oo sand"></span></div>
         <div class="eq-result">= <span class="ru">каждый момент работает на вас</span><span class="en">every moment works for you</span></div>
         <p class="formula-intro">
           <span class="ru">Наше имя — не аббревиатура, а метод. Четыре буквы — четыре принципа,
@@ -1197,7 +1209,14 @@ body{overflow-x:hidden;overflow-x:clip}
     </div>
     <div class="foot-grid">
       <div>
-        <a class="logo dark" href="#home" aria-label="EMOO">EM<span class="o"></span><span class="o"></span></a>
+        <a class="logo dark" href="#home" aria-label="EMOO">
+          <svg class="logo-svg" viewBox="0 12 108 40" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12.5 32L11.5 41L9 37.5L23 37.5L23 44L5 44L7 32L5 20L23 20L23 26.5L9 26.5L11.5 23ZM22 29L22 35L8 35L8 29Z"/>
+            <path fill="currentColor" d="M26 20H35.5L39.9 39.6H38.1L42.5 20H52V44H45.5V27.2L41.5 44H36.5L32.5 27.2V44H26Z"/>
+            <circle class="r1" cx="66" cy="32" r="9" fill="none" stroke-width="6"/>
+            <circle class="r2" cx="90" cy="32" r="9" fill="none" stroke-width="6"/>
+          </svg>
+        </a>
         <div class="foot-divider"></div>
         <p class="foot-about"><span class="ru">Экспертный монтаж и управление выставочными событиями.
           Каждый момент — возможность.</span>
