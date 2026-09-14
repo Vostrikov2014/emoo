@@ -274,14 +274,11 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .about::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;background:var(--gray-bg);z-index:0}
 .about .container{position:relative;z-index:1}
 .about-split{display:flex;gap:60px;align-items:stretch}
-.about-media{width:42%;position:relative;min-height:540px}
+.about-media{width:42%;position:relative;min-height:540px;overflow:hidden}
 .about-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s ease}
 .about-media:hover img{transform:scale(1.05)}
 .about-media::after{content:"";position:absolute;inset:0;background:rgba(5,50,60,.28)}
 .media-btn{position:absolute;right:22px;bottom:22px;z-index:2}
-.media-square{position:absolute;left:-13px;bottom:-13px;width:46px;height:46px;background:var(--sand);z-index:2;
-  animation:msq 3.5s ease-in-out infinite}
-@keyframes msq{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .about-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
 .about-body h2{font-family:var(--disp);font-weight:900;font-size:clamp(26px,3.3vw,42px);line-height:1.14}
 .about-body p{color:var(--muted);line-height:1.7;font-size:15.5px;margin-top:18px;max-width:560px}
@@ -342,7 +339,6 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .svc-row.rev{flex-direction:row-reverse}
 .svc-row.rev .svc-side{padding:44px 60px 20px 0}
 .svc-row.rev .media-btn{left:auto;right:24px}
-.svc-row.rev .media-square{left:auto;right:-13px}
 
 /* ===== STATS ===== */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr)}
@@ -384,14 +380,6 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .work-ph{position:relative;overflow:hidden;aspect-ratio:16/10}
 .work-ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease,filter .5s;filter:saturate(.85)}
 .work-card:hover .work-ph img{transform:scale(1.06);filter:saturate(1)}
-.work-pulse{position:absolute;left:0;bottom:4%;width:6%;max-width:26px;height:58%;background:var(--sand);opacity:.8;z-index:2;
-  pointer-events:none;animation:wpulse 2.6s ease-in-out infinite}
-@keyframes wpulse{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
-.work-card:nth-child(2) .work-pulse{animation-delay:-.7s}
-.work-card:nth-child(3) .work-pulse{animation-delay:-1.3s}
-.work-card:nth-child(4) .work-pulse{animation-delay:-.4s}
-.work-card:nth-child(5) .work-pulse{animation-delay:-1.8s}
-.work-card:nth-child(6) .work-pulse{animation-delay:-1s}
 .work-info{background:#fff;margin:-64px 30px 0;position:relative;z-index:2;padding:24px 28px;box-shadow:0 18px 44px rgba(5,50,60,.15)}
 .work-meta{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .work-info h3{font-family:var(--disp);font-weight:700;font-size:19px;line-height:1.25}
@@ -725,7 +713,6 @@ body{overflow-x:hidden;overflow-x:clip}
     <div class="about-split">
       <div class="about-media" data-aos="fade-up">
         <img src="images/stand-hanover.jpg" alt="EMOO exhibition stand" data-stellar-ratio="0.94">
-        <span class="media-square s4" aria-hidden="true"></span>
         <a class="dot-solid filled sand small media-btn" href="#services">
           <span class="bx"><span class="ru">Смотреть презентацию</span><span class="en">View presentation</span></span>
           <span class="pulse-arrow-bottom s5">↓</span>
@@ -775,7 +762,6 @@ body{overflow-x:hidden;overflow-x:clip}
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square s3" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">01</div>
@@ -796,7 +782,6 @@ body{overflow-x:hidden;overflow-x:clip}
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square s5" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">02</div>
@@ -817,7 +802,6 @@ body{overflow-x:hidden;overflow-x:clip}
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square s4" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">03</div>
@@ -838,7 +822,6 @@ body{overflow-x:hidden;overflow-x:clip}
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
         </a>
-        <span class="media-square s6" aria-hidden="true"></span>
       </div>
       <div class="svc-side">
         <div class="svc-num">04</div>
@@ -1070,7 +1053,7 @@ body{overflow-x:hidden;overflow-x:clip}
   <div class="swiper works-swiper" id="worksSwiper" data-aos="fade-up" data-aos-delay="150">
     <div class="swiper-wrapper">
       <div class="swiper-slide work-card">
-        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-hanover.jpg" alt="Industrial forum — Hanover" loading="lazy"></div>
+        <div class="work-ph"><img src="images/stand-hanover.jpg" alt="Industrial forum — Hanover" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Ганновер</span><span class="en">Hanover</span></span><span>180 м²</span></div>
           <h3><span class="ru">Промышленный форум</span><span class="en">Industrial forum</span></h3>
@@ -1078,7 +1061,7 @@ body{overflow-x:hidden;overflow-x:clip}
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-dubai.jpg" alt="Beauty brand — Dubai" loading="lazy"></div>
+        <div class="work-ph"><img src="images/stand-dubai.jpg" alt="Beauty brand — Dubai" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Дубай</span><span class="en">Dubai</span></span><span>96 м²</span></div>
           <h3><span class="ru">Бьюти-бренд</span><span class="en">Beauty brand</span></h3>
@@ -1086,7 +1069,7 @@ body{overflow-x:hidden;overflow-x:clip}
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-moscow.jpg" alt="IT company — Moscow" loading="lazy"></div>
+        <div class="work-ph"><img src="images/stand-moscow.jpg" alt="IT company — Moscow" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Москва</span><span class="en">Moscow</span></span><span>140 м²</span></div>
           <h3><span class="ru">ИТ-компания</span><span class="en">IT company</span></h3>
@@ -1094,7 +1077,7 @@ body{overflow-x:hidden;overflow-x:clip}
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-barcelona.jpg" alt="Pharma congress — Barcelona" loading="lazy"></div>
+        <div class="work-ph"><img src="images/stand-barcelona.jpg" alt="Pharma congress — Barcelona" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Барселона</span><span class="en">Barcelona</span></span><span>120 м²</span></div>
           <h3><span class="ru">Фарма-конгресс</span><span class="en">Pharma congress</span></h3>
@@ -1102,7 +1085,7 @@ body{overflow-x:hidden;overflow-x:clip}
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-shanghai.jpg" alt="Automaker — Shanghai" loading="lazy"></div>
+        <div class="work-ph"><img src="images/stand-shanghai.jpg" alt="Automaker — Shanghai" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Шанхай</span><span class="en">Shanghai</span></span><span>260 м²</span></div>
           <h3><span class="ru">Автопроизводитель</span><span class="en">Automaker</span></h3>
@@ -1110,7 +1093,7 @@ body{overflow-x:hidden;overflow-x:clip}
         </div>
       </div>
       <div class="swiper-slide work-card">
-        <div class="work-ph"><span class="work-pulse" aria-hidden="true"></span><img src="images/stand-lisbon.jpg" alt="Startup show — Lisbon" loading="lazy"></div>
+        <div class="work-ph"><img src="images/stand-lisbon.jpg" alt="Startup show — Lisbon" loading="lazy"></div>
         <div class="work-info">
           <div class="work-meta"><span><span class="ru">Лиссабон</span><span class="en">Lisbon</span></span><span>48 м²</span></div>
           <h3><span class="ru">Стартап-шоу</span><span class="en">Startup show</span></h3>
