@@ -10,8 +10,27 @@
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['success' => false, 'message' => 'Метод не разрешён']);
+    echo json_encode([
+        'success' => false,
+        'code'    => 'method',
+        'codes'   => ['method'],
+        'message' => 'Метод не разрешён',
+    ], JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+/**
+ * Телефон: допускаются пробелы, скобки, дефисы и точки,
+ * обязательно от 10 до 15 цифр, «+» только в начале.
+ */
+function emoo_is_phone($value)
+{
+    $value = trim((string) $value);
+    if ($value === '' || !preg_match('/^\+?[\d\s().\-]{9,25}$/', $value)) {
+        return false;
+    }
+    $len = strlen(preg_replace('/\D/', '', $value));
+    return $len >= 10 && $len <= 15;
 }
 
 // Настройки
@@ -23,7 +42,11 @@ $from_email = 'emoo@emoo.ru';
 if (!empty($_POST['website_url'])) {
     http_response_code(200);
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['success' => true, 'message' => 'Бриф успешно отправлен']);
+    echo json_encode([
+        'success' => true,
+        'code'    => 'ok',
+        'message' => 'Бриф успешно отправлен',
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -35,24 +58,25 @@ $area    = isset($_POST['area'])    ? trim(strip_tags($_POST['area']))    : '';
 $message = isset($_POST['message']) ? trim(strip_tags($_POST['message'])) : '';
 
 // --- Валидация ---
+// Ключ массива — машинный код ошибки (его ждёт фронтенд), значение — текст на русском.
 $errors = [];
 
-if (empty($name) || mb_strlen($name) < 2 || mb_strlen($name) > 100) {
-    $errors[] = 'Некорректное имя';
+if ($name === '') {
+    $errors['name_req'] = 'Укажите имя';
+} elseif (mb_strlen($name) < 2 || mb_strlen($name) > 100) {
+    $errors['name'] = 'Некорректное имя';
 }
 
-if (empty($contact)) {
-    $errors[] = 'Требуется телефон или email';
-} else {
-    $is_email = filter_var($contact, FILTER_VALIDATE_EMAIL);
-    $is_phone = preg_match('/^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/', preg_replace('/\s/', '', $contact));
-    if (!$is_email && !$is_phone) {
-        $errors[] = 'Некорректный телефон или email';
-    }
+if ($contact === '') {
+    $errors['contact_req'] = 'Требуется телефон или email';
 }
+// Проверка формата контакта отключена — достаточно того, что поле заполнено.
+// Функция emoo_is_phone() оставлена в файле, чтобы вернуть проверку одной строкой:
+// } elseif (!filter_var($contact, FILTER_VALIDATE_EMAIL) && !emoo_is_phone($contact)) {
+//     $errors['contact'] = 'Некорректный телефон или email';
 
 if (!empty($company) && mb_strlen($company) > 200) {
-    $errors[] = 'Слишком длинное название компании';
+    $errors['company'] = 'Слишком длинное название компании';
 }
 
 $valid_areas = ['До 50 м²', '50 – 100 м²', '100 – 200 м²', '200 м² и больше', 'Форум / конференция'];
@@ -65,18 +89,23 @@ if (!empty($area) && !in_array($area, $valid_areas, true)) {
         if ($norm === $nva) { $area = $va; $matched = true; break; }
     }
     if (!$matched) {
-        $errors[] = 'Некорректная площадь';
+        $errors['area'] = 'Некорректная площадь';
     }
 }
 
 if (!empty($message) && mb_strlen($message) > 2000) {
-    $errors[] = 'Слишком длинное сообщение';
+    $errors['message'] = 'Слишком длинное сообщение';
 }
 
 if (!empty($errors)) {
     http_response_code(400);
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['success' => false, 'errors' => $errors]);
+    echo json_encode([
+        'success' => false,
+        'codes'   => array_keys($errors),
+        'errors'  => array_values($errors),
+        'message' => 'Проверьте правильность заполнения полей',
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -117,9 +146,18 @@ if ($sent) {
         date('Y-m-d H:i:s'), $name, $contact, $_SERVER['REMOTE_ADDR'] ?? '—'));
 
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['success' => true, 'message' => 'Бриф успешно отправлен']);
+    echo json_encode([
+        'success' => true,
+        'code'    => 'ok',
+        'message' => 'Бриф успешно отправлен',
+    ], JSON_UNESCAPED_UNICODE);
 } else {
     http_response_code(500);
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['success' => false, 'message' => 'Ошибка при отправке письма']);
+    echo json_encode([
+        'success' => false,
+        'code'    => 'mail_failed',
+        'codes'   => ['mail_failed'],
+        'message' => 'Ошибка при отправке письма',
+    ], JSON_UNESCAPED_UNICODE);
 }

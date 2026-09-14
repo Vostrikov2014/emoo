@@ -415,6 +415,10 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .f-field.static::after{content:"▾";position:absolute;right:2px;bottom:12px;color:var(--muted);pointer-events:none;font-size:12px}
 .f-field.req label::after{content:"*";color:#C0574F;margin-left:3px}
 .form-hint{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.55}
+/* field-level validation state */
+.f-field.bad input,.f-field.bad textarea,.f-field.bad select{border-bottom-color:#C0574F}
+.f-field.bad::before{background:#C0574F}
+.f-err{display:block;margin-top:8px;font-family:var(--mono);font-size:10.5px;line-height:1.55;letter-spacing:.04em;color:#C0574F}
 .form-ok{display:none;text-align:center;padding:30px 0 20px}
 .form-ok.show{display:block}
 .form-ok svg{width:74px;height:74px;margin:0 auto 20px;display:block}
@@ -486,6 +490,38 @@ footer{background:#fff;border-top:1px solid var(--line);padding:64px 0 26px;posi
   background:linear-gradient(90deg,var(--sand),var(--aqua));transform:scaleX(0);transform-origin:0 50%}
 body{overflow-x:hidden;overflow-x:clip}
 
+/* ===== NOTIFICATIONS (akant toast window + tab title output) ===== */
+.notif-stack{position:fixed;top:92px;right:24px;z-index:260;width:min(370px,calc(100vw - 48px));
+  display:flex;flex-direction:column;gap:12px;pointer-events:none}
+.notif{pointer-events:auto;position:relative;display:flex;align-items:flex-start;gap:14px;background:var(--deep-ink);
+  color:#EAF7F8;padding:16px 44px 16px 16px;border-left:3px solid var(--aqua);box-shadow:0 14px 34px rgba(5,50,60,.34);
+  transform:translateX(calc(100% + 34px));opacity:0;transition:transform .55s cubic-bezier(.65,.05,.36,1),opacity .4s}
+.notif.show{transform:translateX(0);opacity:1}
+.notif.hide{transform:translateX(calc(100% + 34px));opacity:0}
+.notif::before{content:"";position:absolute;inset:5px;border:1px dashed rgba(255,255,255,.16);pointer-events:none}
+.notif.ok{border-left-color:var(--sea)}
+.notif.warn{border-left-color:var(--sand)}
+.notif.err{border-left-color:#C0574F}
+.notif-ico{flex:0 0 auto;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+  font-family:var(--mono);font-size:14px;font-weight:700;line-height:1;color:var(--deep-ink);background:var(--aqua)}
+.notif.ok .notif-ico{background:var(--sea)}
+.notif.warn .notif-ico{background:var(--sand)}
+.notif.err .notif-ico{background:#C0574F;color:#fff}
+.notif-body{min-width:0}
+.notif-title{display:block;font-family:var(--disp);font-weight:700;font-size:14px;margin-bottom:5px}
+.notif-text{font-size:13.5px;line-height:1.5;color:rgba(234,247,248,.78)}
+.notif-list{list-style:square;padding-left:18px;margin:0}
+.notif-list li{font-size:13px;line-height:1.6;color:rgba(234,247,248,.78)}
+.notif-x{position:absolute;top:8px;right:9px;width:26px;height:26px;border:0;background:transparent;cursor:pointer;z-index:1;
+  color:rgba(234,247,248,.5);font-size:19px;line-height:1;transition:color .25s,transform .3s}
+.notif-x:hover{color:var(--sand);transform:rotate(90deg)}
+.notif-bar{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--aqua);transform-origin:0 50%;
+  animation:notifBar linear forwards}
+.notif.ok .notif-bar{background:var(--sea)}
+.notif.warn .notif-bar{background:var(--sand)}
+.notif.err .notif-bar{background:#C0574F}
+@keyframes notifBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:960px){
   .head-contacts .dot-bottom{display:none}
@@ -509,6 +545,12 @@ body{overflow-x:hidden;overflow-x:clip}
   .foot-grid{grid-template-columns:1fr 1fr}
   .sec{padding:72px 0}
 }
+@media(max-width:760px){
+  .notif-stack{top:auto;bottom:104px;left:14px;right:14px;width:auto}
+  .notif{transform:translateY(calc(100% + 120px));padding:14px 42px 14px 14px}
+  .notif.show{transform:translateY(0)}
+  .notif.hide{transform:translateY(calc(100% + 120px))}
+}
 @media(max-width:640px){
   .defs{grid-template-columns:1fr}
   .foot-grid{grid-template-columns:1fr}
@@ -528,6 +570,8 @@ body{overflow-x:hidden;overflow-x:clip}
   [data-stellar-ratio],[data-stellar-x]{transform:none !important}
   .link-block::before{transform:none !important}
   .promo-banner.promo-in .promo-ripple{display:none}
+  .notif{transform:none !important}
+  .notif-bar{display:none}
 }
 </style>
 </head>
@@ -1256,6 +1300,9 @@ body{overflow-x:hidden;overflow-x:clip}
 <!-- SCROLL TO TOP -->
 <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">↑</button>
 
+<!-- NOTIFICATIONS -->
+<div class="notif-stack" id="notifStack" role="region" aria-label="Уведомления"></div>
+
 <!-- AOS JS -->
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <!-- Swiper JS -->
@@ -1275,6 +1322,143 @@ body{overflow-x:hidden;overflow-x:clip}
     offset: 80,
     disable: window.matchMedia('(prefers-reduced-motion: reduce)').matches
   });
+
+  /* ========== NOTIFICATIONS (toast window + tab title output) ========== */
+  var BASE_TITLE = {
+    ru:'EMOO — Выставочные стенды под ключ | Застройка и ивент-продакшн',
+    en:'EMOO — Exhibition Stands & Event Production'
+  };
+  var NOTIF_MARK = {ok:'✓', warn:'⚠', err:'✕', info:'ℹ'};
+  var NOTIF_GLYPH = {ok:'✓', warn:'!', err:'✕', info:'i'};
+  var notifStack = document.getElementById('notifStack');
+  var notifUnread = 0, notifHold = null, notifFlash = null;
+
+  function lang(){ return document.body.getAttribute('data-lang') === 'en' ? 'en' : 'ru'; }
+  function T(ru, en){ return lang() === 'en' ? en : ru; }
+  function titleStop(){
+    clearInterval(notifFlash); notifFlash = null;
+    clearTimeout(notifHold); notifHold = null;
+  }
+  function titleReset(){ titleStop(); notifUnread = 0; document.title = BASE_TITLE[lang()]; }
+
+  /* mirror the last notification into the browser tab title (flashing while the tab is hidden) */
+  function titleShow(type, text){
+    titleStop();
+    var short = String(text || '').replace(/\s+/g, ' ').trim();
+    if(short.length > 46) short = short.slice(0, 45) + '…';
+    var mark = (NOTIF_MARK[type] || NOTIF_MARK.info) + ' ' + short + (notifUnread > 1 ? ' (' + notifUnread + ')' : '');
+    document.title = mark;
+    if(document.hidden){
+      var flip = false;
+      notifFlash = setInterval(function(){
+        if(!document.hidden){ titleReset(); return; }
+        document.title = flip ? BASE_TITLE[lang()] : mark;
+        flip = !flip;
+      }, 1000);
+    } else {
+      notifHold = setTimeout(titleReset, 6000);
+    }
+  }
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden && notifFlash) titleReset(); });
+
+  function notifBody(o){
+    var lines = (o.text == null) ? [] : (o.text instanceof Array ? o.text : [o.text]);
+    var body = document.createElement('div');
+    body.className = 'notif-body';
+    if(o.title){
+      var h = document.createElement('b');
+      h.className = 'notif-title';
+      h.textContent = o.title;
+      body.appendChild(h);
+    }
+    if(lines.length === 1){
+      var p = document.createElement('p');
+      p.className = 'notif-text';
+      p.textContent = lines[0];
+      body.appendChild(p);
+    } else if(lines.length > 1){
+      var ul = document.createElement('ul');
+      ul.className = 'notif-list';
+      lines.forEach(function(x){
+        var li = document.createElement('li');
+        li.textContent = x;
+        ul.appendChild(li);
+      });
+      body.appendChild(ul);
+    }
+    return body;
+  }
+  /* открытые уведомления переводятся вместе со страницей */
+  function refreshNotifs(){
+    if(!notifStack) return;
+    [].forEach.call(notifStack.children, function(el){
+      if(!el._o) return;
+      var old = el.querySelector('.notif-body'), fresh = notifBody(el._o);
+      if(old && fresh) el.replaceChild(fresh, old);
+      var xb = el.querySelector('.notif-x');
+      if(xb) xb.setAttribute('aria-label', T('Закрыть уведомление', 'Close notification'));
+    });
+  }
+
+  function notify(o){
+    o = o || {};
+    var type = (o.type && NOTIF_MARK[o.type]) ? o.type : 'info';
+    var lines = (o.text == null) ? [] : (o.text instanceof Array ? o.text : [o.text]);
+    var dur = (o.duration === undefined) ? (type === 'err' ? 9000 : 5500) : o.duration;
+
+    var el = document.createElement('div');
+    el.className = 'notif ' + type;
+    el._o = o;
+    el.setAttribute('role', type === 'err' ? 'alert' : 'status');
+
+    var ico = document.createElement('span');
+    ico.className = 'notif-ico';
+    ico.setAttribute('aria-hidden', 'true');
+    ico.textContent = NOTIF_GLYPH[type];
+
+    var x = document.createElement('button');
+    x.type = 'button';
+    x.className = 'notif-x';
+    x.setAttribute('aria-label', T('Закрыть уведомление', 'Close notification'));
+    x.innerHTML = '&times;';
+
+    el.appendChild(ico); el.appendChild(notifBody(o)); el.appendChild(x);
+    var bar = null;
+    if(dur){
+      bar = document.createElement('i');
+      bar.className = 'notif-bar';
+      bar.style.animationDuration = dur + 'ms';
+      el.appendChild(bar);
+    }
+    if(!notifStack) return function(){};
+    notifStack.appendChild(el);
+    while(notifStack.children.length > 4){ notifStack.removeChild(notifStack.firstChild); }
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+
+    var timer = dur ? setTimeout(dismiss, dur) : null;
+    function dismiss(){
+      clearTimeout(timer);
+      if(!el.parentNode) return;
+      el.classList.remove('show');
+      el.classList.add('hide');
+      setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 600);
+    }
+    x.addEventListener('click', dismiss);
+    el.addEventListener('mouseenter', function(){
+      clearTimeout(timer);
+      if(bar) bar.style.animationPlayState = 'paused';
+    });
+    el.addEventListener('mouseleave', function(){
+      if(!dur) return;
+      timer = setTimeout(dismiss, Math.max(1600, Math.round(dur * 0.3)));
+      if(bar) bar.style.animationPlayState = 'running';
+    });
+
+    notifUnread++;
+    titleShow(type, o.title ? (lines.length ? o.title + ': ' + lines[0] : o.title) : String(lines[0] || ''));
+    return dismiss;
+  }
+  window.notify = notify;
 
   /* ========== LANGUAGE ========== */
   function scramble(el, text){
@@ -1302,7 +1486,9 @@ body{overflow-x:hidden;overflow-x:clip}
       if(el.tagName==='OPTION'){ el.textContent = el.getAttribute('data-'+l); }
       else if(el.id==='kicker'){ scramble(el, el.getAttribute('data-'+l)); }
     });
-    document.title = (l==='ru') ? 'EMOO — Выставочные стенды под ключ | Застройка и ивент-продакшн' : 'EMOO — Exhibition Stands & Event Production';
+    titleReset();
+    refreshNotifs();
+    refreshFieldErrors();
   }
   document.querySelectorAll('.lang-btn').forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
@@ -1438,64 +1624,239 @@ body{overflow-x:hidden;overflow-x:clip}
 
   /* ========== FORM ========== */
   var form = document.getElementById('briefForm');
+  var submitBtn = document.getElementById('submitBtn');
+
+  /* ключи ошибок совпадают с кодами из send-brief.php — тексты двуязычные (RU / EN) */
+  var ERR_TXT = {
+    name_req:   ['Укажите имя — не короче 2 символов.', 'Enter your name — 2 characters or more.'],
+    name:       ['Имя не должно быть длиннее 100 символов.', 'Name must be 100 characters or fewer.'],
+    contact_req:['Укажите телефон или e-mail, чтобы мы могли связаться.', 'Enter a phone number or an email so we can reach you.'],
+    contact:    ['Телефон или e-mail — неверный формат. Пример e-mail: name@company.ru, пример телефона: +7 (995) 558-58-96.', 'Invalid phone number or e-mail format. Example e-mail: name@company.ru, example phone: +7 (995) 558-58-96.'],
+    company:    ['Название компании не длиннее 200 символов.', 'Company name must be 200 characters or fewer.'],
+    area:       ['Значение площади стенда неверно. Обновите страницу и попробуйте снова.', 'The stand area value is invalid. Reload the page and try again.'],
+    message:    ['Описание задачи не длиннее 2000 символов.', 'The task description must be 2000 characters or fewer.'],
+    method:     ['Сервер не принимает этот тип запроса.', 'The server does not accept this request method.'],
+    mail_failed:['Письмо не ушло с нашей стороны. Попробуйте позже или напишите на emoo@emoo.ru.', 'The letter was not sent on our side. Try later or write to emoo@emoo.ru.'],
+    unknown:    ['Проверьте заполненные данные или свяжитесь с нами по телефону.', 'Please check the entered data or contact us by phone.']
+  };
+  var CODE_FIELD = {
+    name:'fName', name_req:'fName',
+    contact:'fPhone', contact_req:'fPhone',
+    company:'fCompany', area:'fArea', message:'fMsg'
+  };
+  /* старые ответы сервера текстом — остаёмся совместимыми */
+  var SRV_CODE = {
+    'Метод не разрешён':'method',
+    'Бриф успешно отправлен':'ok',
+    'Некорректное имя':'name',
+    'Укажите имя':'name_req',
+    'Требуется телефон или email':'contact_req',
+    'Некорректный телефон или email':'contact',
+    'Слишком длинное название компании':'company',
+    'Некорректная площадь':'area',
+    'Слишком длинное сообщение':'message',
+    'Ошибка при отправке письма':'mail_failed'
+  };
+
+  function errText(code){ var t = ERR_TXT[code] || ERR_TXT.unknown; return T(t[0], t[1]); }
+  function codeFromText(txt){
+    if(SRV_CODE[txt]) return SRV_CODE[txt];
+    for(var k in SRV_CODE){ if(SRV_CODE.hasOwnProperty(k) && txt.indexOf(k) !== -1) return SRV_CODE[k]; }
+    return null;
+  }
+  function httpText(st){
+    if(st === 404 || st === 405) return T('Сервер не принимает запрос (код ' + st + '). Попробуйте позже или напишите на emoo@emoo.ru.', 'The server rejects this request (code ' + st + '). Try later or write to emoo@emoo.ru.');
+    if(st >= 500) return T('На сервере произошла ошибка (код ' + st + '). Заполненные поля сохранены — попробуйте позже или позвоните нам.', 'Server error (code ' + st + '). Your entries are kept — try later or call us.');
+    return T('Сервер вернул неожиданный ответ (код ' + st + '). Данные в форме сохранены, попробуйте позже.', 'Unexpected server answer (code ' + st + '). Your entries are kept, please try later.');
+  }
+
+  function setSubmitting(on){
+    submitBtn.disabled = on;
+    submitBtn.querySelector('.submit-label').style.display = on ? 'none' : '';
+    submitBtn.querySelector('.submit-loading').style.display = on ? '' : 'none';
+  }
+
+  /* подпись под полем */
+  function markField(code, on){
+    var input = document.getElementById(CODE_FIELD[code] || '');
+    if(!input) return;
+    var wrap = input.closest ? input.closest('.f-field') : null;
+    if(!wrap) return;
+    var note = wrap.querySelector('.f-err');
+    if(!on){
+      wrap.classList.remove('bad');
+      delete wrap._code;
+      if(note && note.parentNode) note.parentNode.removeChild(note);
+      return;
+    }
+    wrap.classList.add('bad');
+    wrap._code = code;
+    if(!note){
+      note = document.createElement('span');
+      note.className = 'f-err';
+      wrap.appendChild(note);
+    }
+    note.textContent = errText(code);
+  }
+  function clearFieldErrors(){
+    document.querySelectorAll('.f-field.bad').forEach(function(w){
+      w.classList.remove('bad');
+      delete w._code;
+      var n = w.querySelector('.f-err');
+      if(n && n.parentNode) n.parentNode.removeChild(n);
+    });
+  }
+  function refreshFieldErrors(){
+    document.querySelectorAll('.f-field.bad').forEach(function(w){
+      var n = w.querySelector('.f-err');
+      if(n && w._code) n.textContent = errText(w._code);
+    });
+  }
+
+  /* правила браузера: формат контакта не проверяем — важно только то, что поле заполнено.
+     RX_EMAIL и isPhone оставлены, чтобы вернуть проверку одной строкой ниже */
+  var RX_EMAIL = /^[^\s@,;]+@[^\s@,;]+\.[A-Za-z\u0410-\u044F]{2,}$/;
+  function isPhone(v){
+    if(!/^\+?[\d\s().\-]{9,25}$/.test(v)) return false;
+    var d = v.replace(/\D/g, '');
+    return d.length >= 10 && d.length <= 15;
+  }
+  function validateBrief(){
+    var v = function(id){ return document.getElementById(id).value.trim(); };
+    var codes = [];
+    var name = v('fName'), contact = v('fPhone'), company = v('fCompany'), msg = v('fMsg');
+    if(!name) codes.push('name_req');
+    else if(name.length < 2 || name.length > 100) codes.push('name');
+    if(!contact) codes.push('contact_req');
+    // else if(!RX_EMAIL.test(contact) && !isPhone(contact)) codes.push('contact');
+    if(company.length > 200) codes.push('company');
+    if(msg.length > 2000) codes.push('message');
+    return codes;
+  }
+
+  ['fName','fPhone','fCompany','fMsg'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', function(){
+      var wrap = el.closest ? el.closest('.f-field') : null;
+      if(wrap && wrap.classList.contains('bad')) markField(wrap._code, false);
+    });
+  });
+
   form.addEventListener('submit', function(ev){
     ev.preventDefault();
-    var name = document.getElementById('fName'), phone = document.getElementById('fPhone'), ok = true;
-    [name, phone].forEach(function(f){
-      if(!f.value.trim()){ f.style.borderColor = '#C0574F'; ok = false; }
-      else f.style.borderColor = '';
-    });
-    if(!ok) return;
+    clearFieldErrors();
 
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.querySelector('.submit-label').style.display = 'none';
-    btn.querySelector('.submit-loading').style.display = '';
+    var codes = validateBrief();
+    if(codes.length){
+      codes.forEach(function(c){ markField(c, true); });
+      notify({
+        type:'err',
+        title:T('Проверьте данные в брифе', 'Please check the brief'),
+        text:codes.map(errText)
+      });
+      var first = document.getElementById(CODE_FIELD[codes[0]]);
+      if(first) first.focus();
+      return;
+    }
 
+    if(navigator.onLine === false){
+      notify({
+        type:'err',
+        title:T('Нет подключения', 'You are offline'),
+        text:T('Интернет недоступен, бриф не отправлен. Данные в форме сохранены — подключитесь и попробуйте снова, или позвоните: +7 (995) 558-58-96.', 'No internet connection, the brief was not sent. Your entries are kept — reconnect and try again, or call us: +7 (995) 558-58-96.')
+      });
+      return;
+    }
+
+    setSubmitting(true);
     var formData = new FormData(form);
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'send-brief.php', true);
+    xhr.timeout = 20000;
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.onload = function() {
-      try {
-        var response = JSON.parse(xhr.responseText);
-      } catch(e) {
-        alert('Ошибка соединения. Попробуйте позже.');
-        btn.disabled = false;
-        btn.querySelector('.submit-label').style.display = '';
-        btn.querySelector('.submit-loading').style.display = 'none';
-        return;
-      }
-      if (xhr.status >= 200 && xhr.status < 300 && response.success) {
+      var response = null;
+      try { response = JSON.parse(xhr.responseText); } catch(e) { response = null; }
+
+      if(response && xhr.status >= 200 && xhr.status < 300 && response.success){
+        setSubmitting(false);
         form.style.display = 'none';
         document.getElementById('formOk').classList.add('show');
+        notify({
+          type:'ok',
+          title:T('Бриф отправлен', 'Brief sent'),
+          text:T('Концепт будет у вас в течение 24 часов.', 'Your concept will arrive within 24 hours.'),
+          duration:7000
+        });
+        return;
+      }
+
+      setSubmitting(false);
+
+      /* 1) коды от сервера — подписываем поля; 2) старые строки; 3) HTTP-сбой */
+      var badCodes = [], msgs = [];
+      if(response && response.codes && response.codes.length){
+        badCodes = response.codes.slice();
+        msgs = response.codes.map(function(c){ return ERR_TXT[c] ? errText(c) : errText('unknown'); });
+      } else if(response && response.errors && response.errors.length){
+        response.errors.forEach(function(x){
+          var c = codeFromText(String(x));
+          if(c){ badCodes.push(c); msgs.push(errText(c)); }
+          else msgs.push(String(x));
+        });
+      } else if(response && response.message){
+        var cm = codeFromText(String(response.message));
+        msgs = [cm ? errText(cm) : String(response.message)];
+        if(cm) badCodes.push(cm);
+      } else if(xhr.status === 0){
+        msgs = [T('Связь с сервером не установлена. Заполненные поля сохранены — попробуйте ещё раз или позвоните: +7 (995) 558-58-96.', 'The server could not be reached. Your entries are kept — try again or call us: +7 (995) 558-58-96.')];
       } else {
-        var msg = '';
-        if (response.errors && response.errors.length) { msg = response.errors.join('\n'); }
-        else { msg = response.message || 'Ошибка при отправке. Попробуйте позже.'; }
-        alert(msg);
-        btn.disabled = false;
-        btn.querySelector('.submit-label').style.display = '';
-        btn.querySelector('.submit-loading').style.display = 'none';
+        msgs = [httpText(xhr.status)];
+      }
+      badCodes.forEach(function(c){ markField(c, true); });
+      notify({
+        type:'err',
+        title: badCodes.length ? T('Проверьте данные в брифе', 'Please check the brief') : T('Бриф не отправлен', 'Brief not sent'),
+        text:msgs
+      });
+      if(badCodes.length){
+        var f0 = document.getElementById(CODE_FIELD[badCodes[0]]);
+        if(f0) f0.focus();
       }
     };
     xhr.onerror = function() {
-      alert('Ошибка сети. Проверьте подключение к интернету.');
-      btn.disabled = false;
-      btn.querySelector('.submit-label').style.display = '';
-      btn.querySelector('.submit-loading').style.display = 'none';
+      setSubmitting(false);
+      notify({
+        type:'err',
+        title:T('Бриф не отправлен', 'Brief not sent'),
+        text:T('Соединение с сервером прервано и данные не дошли. Проверьте интернет и попробуйте ещё раз — заполненные поля сохранены. Если повторяется, позвоните: +7 (995) 558-58-96.', 'The connection to the server dropped, the data did not arrive. Check your internet and try again — your entries are kept. If it keeps happening, call us: +7 (995) 558-58-96.')
+      });
+    };
+    xhr.ontimeout = function() {
+      setSubmitting(false);
+      notify({
+        type:'err',
+        title:T('Сервер не отвечает', 'Server is not responding'),
+        text:T('Отправка заняла слишком долго. Данные в форме сохранены — попробуйте ещё раз или напишите на emoo@emoo.ru.', 'Sending took too long. Your entries are kept — try again or write to emoo@emoo.ru.')
+      });
     };
     xhr.send(formData);
   });
 
   document.getElementById('sendAnother').addEventListener('click', function(){
+    clearFieldErrors();
     form.reset();
     document.getElementById('formOk').classList.remove('show');
     form.style.display = '';
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = false;
-    btn.querySelector('.submit-label').style.display = '';
-    btn.querySelector('.submit-loading').style.display = 'none';
+    setSubmitting(false);
+    notify({
+      type:'info',
+      title:T('Бриф снова готов к отправке', 'The brief form is ready again'),
+      text:T('Заполните поля и отправьте новую заявку.', 'Fill in the fields and send a new request.'),
+      duration:4000
+    });
+    document.getElementById('fName').focus();
   });
 })();
 </script>
