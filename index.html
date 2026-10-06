@@ -218,7 +218,7 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .hero-inner{position:relative;z-index:2;width:100%;max-width:1560px;margin:0 auto;padding:150px 48px 150px}
 .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--aqua);min-height:1.4em;margin-bottom:20px}
 .hero-title{font-family:var(--disp);font-weight:900;font-size:clamp(34px,5.4vw,72px);line-height:1.05;text-transform:uppercase}
-.hero-title .stroke{color:transparent;-webkit-text-stroke:1.5px #fff}
+.hero-title .stroke{font-family:var(--body);font-weight:800;letter-spacing:.02em;color:transparent;-webkit-text-stroke:3px #fff}
 @supports not (-webkit-text-stroke:1px #000){.hero-title .stroke{color:#fff}}
 .hero-title .accent{color:var(--sand)}
 .hero-lead{margin-top:28px;max-width:620px;font-size:17px;color:#CFEBEF;line-height:1.65}
@@ -321,8 +321,8 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 
 /* ===== SERVICES (akant alternating rows) ===== */
 .services{background:#fff;padding:100px 0 30px;position:relative}
-.svc-row{display:flex;align-items:stretch;margin-top:84px}
-.svc-media{width:58%;position:relative;min-height:440px;overflow:hidden}
+.svc-row{display:flex;align-items:stretch;margin-top:84px;position:relative}
+.svc-media{width:58%;position:relative;min-height:440px;overflow:hidden;z-index:2}
 .svc-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s ease;filter:saturate(.9)}
 .svc-row:hover .svc-media img{transform:scale(1.05)}
 .svc-media::after{content:"";position:absolute;inset:0;background:rgba(5,50,60,.3)}
@@ -330,11 +330,10 @@ body.menu-open .burger span:nth-child(2){transform:translateY(-4.5px) rotate(-45
 .svc-side{width:42%;padding:44px 0 20px 60px;display:flex;flex-direction:column;justify-content:center}
 .svc-num{font-family:var(--mono);font-size:12px;letter-spacing:.26em;color:var(--sand);margin-bottom:18px}
 .svc-desc{color:var(--muted);font-size:15px;line-height:1.65;margin-bottom:22px}
-.svc-lines{position:relative;height:2px;margin-bottom:22px}
-.svc-line{position:absolute;left:0;top:0;height:2px;background:var(--deep);min-width:300%;margin-left:-290%;z-index:1}
-.svc-line.dash{height:0;border-top:2px dashed rgba(16,60,70,.35);background:none;min-width:300%;margin-left:-250%;z-index:0}
-.svc-row.rev .svc-line{left:auto;right:0;margin-left:0;margin-right:-290%}
-.svc-row.rev .svc-line.dash{margin-right:-250%}
+.svc-lines{position:relative;height:2px;margin:0 0 22px}
+.svc-line{position:absolute;left:-100vw;top:0;height:0;border-top:2px solid var(--deep);background:none;width:calc(100vw + 60% - 60px);z-index:1}
+.svc-line.dash{height:0;border-top:2px dashed rgba(16,60,70,.35);background:none;width:calc(100vw + 100%);z-index:0}
+.svc-row.rev .svc-line{left:auto;right:-100vw}
 .svc-title{font-family:var(--disp);font-weight:700;font-size:clamp(20px,2.3vw,28px);line-height:1.2}
 .svc-row.rev{flex-direction:row-reverse}
 .svc-row.rev .svc-side{padding:44px 60px 20px 0}
@@ -535,6 +534,9 @@ body{overflow-x:hidden;overflow-x:clip}
   .svc-row,.svc-row.rev{flex-direction:column}
   .svc-media{width:100%;min-height:340px}
   .svc-side,.svc-row.rev .svc-side{width:100%;padding:36px 0 10px}
+  .svc-line{left:0;width:60%}
+  .svc-row.rev .svc-line{left:auto;right:0}
+  .svc-line.dash{width:100%}
   .cta-grid{grid-template-columns:1fr;gap:54px}
   .works-swiper .swiper-slide.work-card{width:420px}
 }
@@ -647,7 +649,7 @@ body{overflow-x:hidden;overflow-x:clip}
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-bg" data-stellar-ratio="1.05">
-    <img src="images/hero.jpg" alt="Выставочный стенд EMOO / EMOO exhibition stand">
+    <img src="images/image_1.jpg" alt="Выставочный стенд EMOO / EMOO exhibition stand">
   </div>
   <div class="hero-grid" aria-hidden="true"><i></i></div>
   <div class="hero-orb o1" aria-hidden="true"></div>
@@ -724,7 +726,6 @@ body{overflow-x:hidden;overflow-x:clip}
     <div class="hero-meta" data-aos="fade-up" data-aos-delay="350">
       <div><span class="ru">Формат</span><span class="en">Format</span><b><span class="ru">застройка под ключ</span><span class="en">full turnkey build</span></b></div>
       <div><span class="ru">Концепт</span><span class="en">Concept</span><b><span class="ru">за 24 часа</span><span class="en">within 24 hours</span></b></div>
-      <div><span class="ru">География</span><span class="en">Geography</span><b><span class="ru">17 стран</span><span class="en">17 countries</span></b></div>
     </div>
   </div>
   <a class="hero-scroll" href="#about" aria-label="Scroll down"><span class="pulse-arrow-bottom">↓</span></a>
@@ -756,7 +757,7 @@ body{overflow-x:hidden;overflow-x:clip}
     <div class="sec-index" data-aos="fade-up">01 <span class="ru">/ О нас</span><span class="en">/ About</span></div>
     <div class="about-split">
       <div class="about-media" data-aos="fade-up">
-        <img src="images/stand-hanover.jpg" alt="EMOO exhibition stand" data-stellar-ratio="0.94">
+        <img src="images/image_2.png" alt="EMOO exhibition stand" data-stellar-ratio="0.94">
         <a class="dot-solid filled sand small media-btn" href="#services">
           <span class="bx"><span class="ru">Смотреть презентацию</span><span class="en">View presentation</span></span>
           <span class="pulse-arrow-bottom s5">↓</span>
@@ -764,17 +765,19 @@ body{overflow-x:hidden;overflow-x:clip}
       </div>
       <div class="about-body">
         <h2 data-aos="fade-up" data-aos-delay="100">
-          <span class="ru">Ваш надежный проводник<br>в мире выставок</span>
-          <span class="en">Your reliable guide<br>in the world of exhibitions</span>
+          <span class="ru">Создаем пространство<br>для вашего успеха</span>
+          <span class="en">Creating space<br>for your success</span>
         </h2>
-        <p data-aos="fade-up" data-aos-delay="150"><span class="ru">EMOO — команда настоящих профессионалов, имеющая большой опыт разработки дизайна,
-          проектирования и реализации эксклюзивных выставочных стендов по всей России и за рубежом.</span>
-          <span class="en">EMOO is a team of true professionals with extensive experience in designing,
-          planning and building exclusive exhibition stands across Russia and abroad.</span></p>
-        <p data-aos="fade-up" data-aos-delay="200"><span class="ru">Полный цикл: от концепта до сопровождения в дни выставки. Один подрядчик,
-          одна ответственность. 340+ проектов в 17 странах.</span>
-          <span class="en">Full cycle: from concept to on-site support during the exhibition days. One contractor,
-          one responsibility. 340+ projects in 17 countries.</span></p>
+        <p data-aos="fade-up" data-aos-delay="150"><span class="ru">EMOO — команда профессионалов. Мы занимаемся полным циклом создания
+          эксклюзивных стендов: от разработки дизайн-проекта до реализации объектов любой сложности.</span>
+          <span class="en">EMOO is a team of professionals. We cover the full cycle of creating
+          exclusive stands: from design concept development to delivering structures of any complexity.</span></p>
+        <p data-aos="fade-up" data-aos-delay="200"><span class="ru">Наш подход: абсолютная прозрачность, четкое соблюдение дедлайнов
+          и забота о клиенте на всех этапах сотрудничества.</span>
+          <span class="en">Our approach: absolute transparency, strict adherence to deadlines
+          and care for the client at every stage of cooperation.</span></p>
+        <p data-aos="fade-up" data-aos-delay="250"><span class="hl"><span class="ru">Наше вдохновение — ваши результаты</span>
+          <span class="en">Our inspiration — your results</span></span></p>
         <div class="link-block" data-aos="slide-right" data-aos-offset="60" data-aos-duration="2200">
           <a class="dot-bottom" href="#services">
             <span class="ru">Подробнее</span><span class="en">Learn more</span>
@@ -793,15 +796,12 @@ body{overflow-x:hidden;overflow-x:clip}
     <h2 class="sec-title" data-aos="fade-up" data-aos-delay="100">
       <span class="ru">Что мы делаем</span><span class="en">What we do</span>
     </h2>
-    <p class="sec-sub" data-aos="fade-up" data-aos-delay="150">
-      <span class="ru">Полный цикл: от концепта до сопровождения в дни выставки. Один подрядчик, одна ответственность.</span>
-      <span class="en">Full cycle: from concept to on-site support during the exhibition days. One contractor, one responsibility.</span></p>
   </div>
 
   <div class="container">
     <div class="svc-row">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-hanover.jpg" alt="Design & build" loading="lazy" data-stellar-ratio="1.08">
+        <img src="images/image_3.png" alt="Exhibition stands" loading="lazy" data-stellar-ratio="1.08">
         <a class="dot-solid filled sand small media-btn left" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
@@ -809,19 +809,19 @@ body{overflow-x:hidden;overflow-x:clip}
       </div>
       <div class="svc-side">
         <div class="svc-num">01</div>
-        <p class="svc-desc" data-aos="slide-right" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">От обмера до сдачи: конструктив, свет, графика, мебель, инженерия.</span>
-          <span class="en">From survey to handover: structure, lighting, graphics, furniture, engineering.</span></span></p>
+        <p class="svc-desc" data-aos="slide-right" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Полный цикл: от концепта до сдачи объекта.</span>
+          <span class="en">Full cycle: from concept to project delivery.</span></span></p>
         <div class="svc-lines" aria-hidden="true">
           <i class="svc-line" data-aos="slide-right" data-aos-offset="160" data-aos-duration="3000" data-aos-delay="300" data-aos-easing="ease"></i>
           <i class="svc-line dash" data-aos="slide-right" data-aos-offset="50" data-aos-duration="2000"></i>
         </div>
-        <h3 class="svc-title" data-aos="slide-right" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Проектирование и застройка</span><span class="en">Design &amp; build</span></span></h3>
+        <h3 class="svc-title" data-aos="slide-right" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Выставочные стенды</span><span class="en">Exhibition stands</span></span></h3>
       </div>
     </div>
 
     <div class="svc-row rev">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-lisbon.jpg" alt="Event program" loading="lazy" data-stellar-ratio="0.94">
+        <img src="images/image_4.png" alt="Museum expositions" loading="lazy" data-stellar-ratio="0.94">
         <a class="dot-solid filled sand small media-btn" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
@@ -829,19 +829,21 @@ body{overflow-x:hidden;overflow-x:clip}
       </div>
       <div class="svc-side">
         <div class="svc-num">02</div>
-        <p class="svc-desc" data-aos="slide-left" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Сценарий, персонал, активности — стенд, который зарабатывает контакты.</span>
-          <span class="en">Scenario, staff, activities — a stand that earns contacts.</span></span></p>
+        <p class="svc-desc" data-aos="slide-left" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Проектируем и создаем музейные пространства. Разрабатываем концепцию, планировку
+            и техническое оснащение. Продумываем каждую деталь.</span>
+          <span class="en">We design and create museum spaces. We develop the concept, layout
+            and technical equipment. We think through every detail.</span></span></p>
         <div class="svc-lines" aria-hidden="true">
           <i class="svc-line" data-aos="slide-left" data-aos-offset="160" data-aos-duration="3000" data-aos-delay="300" data-aos-easing="ease"></i>
           <i class="svc-line dash" data-aos="slide-left" data-aos-offset="50" data-aos-duration="2000"></i>
         </div>
-        <h3 class="svc-title" data-aos="slide-left" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Ивент-программа</span><span class="en">Event program</span></span></h3>
+        <h3 class="svc-title" data-aos="slide-left" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Музейные экспозиции</span><span class="en">Museum expositions</span></span></h3>
       </div>
     </div>
 
     <div class="svc-row">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-moscow.jpg" alt="Visualization & 3D" loading="lazy" data-stellar-ratio="1.08">
+        <img src="images/image_5.png" alt="Showrooms & brand zones" loading="lazy" data-stellar-ratio="1.08">
         <a class="dot-solid filled sand small media-btn left" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
@@ -849,19 +851,19 @@ body{overflow-x:hidden;overflow-x:clip}
       </div>
       <div class="svc-side">
         <div class="svc-num">03</div>
-        <p class="svc-desc" data-aos="slide-right" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Концепт за 24 часа, фотореалистичные рендеры, видео-облёт, иммерсивный бриф.</span>
-          <span class="en">Concept in 24 hours, photorealistic renders, video fly-through, immersive brief.</span></span></p>
+        <p class="svc-desc" data-aos="slide-right" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">От концепции до открытия: пространства для продаж и презентаций.</span>
+          <span class="en">From concept to opening: spaces for sales and presentations.</span></span></p>
         <div class="svc-lines" aria-hidden="true">
           <i class="svc-line" data-aos="slide-right" data-aos-offset="160" data-aos-duration="3000" data-aos-delay="300" data-aos-easing="ease"></i>
           <i class="svc-line dash" data-aos="slide-right" data-aos-offset="50" data-aos-duration="2000"></i>
         </div>
-        <h3 class="svc-title" data-aos="slide-right" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Визуализация и 3D</span><span class="en">Visualization &amp; 3D</span></span></h3>
+        <h3 class="svc-title" data-aos="slide-right" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Шоурумы и брендзоны</span><span class="en">Showrooms &amp; brand zones</span></span></h3>
       </div>
     </div>
 
     <div class="svc-row rev">
       <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
-        <img src="images/stand-shanghai.jpg" alt="Logistics & support" loading="lazy" data-stellar-ratio="0.94">
+        <img src="images/image_6.png" alt="Events & forums" loading="lazy" data-stellar-ratio="0.94">
         <a class="dot-solid filled sand small media-btn" href="#contacts">
           <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
           <span class="pulse-arrow-right">→</span>
@@ -869,13 +871,53 @@ body{overflow-x:hidden;overflow-x:clip}
       </div>
       <div class="svc-side">
         <div class="svc-num">04</div>
-        <p class="svc-desc" data-aos="slide-left" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Монтаж, демонтаж, документы площадки и дежурство все дни выставки.</span>
-          <span class="en">Assembly, dismantling, venue paperwork and on-site duty during the show.</span></span></p>
+        <p class="svc-desc" data-aos="slide-left" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Мероприятия любой сложности: от идеи до реализации.</span>
+          <span class="en">Events of any complexity: from idea to implementation.</span></span></p>
         <div class="svc-lines" aria-hidden="true">
           <i class="svc-line" data-aos="slide-left" data-aos-offset="160" data-aos-duration="3000" data-aos-delay="300" data-aos-easing="ease"></i>
           <i class="svc-line dash" data-aos="slide-left" data-aos-offset="50" data-aos-duration="2000"></i>
         </div>
-        <h3 class="svc-title" data-aos="slide-left" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Логистика и сопровождение</span><span class="en">Logistics &amp; support</span></span></h3>
+        <h3 class="svc-title" data-aos="slide-left" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Мероприятия и форумы</span><span class="en">Events &amp; forums</span></span></h3>
+      </div>
+    </div>
+
+    <div class="svc-row">
+      <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
+        <img src="images/image_7.jpg" alt="Equipment rental & multimedia content" loading="lazy" data-stellar-ratio="1.08">
+        <a class="dot-solid filled sand small media-btn left" href="#contacts">
+          <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
+          <span class="pulse-arrow-right">→</span>
+        </a>
+      </div>
+      <div class="svc-side">
+        <div class="svc-num">05</div>
+        <p class="svc-desc" data-aos="slide-right" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Программное обеспечение и оборудование для интерактивных и мультимедийных решений.</span>
+          <span class="en">Software and equipment for interactive and multimedia solutions.</span></span></p>
+        <div class="svc-lines" aria-hidden="true">
+          <i class="svc-line" data-aos="slide-right" data-aos-offset="160" data-aos-duration="3000" data-aos-delay="300" data-aos-easing="ease"></i>
+          <i class="svc-line dash" data-aos="slide-right" data-aos-offset="50" data-aos-duration="2000"></i>
+        </div>
+        <h3 class="svc-title" data-aos="slide-right" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Аренда оборудования и мультимедийный контент</span><span class="en">Equipment rental &amp; multimedia content</span></span></h3>
+      </div>
+    </div>
+
+    <div class="svc-row rev">
+      <div class="svc-media" data-aos="slide-up" data-aos-duration="800">
+        <img src="images/image_8.jpg" alt="Souvenir products" loading="lazy" data-stellar-ratio="0.94">
+        <a class="dot-solid filled sand small media-btn" href="#contacts">
+          <span class="bx"><span class="ru">Подробнее</span><span class="en">Learn more</span></span>
+          <span class="pulse-arrow-right">→</span>
+        </a>
+      </div>
+      <div class="svc-side">
+        <div class="svc-num">06</div>
+        <p class="svc-desc" data-aos="slide-left" data-aos-offset="60" data-aos-duration="1000"><span class="hl"><span class="ru">Широкий выбор и оперативное производство.</span>
+          <span class="en">Wide selection and fast production.</span></span></p>
+        <div class="svc-lines" aria-hidden="true">
+          <i class="svc-line" data-aos="slide-left" data-aos-offset="160" data-aos-duration="3000" data-aos-delay="300" data-aos-easing="ease"></i>
+          <i class="svc-line dash" data-aos="slide-left" data-aos-offset="50" data-aos-duration="2000"></i>
+        </div>
+        <h3 class="svc-title" data-aos="slide-left" data-aos-offset="20" data-aos-duration="1600"><span class="hl"><span class="ru">Сувенирная продукция</span><span class="en">Souvenir products</span></span></h3>
       </div>
     </div>
   </div>
@@ -1072,7 +1114,7 @@ body{overflow-x:hidden;overflow-x:clip}
   </div>
 </section>
 
-<!-- WORKS (akant portfolio) -->
+<!-- WORKS (akant portfolio) — временно скрыт
 <section class="works" id="works">
   <div class="container">
     <div class="sec-index" data-aos="fade-up">05 <span class="ru">/ Проекты</span><span class="en">/ Projects</span></div>
@@ -1147,6 +1189,7 @@ body{overflow-x:hidden;overflow-x:clip}
     </div>
   </div>
 </section>
+-->
 
 <!-- CONTACTS (akant underline form) -->
 <section class="sec sec-foam contacts" id="contacts">
@@ -1538,17 +1581,20 @@ body{overflow-x:hidden;overflow-x:clip}
   });
 
   /* ========== SWIPER — WORKS ========== */
-  var worksSwiper = new Swiper('#worksSwiper', {
-    slidesPerView: 'auto',
-    spaceBetween: 24,
-    speed: 2500,
-    grabCursor: true,
-    freeMode: true,
-    navigation: {
-      prevEl: '#worksPrev',
-      nextEl: '#worksNext'
-    }
-  });
+  /* секция «Наши проекты» временно скрыта — инициализация только при наличии слайдера в DOM */
+  if(document.getElementById('worksSwiper')){
+    var worksSwiper = new Swiper('#worksSwiper', {
+      slidesPerView: 'auto',
+      spaceBetween: 24,
+      speed: 2500,
+      grabCursor: true,
+      freeMode: true,
+      navigation: {
+        prevEl: '#worksPrev',
+        nextEl: '#worksNext'
+      }
+    });
+  }
 
   /* ========== SCROLL MOTION (progress bar + parallax) ========== */
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
