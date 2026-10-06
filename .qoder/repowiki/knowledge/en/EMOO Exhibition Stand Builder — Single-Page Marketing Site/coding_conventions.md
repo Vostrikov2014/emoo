@@ -1,0 +1,6 @@
+- Bilingual text is stored as paired `<span class="ru">` / `<span class="en">` siblings inside the same DOM node and switched by toggling `data-lang` on `<body>` rather than by swapping pages.
+- Section headings and other animated text use the `lm-wrap` / `lm-line` / `line` nesting pattern so a single IntersectionObserver can trigger a slide-up reveal transition uniformly across the page.
+- Scroll-driven animations are implemented with `IntersectionObserver` instances scoped to specific element groups (`.rv`, `.lm-wrap`, `.count`, stage articles) instead of scroll-event polling.
+- User-facing copy lives directly in the HTML markup; there are no external JSON/i18n files, so adding a new language requires duplicating every visible string pair.
+- The form handler `send-brief.php` enforces a honeypot field (`website_url`), strips tags from all inputs, whitelists allowed area values, and always responds with `application/json` plus an appropriate HTTP status code.
+- Visual styling is centralized in CSS custom properties defined under `:root` (e.g. `--deep`, `--sand`, `--foam`) and reused throughout the stylesheet to keep the color palette consistent.

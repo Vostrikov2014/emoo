@@ -1,0 +1,1 @@
+Vanilla HTML5 + CSS3 (CSS custom properties, Grid, Flexbox, `clip-path`, `@supports`) + unminified vanilla JavaScript (no libraries); PHP 7.4+ `mail()` for form delivery; Apache `.htaccess` for HTTPS enforcement, security headers, caching, and compression; Google Fonts (Unbounded, Manrope, JetBrains Mono).
