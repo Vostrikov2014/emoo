@@ -4,9 +4,9 @@
       <rect x="27" y="8" width="10" height="12"/>
     </clipPath>
   </defs>
-  <circle cx="24" cy="32" r="20.5" fill="none" stroke="#A9C48C" stroke-width="7"/>
-  <circle cx="40" cy="32" r="20.5" fill="none" stroke="#C08B52" stroke-width="7"/>
+  <circle cx="24" cy="32" r="20.5" fill="none" stroke="#A9C48C" stroke-width="6"/>
+  <circle cx="40" cy="32" r="20.5" fill="none" stroke="#C08B52" stroke-width="6"/>
   <g clip-path="url(#under)">
-    <circle cx="24" cy="32" r="20.5" fill="none" stroke="#A9C48C" stroke-width="7"/>
+    <circle cx="24" cy="32" r="20.5" fill="none" stroke="#A9C48C" stroke-width="6"/>
   </g>
 </svg>
